@@ -98,31 +98,31 @@
 			]
 		},
 		"configuration": {
-            "type": "object",
-            "title": "PowerShell Universal",
-            "properties": {
-                "powerShellUniversal.port": {
-                    "type": "number",
-                    "default": 5000,
-                    "description": "The port that PowerShell Universal is running on. This also configures which port to start Universal on."
-                },
-                "powerShellUniversal.computerName": {
-                    "type": "string",
-                    "default": "localhost",
-                    "description": "The local or remote computer to connect to."
-                },
-                "powerShellUniversal.appToken": {
-                    "type": "string",
-                    "default": "",
-                    "description": "The appToken used to connect to PowerShell Universal"
-                },
-                "powerShellUniversal.serverPath": {
-                    "type": "string",
-                    "default": "",
-                    "description": "The local path to the Universal Server executable"
-                }
-            }
-        },
+			"type": "object",
+			"title": "PowerShell Universal",
+			"properties": {
+				"powerShellUniversal.port": {
+					"type": "number",
+					"default": 5000,
+					"description": "The port that PowerShell Universal is running on. This also configures which port to start Universal on."
+				},
+				"powerShellUniversal.computerName": {
+					"type": "string",
+					"default": "localhost",
+					"description": "The local or remote computer to connect to."
+				},
+				"powerShellUniversal.appToken": {
+					"type": "string",
+					"default": "",
+					"description": "The appToken used to connect to PowerShell Universal"
+				},
+				"powerShellUniversal.serverPath": {
+					"type": "string",
+					"default": "",
+					"description": "The local path to the Universal Server executable"
+				}
+			}
+		},
 		"menus": {
 			"view/title": [
 				{

@@ -1,0 +1,20 @@
+name: Production
+on: [workflow_dispatch]
+
+jobs:
+    build:
+      name: Build and Publish
+      runs-on: windows-latest
+      steps:
+        - uses: actions/checkout@v1
+        - name: InvokeBuild
+          run: Install-Module InvokeBuild -Scope CurrentUser -Force
+          shell: powershell
+        - name: Build
+          run: Invoke-Build
+          shell: powershell
+        - name: Publish
+          run: Invoke-Build -Task PublishExtension
+          env:
+            MarketplaceToken: ${{ secrets.MARKETPLACE_TOKEN }}
+          shell: powershell
