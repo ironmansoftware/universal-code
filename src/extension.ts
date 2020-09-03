@@ -10,6 +10,8 @@ import { downloadUniversalCommand, downloadUniversal } from './commands/download
 import { startUniversal, startUniversalCommand } from './commands/startUniversal';
 import { load } from './settings';
 import { registerDashboardCommands } from './commands/dashboards';
+import { ApiTreeViewProvider } from './api-treeview';
+import { registerEndpointCommands } from './commands/endpoints';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -51,14 +53,19 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const moduleProvider = new DashboardTreeViewProvider();
 	const infoProvider = new InfoTreeViewProvider();
+	const endpointProvider = new ApiTreeViewProvider();
+
 	vscode.window.createTreeView<vscode.TreeItem>('universalDashboardProviderView', { treeDataProvider: moduleProvider });
+	vscode.window.createTreeView<vscode.TreeItem>('universalEndpointProviderView', { treeDataProvider: endpointProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalInfoProviderView', { treeDataProvider: infoProvider });
 	vscode.commands.registerCommand('powershell-universal.refreshTreeView', () => moduleProvider.refresh());
-
+	vscode.commands.registerCommand('powershell-universal.refreshEndpointTreeView', () => endpointProvider.refresh());
+	
 	downloadUniversalCommand();
 	startUniversalCommand();
 	help();
 	registerDashboardCommands(context);
+	registerEndpointCommands(context);
 }
 
 // this method is called when your extension is deactivated

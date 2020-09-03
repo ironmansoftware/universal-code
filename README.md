@@ -12,9 +12,17 @@ PowerShell Universal is the ultimate platform for building web-based IT tools. T
 
 The extension can automatically download and install Universal. When the extension starts, if the binaries are present, it will start a Universal server. 
 
-### Manage Dashboards
+### APIs
 
-The extension can list and restart dashboards that are running within Universal. 
+- View APIs
+- Automatically insert `Invoke-RestMethod` to call APIs
+- Edit APIs
+
+### Dashboards
+
+- View dashboards 
+- Open Dashboard scripts
+- Restart Dashboards
 
 ### Auto-import modules
 

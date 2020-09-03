@@ -12,6 +12,7 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
     vscode.commands.registerCommand('powershell-universal.restartDashboard', restartDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.importModules', importModulesCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
+    vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
 }
 
 export const manageDashboardsCommand = async () => {
@@ -70,4 +71,13 @@ export const openFileCommand = async (dashboard : DashboardTreeItem) => {
     vscode.window.showTextDocument(textDocument);
 
     importModulesCommand(dashboard);
+}
+
+export const openDashboardConfigFileCommand = async () => {
+    const settings = await Container.universal.getSettings();
+    const filePath = path.join(settings.repositoryPath, '.universal', 'dashboards.ps1');
+
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
+
+    vscode.window.showTextDocument(textDocument);
 }

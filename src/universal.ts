@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint } from './types';
 import axios, { AxiosPromise } from 'axios';
 var path = require('path');
 import {load, SetAppToken} from './settings';
@@ -151,6 +151,14 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/diagnostics`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject('Failed to query dashboard diagnostics.');
+            })
+        })
+    }
+
+    getEndpoints() : Promise<Array<Endpoint>> {
+        return new Promise((resolve, reject) => {
+            this.request('/api/v1/endpoint', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query endpoints.');
             })
         })
     }

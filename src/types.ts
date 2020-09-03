@@ -51,6 +51,13 @@ export type DashboardDiagnostics = {
     endpoints : Array<DashboardEndpoint>;
 }
 
+export type Endpoint = {
+    id : number;
+    url : string;
+    method: string;
+    authentication : boolean;
+}
+
 export type Settings = {
     repositoryPath : string;
 }

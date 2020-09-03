@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Container } from './container';
 import { Dashboard, DashboardFramework, DashboardEndpoint, DashboardStatus } from './types';
-
+import ParentTreeItem from './parentTreeItem';
 export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined> = new vscode.EventEmitter<vscode.TreeItem | undefined>();
@@ -34,14 +34,6 @@ export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode
     refresh(node? : vscode.TreeItem): void {
 		this._onDidChangeTreeData.fire(node);
 	}
-}
-
-abstract class ParentTreeItem extends vscode.TreeItem {
-	constructor(label : string , state : vscode.TreeItemCollapsibleState ) {
-		super(label, state)
-	}
-
-	abstract getChildren(): Thenable<vscode.TreeItem[]>
 }
 
 export class DashboardTreeItem extends vscode.TreeItem {

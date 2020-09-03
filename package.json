@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -29,6 +29,7 @@
 	"activationEvents": [
 		"onView:universalInfoProviderView",
 		"onView:universalDashboardProviderView",
+		"onView:universalEndpointProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
 		"onCommand:powershell-universal.startUniversal"
 	],
@@ -37,6 +38,11 @@
 		"commands": [
 			{
 				"command": "powershell-universal.refreshTreeView",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "powershell-universal.refreshEndpointTreeView",
 				"title": "Refresh",
 				"icon": "$(refresh)"
 			},
@@ -84,6 +90,26 @@
 				"command": "powershell-universal.help",
 				"title": "Help",
 				"icon": "$(book)"
+			},
+			{
+				"command": "powershell-universal.openEndpointConfigFile",
+				"title": "Open endpoints.ps1",
+				"icon": "$(go-to-file)"
+			},
+			{
+				"command": "powershell-universal.openDashboardConfigFile",
+				"title": "Open dashboards.ps1",
+				"icon": "$(go-to-file)"
+			},
+			{
+				"command": "powershell-universal.insertRestMethod",
+				"title": "Insert Invoke-RestMethod to Console",
+				"icon": "$(terminal)"
+			},
+			{
+				"command": "powershell-universal.manageEndpoints",
+				"title": "PowerShell Universal: Manage API",
+				"icon": "$(link-external)"
 			}
 		],
 		"viewsContainers": {
@@ -97,6 +123,10 @@
 		},
 		"views": {
 			"powershellUniversal": [
+				{
+					"id": "universalEndpointProviderView",
+					"name": "APIs"
+				},
 				{
 					"id": "universalDashboardProviderView",
 					"name": "Dashboards"
@@ -141,8 +171,28 @@
 					"group": "navigation"
 				},
 				{
+					"command": "powershell-universal.openEndpointConfigFile",
+					"when": "view == universalEndpointProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.openDashboardConfigFile",
+					"when": "view == universalDashboardProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.refreshEndpointTreeView",
+					"when": "view == universalEndpointProviderView",
+					"group": "navigation"
+				},
+				{
 					"command": "powershell-universal.manageDashboards",
 					"when": "view == universalDashboardProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.manageEndpoints",
+					"when": "view == universalEndpointProviderView",
 					"group": "navigation"
 				}
 			],
@@ -165,6 +215,11 @@
 				{
 					"command": "powershell-universal.importModules",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.insertRestMethod",
+					"when": "view == universalEndpointProviderView && viewItem == endpoint",
 					"group": "inline"
 				}
 			]
