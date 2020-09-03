@@ -7,7 +7,7 @@
 	"engines": {
 		"vscode": "^1.46.0"
 	},
-	"repository": {},
+	"repository": "https://github.com/ironmansoftware/universal-code",
 	"categories": [
 		"Other"
 	],
