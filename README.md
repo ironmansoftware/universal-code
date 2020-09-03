@@ -14,11 +14,15 @@ The extension can automatically download and install Universal. When the extensi
 
 ### APIs
 
+![](https://github.com/ironmansoftware/universal-code/raw/master/images/apis.png)
+
 - View APIs
 - Automatically insert `Invoke-RestMethod` to call APIs
 - Edit APIs
 
 ### Dashboards
+
+![](https://github.com/ironmansoftware/universal-code/raw/master/images/dashboards.png)
 
 - View dashboards 
 - Open Dashboard scripts
