@@ -12,7 +12,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:powershell-universal.connect",
 		"onView:universalInfoProviderView",
 		"onView:universalDashboardProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
@@ -21,10 +20,6 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-			{
-				"command": "powershell-universal.connect",
-				"title": "Connect to PowerShell Universal"
-			},
 			{
 				"command": "powershell-universal.refreshTreeView",
 				"title": "Refresh",
