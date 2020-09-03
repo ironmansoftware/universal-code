@@ -16,9 +16,12 @@ task BuildExtension {
 }
 
 task PublishExtension {
-    npm install -g vsce
-    $vsix = (Get-ChildItem "$PSScriptRoot-*.vsix").FullName
-    vsce publish --packagePath $vsix -p $env:MarketplaceToken
+    & {
+        $ErrorActionPreference = 'SilentlyContinue'
+        npm install -g vsce
+        $vsix = (Get-ChildItem "$PSScriptRoot\*.vsix").FullName
+        vsce publish --packagePath $vsix -p $env:MarketplaceToken
+    }
 }
 
 task . BuildExtension
