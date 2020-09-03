@@ -18,7 +18,7 @@ task BuildExtension {
 task PublishExtension {
     npm install -g vsce
     $vsix = (Get-ChildItem "$PSScriptRoot-*.vsix").FullName
-    vsce publish --packagePath $vsix -p $env:GalleryToken
+    vsce publish --packagePath $vsix -p $env:MarketplaceToken
 }
 
 task . BuildExtension
