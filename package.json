@@ -3,14 +3,29 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
-	"repository": "https://github.com/ironmansoftware/universal-code",
+	"repository": {
+        "type": "git",
+        "url": "https://github.com/ironmansoftware/universal-code"
+    },
 	"categories": [
 		"Other"
-	],
+	],    
+	"icon": "logo.png",
+    "qna": "marketplace",
+    "homepage": "https://ironmansoftware.com/powershell-universal",
+    "bugs": {
+        "url": "https://github.com/ironmansoftware/universal-code/issues"
+    },
+    "keywords": [
+        "powershell",
+		"universal dashboard",
+		"powershell universal",
+		"universal automation"
+    ],
 	"activationEvents": [
 		"onView:universalInfoProviderView",
 		"onView:universalDashboardProviderView",
