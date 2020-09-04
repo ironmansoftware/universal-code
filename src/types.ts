@@ -58,6 +58,35 @@ export type Endpoint = {
     authentication : boolean;
 }
 
+export type Job = {
+    id : number; 
+    status : JobStatus;
+    script : Script;
+}
+
+export enum JobStatus {
+    Queued,
+    Running,
+    Completed,
+    Failed,
+    WaitingOnFeedback,
+    Canceled,
+    Canceling,
+    Historical,
+    Active
+}
+
+export type Script = {
+    id : number;
+    name : string;
+    fullPath : string;
+}
+
+export type ScriptParameter = {
+    id : number;
+}
+
 export type Settings = {
     repositoryPath : string;
 }
+

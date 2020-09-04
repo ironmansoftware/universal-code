@@ -4,6 +4,10 @@ All notable changes to the "powershell-universal" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.20]
+
+- Added support for scripts and jobs.
+
 ## [1.1.0]
 
 - Added support for APIs

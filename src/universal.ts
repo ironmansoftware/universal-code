@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter } from './types';
 import axios, { AxiosPromise } from 'axios';
 var path = require('path');
 import {load, SetAppToken} from './settings';
@@ -10,7 +10,7 @@ export class Universal {
         this.context = context;
     }
 
-    request(path : string, method: any) : AxiosPromise<any> | undefined {
+    request(path : string, method: any, data : any = null) : AxiosPromise<any> | undefined {
 
         const settings = load();
 
@@ -31,7 +31,8 @@ export class Universal {
             method,
             headers : {
                 authorization: `Bearer ${settings.appToken}`
-            }
+            },
+            data: data
         });
     }
 
@@ -159,6 +160,39 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/endpoint', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject('Failed to query endpoints.');
+            })
+        })
+    }
+
+    getJob(id : number) : Promise<Job> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/job/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query job.');
+            })
+        })
+    }
+
+    getScripts() : Promise<Array<Script>> {
+        return new Promise((resolve, reject) => {
+            this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query scripts.');
+            })
+        })
+    }
+
+    getScriptParameters(id : number) : Promise<Array<ScriptParameter>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/script/${id}/parameter`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query job.');
+            })
+        })
+    }
+
+    runScript(id : number) : Promise<number> {
+        return new Promise((resolve, reject) => {
+            const jobContext = {}
+            this.request(`/api/v1/script/${id}`, 'POST', jobContext)?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query scripts.');
             })
         })
     }

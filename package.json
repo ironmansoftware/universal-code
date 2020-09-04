@@ -30,6 +30,7 @@
 		"onView:universalInfoProviderView",
 		"onView:universalDashboardProviderView",
 		"onView:universalEndpointProviderView",
+		"onView:universalScriptProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
 		"onCommand:powershell-universal.startUniversal"
 	],
@@ -43,6 +44,11 @@
 			},
 			{
 				"command": "powershell-universal.refreshEndpointTreeView",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "powershell-universal.refreshScriptTreeView",
 				"title": "Refresh",
 				"icon": "$(refresh)"
 			},
@@ -102,14 +108,34 @@
 				"icon": "$(go-to-file)"
 			},
 			{
+				"command": "powershell-universal.openScriptConfigFile",
+				"title": "Open scripts.ps1",
+				"icon": "$(go-to-file)"
+			},
+			{
 				"command": "powershell-universal.insertRestMethod",
 				"title": "Insert Invoke-RestMethod to Console",
 				"icon": "$(terminal)"
 			},
 			{
+				"command": "powershell-universal.invokeScript",
+				"title": "Run Script",
+				"icon": "$(play)"
+			},
+			{
 				"command": "powershell-universal.manageEndpoints",
-				"title": "PowerShell Universal: Manage API",
+				"title": "PowerShell Universal: Manage APIs",
 				"icon": "$(link-external)"
+			},
+			{
+				"command": "powershell-universal.manageScripts",
+				"title": "PowerShell Universal: Manage Scripts",
+				"icon": "$(link-external)"
+			},
+			{
+				"command": "powershell-universal.editScript",
+				"title": "PowerShell Universal: Edit Script",
+				"icon": "$(go-to-file)"
 			}
 		],
 		"viewsContainers": {
@@ -130,6 +156,10 @@
 				{
 					"id": "universalDashboardProviderView",
 					"name": "Dashboards"
+				},
+				{
+					"id": "universalScriptProviderView",
+					"name": "Scripts"
 				},
 				{
 					"id": "universalInfoProviderView",
@@ -181,8 +211,18 @@
 					"group": "navigation"
 				},
 				{
+					"command": "powershell-universal.openScriptConfigFile",
+					"when": "view == universalScriptProviderView",
+					"group": "navigation"
+				},
+				{
 					"command": "powershell-universal.refreshEndpointTreeView",
 					"when": "view == universalEndpointProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.refreshScriptTreeView",
+					"when": "view == universalScriptProviderView",
 					"group": "navigation"
 				},
 				{
@@ -193,6 +233,11 @@
 				{
 					"command": "powershell-universal.manageEndpoints",
 					"when": "view == universalEndpointProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.manageScripts",
+					"when": "view == universalScriptProviderView",
 					"group": "navigation"
 				}
 			],
@@ -220,6 +265,16 @@
 				{
 					"command": "powershell-universal.insertRestMethod",
 					"when": "view == universalEndpointProviderView && viewItem == endpoint",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.invokeScript",
+					"when": "view == universalScriptProviderView && viewItem == script",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.editScript",
+					"when": "view == universalScriptProviderView && viewItem == script",
 					"group": "inline"
 				}
 			]

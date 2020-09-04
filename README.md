@@ -49,6 +49,14 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 1.0.0
+### [1.20]
 
-Initial release of PowerShell Universal
+- Added support for scripts and jobs.
+
+### [1.1.0]
+
+- Added support for APIs
+
+### [1.0.0]
+
+- Initial release
