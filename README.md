@@ -28,6 +28,14 @@ The extension can automatically download and install Universal. When the extensi
 - Open Dashboard scripts
 - Restart Dashboards
 
+### Scripts 
+
+![](https://github.com/ironmansoftware/universal-code/raw/master/images/scripts.png)
+
+- View scripts
+- Edit scripts
+- Run scripts and receive notifications on job status
+
 ### Auto-import modules
 
 The dashboard will automatically import modules for a dashboard so that IntelliSense works properly.
