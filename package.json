@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -31,6 +31,7 @@
 		"onView:universalDashboardProviderView",
 		"onView:universalEndpointProviderView",
 		"onView:universalScriptProviderView",
+		"onView:universalConfigProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
 		"onCommand:powershell-universal.startUniversal"
 	],
@@ -113,6 +114,11 @@
 				"icon": "$(go-to-file)"
 			},
 			{
+				"command": "powershell-universal.openConfigFile",
+				"title": "Open file",
+				"icon": "$(go-to-file)"
+			},
+			{
 				"command": "powershell-universal.insertRestMethod",
 				"title": "Insert Invoke-RestMethod to Console",
 				"icon": "$(terminal)"
@@ -160,6 +166,10 @@
 				{
 					"id": "universalScriptProviderView",
 					"name": "Scripts"
+				},
+				{
+					"id": "universalConfigProviderView",
+					"name": "Configuration"
 				},
 				{
 					"id": "universalInfoProviderView",
@@ -275,6 +285,11 @@
 				{
 					"command": "powershell-universal.editScript",
 					"when": "view == universalScriptProviderView && viewItem == script",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.openConfigFile",
+					"when": "view == universalConfigProviderView && viewItem == configfile",
 					"group": "inline"
 				}
 			]
