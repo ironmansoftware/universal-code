@@ -37,7 +37,7 @@ The extension can automatically download and install Universal. When the extensi
 - Run scripts and receive notifications on job status
 
 
-### Scripts 
+### Configuration 
 
 ![](https://github.com/ironmansoftware/universal-code/raw/master/images/config.png)
 
