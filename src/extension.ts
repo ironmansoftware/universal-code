@@ -24,23 +24,32 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const settings = load();
 	var firstTime = false;
-	if (settings.serverPath === "") {
+	if (settings.serverPath === "" && settings.startServer) {
 		firstTime = true;
 		const result = await vscode.window.showInformationMessage("PowerShell Universal not found. Would you like to download and start the server?", "Download");
 
 		if (result === "Download") {
 
-			var disposable = vscode.window.setStatusBarMessage("Downloading PowerShell Universal...")
+			var disposable = vscode.window.setStatusBarMessage(`Downloading PowerShell Universal...`)
 			await downloadUniversal();
 			disposable.dispose();
 		}
 	}
 
-	disposable = vscode.window.setStatusBarMessage("Starting up PowerShell Universal...")
-	await startUniversal();
-	await universal.waitForAlive();
-	disposable.dispose();
+	if (settings.startServer)
+	{
+		disposable = vscode.window.setStatusBarMessage("Starting up PowerShell Universal...")
+		await startUniversal();
+		disposable.dispose();
+	}
 
+	disposable = vscode.window.setStatusBarMessage(`Connecting to PowerShell Universal at http://${settings.computerName}:${settings.port}...`)
+	if (!await universal.waitForAlive())
+	{
+		return;
+	}
+	disposable.dispose();
+	
 	if (settings.appToken === "")
 	{	
 		await universal.grantAppToken();

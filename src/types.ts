@@ -9,6 +9,15 @@ export type Dashboard = {
     dashboardComponents : Array<DashboardComponent>
 }
 
+export type DashboardLog = {
+    log : string;
+}
+
+export type DashboardLogItem = {
+    Data : string;
+    Timestamp : string;
+}
+
 export enum DashboardStatus
 {
     Stopped, 

@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import {load} from './../settings';
 import {DashboardTreeItem } from './../dashboard-treeview';
 import { Container } from '../container';
+import { DashboardLogItem, DashboardLog } from '../types';
 const path = require('path');
 
 export const registerDashboardCommands = (context : vscode.ExtensionContext) => {
@@ -13,6 +14,8 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
     vscode.commands.registerCommand('powershell-universal.importModules', importModulesCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
+    vscode.commands.registerCommand('powershell-universal.connectToDashboard', connectToDashboardCommand);
+    vscode.commands.registerCommand('powershell-universal.viewDashboardLog', viewDashboardLogCommand);
 }
 
 export const manageDashboardsCommand = async () => {
@@ -78,6 +81,30 @@ export const openDashboardConfigFileCommand = async () => {
     const filePath = path.join(settings.repositoryPath, '.universal', 'dashboards.ps1');
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);
+
+    vscode.window.showTextDocument(textDocument);
+}
+
+export const connectToDashboardCommand = async (item : DashboardTreeItem) => {
+    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
+
+    terminal?.sendText(`Enter-PSHostProcess -Id ${item.dashboard.processId}`);
+}
+
+export const viewDashboardLogCommand = async (item : DashboardTreeItem) => {
+
+    const log = await Container.universal.getDashboardLog(item.dashboard.id);
+
+    const json : Array<DashboardLogItem> = JSON.parse(log.log);
+
+    var logFile = '';
+    json.forEach(item => {
+        logFile += `[${item.Timestamp}] ${item.Data} \r\n` 
+    });
+
+    const textDocument = await vscode.workspace.openTextDocument({        
+        content: logFile
+    });
 
     vscode.window.showTextDocument(textDocument);
 }

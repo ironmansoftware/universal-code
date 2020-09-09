@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog } from './types';
 import axios, { AxiosPromise } from 'axios';
 var path = require('path');
 import {load, SetAppToken} from './settings';
@@ -53,7 +53,9 @@ export class Universal {
             address = `http://${address}`;
         }
 
-        while(true) {
+        var retries = 0;
+
+        while(retries < 60) {
             try 
             {
                 await axios({ 
@@ -61,10 +63,16 @@ export class Universal {
                     method: "get"
                 });
 
-                break;
+                return true;
             }
             catch {}
+
+            retries++;
         }
+
+        vscode.window.showWarningMessage("Failed to connect to PowerShell Universal. You can configure the connection information in settings.");
+
+        return false;
     }
 
     async grantAppToken() {
@@ -136,6 +144,14 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject('Failed to query dashboards.');
+            })
+        })
+    }
+
+    getDashboardLog(id : number) : Promise<DashboardLog> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${id}/log`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query dashboard log.');
             })
         })
     }

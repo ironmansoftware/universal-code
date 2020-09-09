@@ -84,6 +84,16 @@
 				"icon": "$(desktop-download)"
 			},
 			{
+				"command": "powershell-universal.connectToDashboard",
+				"title": "Debug Dashboard Process",
+				"icon": "$(debug-alt)"
+			},
+			{
+				"command": "powershell-universal.viewDashboardLog",
+				"title": "View Log",
+				"icon": "$(file)"
+			},
+			{
 				"command": "powershell-universal.startUniversal",
 				"title": "PowerShell Universal: Start",
 				"icon": "$(play)"
@@ -200,6 +210,11 @@
 					"type": "string",
 					"default": "",
 					"description": "The local path to the Universal Server executable"
+				},
+				"powerShellUniversal.startServer": {
+					"type": "boolean",
+					"default": "true",
+					"description": "Whether to start the PowerShell Universal server when the extension is activated."
 				}
 			}
 		},
@@ -271,6 +286,14 @@
 					"command": "powershell-universal.importModules",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
 					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.viewDashboardLog",
+					"when": "view == universalDashboardProviderView && viewItem == dashboard"
+				},
+				{
+					"command": "powershell-universal.connectToDashboard",
+					"when": "view == universalDashboardProviderView && viewItem == dashboard"
 				},
 				{
 					"command": "powershell-universal.insertRestMethod",

@@ -27,6 +27,8 @@ The extension can automatically download and install Universal. When the extensi
 - View dashboards 
 - Open Dashboard scripts
 - Restart Dashboards
+- View Dashboard log
+- Debug Dashboard Process
 
 ### Scripts 
 
@@ -61,10 +63,27 @@ This extension contributes the following settings:
 * `powershellUniversal.computerName`: Computer that the server is running on. Defaults to localhost.
 * `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up. 
 * `powershellUniversal.serverPath`: The path to the binaries for the Universal server. This defaults to %AppData%\PowerShellUniversal
+* `powershellUniversal.startServer`: Whether to start the PowerShell Universal server when the extension is activated. This defaults to true.
 
 ## Release Notes
 
-### [1.20]
+## [1.4.0]
+
+### Added
+
+- Added a setting to disable starting the PowerShell Universal server on extension activation.
+- Added View Dashboard Log command 
+- Added Debug Dashboard Process command
+
+### Changed
+
+- Extension will fail to activate after a number of retries while connecting to the Universal server.
+
+## [1.3.0]
+
+- Added support configuration files. 
+
+### [1.2.0]
 
 - Added support for scripts and jobs.
 

@@ -6,6 +6,7 @@ export interface ISettings {
     computerName: string;
     appToken: string;
     serverPath : string;
+    startServer: boolean;
 }
 
 export function load() : ISettings {
@@ -16,6 +17,7 @@ export function load() : ISettings {
         computerName: configuration.get<string>("computerName", "localhost"),
         appToken: configuration.get<string>("appToken", ""),
         serverPath: configuration.get<string>("serverPath", ""),
+        startServer: configuration.get<boolean>("startServer", false),
     }
 }
 

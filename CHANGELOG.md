@@ -4,7 +4,17 @@ All notable changes to the "powershell-universal" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [1.2.0]
+## [1.4.0]
+
+### Added
+
+- Added a setting to disable starting the PowerShell Universal server on extension activation.
+
+### Changed
+
+- Extension will fail to activate after a number of retries while connecting to the Universal server.
+
+## [1.3.0]
 
 - Added support configuration files. 
 
