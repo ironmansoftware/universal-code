@@ -27,6 +27,7 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
                 new ConfigTreeItem('Schedules', 'schedules.ps1'), 
                 new ConfigTreeItem('Scripts', 'scripts.ps1'), 
                 new ConfigTreeItem('Settings', 'settings.ps1'), 
+                new ConfigTreeItem('Roles', 'roles.ps1'), 
                 new ConfigTreeItem('Variables', 'variables.ps1'), 
             ]
         }

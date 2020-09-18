@@ -57,10 +57,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	if (firstTime)
 	{
-		const result = await vscode.window.showInformationMessage("You're ready to rock! PowerShell Universal is up and running.", "Go to Admin Console");
+		const result = await vscode.window.showInformationMessage("You're ready to rock! PowerShell Universal is up and running.", "Go to Admin Console", "Learn More");
 		if (result === "Go to Admin Console")
 		{
 			vscode.env.openExternal(vscode.Uri.parse("http://localhost:5000"))
+		}
+
+		if (result === "Learn More")
+		{
+			vscode.env.openExternal(vscode.Uri.parse("https://youtu.be/ISoZbY9YPvo"))
 		}
 	}
 
