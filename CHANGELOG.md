@@ -4,6 +4,12 @@ All notable changes to the "powershell-universal" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.5.0]
+
+### Added
+
+- Add a command for manually refreshing the PSU configuration
+
 ## [1.4.0]
 
 ### Added

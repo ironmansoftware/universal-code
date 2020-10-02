@@ -7,6 +7,7 @@ import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 
 export const registerConfigCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openConfigFile', openConfigCommand);
+    vscode.commands.registerCommand('powershell-universal.reloadConfig', refreshConfig);
 }
 
 export const openConfigCommand = async (item : ConfigTreeItem) => {
@@ -21,3 +22,16 @@ export const openConfigCommand = async (item : ConfigTreeItem) => {
 
     vscode.window.showTextDocument(textDocument);
 }
+
+
+export const refreshConfig = async () => {
+    try {
+        await Container.universal.refreshConfig();
+    } catch (error) {
+        vscode.window.showErrorMessage(error);
+        return;
+    }
+    
+    vscode.window.showInformationMessage("Configuration reloaded.");
+}
+

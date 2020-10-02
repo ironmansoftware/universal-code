@@ -213,6 +213,14 @@ export class Universal {
         })
     }
 
+    refreshConfig() : Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration`, 'POST')?.then(() => resolve()).catch(x => {
+                reject('Failed refresh configuration.');
+            })
+        })
+    }
+
     getSettings() : Promise<Settings> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/settings`, 'GET')?.then(x => resolve(x.data[0])).catch(x => {

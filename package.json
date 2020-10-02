@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.4.1",
+	"version": "1.5.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -38,6 +38,11 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
+			{
+				"command": "powershell-universal.reloadConfig",
+				"title": "Reload Configuration",
+				"icon": "$(debug-restart)"
+			},
 			{
 				"command": "powershell-universal.refreshTreeView",
 				"title": "Refresh",
@@ -263,6 +268,11 @@
 				{
 					"command": "powershell-universal.manageScripts",
 					"when": "view == universalScriptProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.reloadConfig",
+					"when": "view == universalConfigProviderView",
 					"group": "navigation"
 				}
 			],
