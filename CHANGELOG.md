@@ -10,6 +10,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Add a command for manually refreshing the PSU configuration
 
+### Changed
+
+- Fixed an issue where components wouldn't import correctly
+
 ## [1.4.0]
 
 ### Added

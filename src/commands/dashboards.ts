@@ -60,7 +60,9 @@ export const importModulesCommand = async (dashboard : DashboardTreeItem) => {
     if (dashboard.dashboard.dashboardComponents)
     {
         dashboard.dashboard.dashboardComponents.forEach(x => {
-            terminal?.sendText(`Import-Module '${x.path}\\*.psd1' -Force`);
+            const path = x.path.endsWith(".psd1") ? x.path : x.path + "\\*.psd1";
+
+            terminal?.sendText(`Import-Module '${path}' -Force`);
         });
     }
 }
