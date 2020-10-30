@@ -3,29 +3,29 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
 	"repository": {
-        "type": "git",
-        "url": "https://github.com/ironmansoftware/universal-code"
-    },
+		"type": "git",
+		"url": "https://github.com/ironmansoftware/universal-code"
+	},
 	"categories": [
 		"Other"
-	],    
+	],
 	"icon": "logo.png",
-    "qna": "marketplace",
-    "homepage": "https://ironmansoftware.com/powershell-universal",
-    "bugs": {
-        "url": "https://github.com/ironmansoftware/universal-code/issues"
-    },
-    "keywords": [
-        "powershell",
+	"qna": "marketplace",
+	"homepage": "https://ironmansoftware.com/powershell-universal",
+	"bugs": {
+		"url": "https://github.com/ironmansoftware/universal-code/issues"
+	},
+	"keywords": [
+		"powershell",
 		"universal dashboard",
 		"powershell universal",
 		"universal automation"
-    ],
+	],
 	"activationEvents": [
 		"onView:universalInfoProviderView",
 		"onView:universalDashboardProviderView",
@@ -337,13 +337,13 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.46.0",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^13.11.0",
-		"eslint": "^6.8.0",
-		"@typescript-eslint/parser": "^2.30.0",
+		"@types/vscode": "^1.46.0",
 		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.1.2",
 		"typescript": "^3.8.3",
