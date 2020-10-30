@@ -69,6 +69,19 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	}
 
+	vscode.window.registerUriHandler({
+		handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
+			if (uri.path.startsWith('/debug')) {
+				const querystring = require('querystring');
+				const query = querystring.parse(uri.query);
+
+				Container.universal.sendTerminalCommand(`if ($PID -ne ${query.PID}) {Enter-PSHostProcess -ID ${query.PID} }`);
+				Container.universal.sendTerminalCommand(`Debug-Runspace -ID ${query.RS}`);
+			}
+
+		}
+	});
+
 	const moduleProvider = new DashboardTreeViewProvider();
 	const infoProvider = new InfoTreeViewProvider();
 	const endpointProvider = new ApiTreeViewProvider();

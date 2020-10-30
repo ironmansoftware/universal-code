@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.5.1",
+	"version": "1.6.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -27,6 +27,7 @@
 		"universal automation"
 	],
 	"activationEvents": [
+		"onUri",
 		"onView:universalInfoProviderView",
 		"onView:universalDashboardProviderView",
 		"onView:universalEndpointProviderView",
