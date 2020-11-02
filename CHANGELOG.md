@@ -10,6 +10,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Added support for Debug-PSUDashboard
 
+### Changed
+
+- Replaced PowerShell Versions with Environments in the configuration tree view
+
 ## [1.5.1]
 
 ### Changed
