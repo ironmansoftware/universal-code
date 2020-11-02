@@ -4,6 +4,12 @@ All notable changes to the "powershell-universal" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.6.0]
+
+### Added
+
+- Added support for Debug-PSUDashboard
+
 ## [1.5.1]
 
 ### Changed
