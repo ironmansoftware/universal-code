@@ -13,11 +13,14 @@ export const downloadUniversal = async () => {
     let platform = '';
     switch(os.platform())
     {
+        case 'darwin':
+            platform = 'osx';
+            break;
         case 'linux':
             platform = 'linux';
             break;
         case 'win32':
-            platform = 'win';
+            platform = 'win7';
             break;
         default:
             vscode.window.showErrorMessage("Unsupported platform");

@@ -7,6 +7,9 @@ export const startUniversal = () => {
     let server = '';
     switch(os.platform())
     {
+        case 'darwin':
+            server = 'Universal.Server';
+            break;
         case 'linux':
             server = 'Universal.Server';
             break;

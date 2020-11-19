@@ -4,6 +4,13 @@ All notable changes to the "powershell-universal" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.6.1]
+
+### Changed
+
+- Fixed issue when attempting to download on Windows or Mac
+- Fixed issue where extension would not work with Mac OS X
+
 ## [1.6.0]
 
 ### Added

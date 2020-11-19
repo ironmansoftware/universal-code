@@ -51,7 +51,7 @@ The dashboard will automatically import modules for a dashboard so that IntelliS
 
 ## Requirements
 
-- Windows or Linux
+- Windows, Linux or Mac
 - PowerShell v5.1 or later
 - Modern Web Browser
 
@@ -64,33 +64,3 @@ This extension contributes the following settings:
 * `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up. 
 * `powershellUniversal.serverPath`: The path to the binaries for the Universal server. This defaults to %AppData%\PowerShellUniversal
 * `powershellUniversal.startServer`: Whether to start the PowerShell Universal server when the extension is activated. This defaults to true.
-
-## Release Notes
-
-## [1.4.0]
-
-### Added
-
-- Added a setting to disable starting the PowerShell Universal server on extension activation.
-- Added View Dashboard Log command 
-- Added Debug Dashboard Process command
-
-### Changed
-
-- Extension will fail to activate after a number of retries while connecting to the Universal server.
-
-## [1.3.0]
-
-- Added support configuration files. 
-
-### [1.2.0]
-
-- Added support for scripts and jobs.
-
-### [1.1.0]
-
-- Added support for APIs
-
-### [1.0.0]
-
-- Initial release
