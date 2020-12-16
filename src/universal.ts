@@ -30,7 +30,8 @@ export class Universal {
             url: `${address}:${settings.port}${path}`,
             method,
             headers : {
-                authorization: `Bearer ${settings.appToken}`
+                authorization: `Bearer ${settings.appToken}`,
+                'Content-Type': 'application/json'
             },
             data: data
         });
@@ -164,6 +165,14 @@ export class Universal {
         })
     }
 
+    saveDashboard(id : number, dashboard : Dashboard) {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${id}`, 'PUT', dashboard)?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to save dashboard.');
+            })
+        })
+    }
+
     getDiagnostics(id : number) : Promise<DashboardDiagnostics> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/diagnostics`, 'GET')?.then(x => resolve(x.data)).catch(x => {
@@ -192,6 +201,30 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject('Failed to query scripts.');
+            })
+        })
+    }
+
+    getScript(id : number) : Promise<Script> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/script/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query script.');
+            })
+        })
+    }
+
+    getScriptFilePath(filePath : string) : Promise<Script> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/script/path/${filePath}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query script.');
+            })
+        })
+    }
+
+    saveScript(script : Script) {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/script/`, 'PUT', script)?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to save script.');
             })
         })
     }
@@ -225,6 +258,30 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/settings`, 'GET')?.then(x => resolve(x.data[0])).catch(x => {
                 reject('Failed to query settings.');
+            })
+        })
+    }
+
+    getConfigurations() : Promise<Array<string>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query configurations.');
+            })
+        })
+    }
+
+    getConfiguration(fileName : string) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/${fileName}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to query configuration.');
+            })
+        })
+    }
+
+    saveConfiguration(fileName : string, data : string) {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/${fileName}`, 'PUT', data)?.then(x => resolve(x.data)).catch(x => {
+                reject('Failed to save configuration.');
             })
         })
     }

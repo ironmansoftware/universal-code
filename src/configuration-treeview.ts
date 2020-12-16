@@ -15,21 +15,10 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
     async getChildren(element?: vscode.TreeItem | undefined) {
         if (element == null)
         {
-            return [
-                new ConfigTreeItem('Authentication', 'authentication.ps1'),
-                new ConfigTreeItem('Dashboards', 'dashboards.ps1'),
-                new ConfigTreeItem('Dashboard Components', 'dashboard.components.ps1'),
-                new ConfigTreeItem('Dashboard Frameworks', 'dashboard.frameworks.ps1'),
-                new ConfigTreeItem('Endpoints', 'endpoints.ps1'),
-                new ConfigTreeItem('Environments', 'environments.ps1'), 
-                new ConfigTreeItem('Licenses', 'licenses.ps1'),   
-                new ConfigTreeItem('Published Folders', 'publishedFolders.ps1'), 
-                new ConfigTreeItem('Schedules', 'schedules.ps1'), 
-                new ConfigTreeItem('Scripts', 'scripts.ps1'), 
-                new ConfigTreeItem('Settings', 'settings.ps1'), 
-                new ConfigTreeItem('Roles', 'roles.ps1'), 
-                new ConfigTreeItem('Variables', 'variables.ps1'), 
-            ]
+            const configs = await Container.universal.getConfigurations();
+            var configTree: ConfigTreeItem[] = [];
+            configs.forEach(c => configTree.push(new ConfigTreeItem(c,c)));
+            return configTree;
         }
     }
 
