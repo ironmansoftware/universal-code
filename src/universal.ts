@@ -273,7 +273,7 @@ export class Universal {
     getConfiguration(fileName : string) : Promise<string> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration/${fileName}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query configuration.');
+                resolve('');
             })
         })
     }
