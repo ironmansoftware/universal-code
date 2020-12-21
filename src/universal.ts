@@ -39,8 +39,15 @@ export class Universal {
     load() {
     }
 
-    async getVersion() {
-        const response = await this.request("/api/v1/version", "get");
+    getVersion() : Promise<string> {
+        return new Promise((resolve) => {
+            this.request('/api/v1/version', 'GET')?.then(x => resolve(x.data)).catch(x => {                
+            })
+        })
+    }
+
+    async getReleasedVersion() {        
+        const response = await axios.get("https://imsreleases.blob.core.windows.net/universal/production/version.txt");
         return response?.data;
     }
 
