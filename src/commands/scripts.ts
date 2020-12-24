@@ -4,12 +4,23 @@ import {ScriptTreeItem } from './../script-treeview';
 import { Container } from '../container';
 import { trackJob } from '../job-tracker';
 const path = require('path');
+import * as fs from 'fs';
 
 export const registerScriptCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openScriptConfigFile', openScriptConfigFileCommand);
     vscode.commands.registerCommand('powershell-universal.invokeScript', invokeScriptCommand);
     vscode.commands.registerCommand('powershell-universal.manageScripts', manageScriptsCommand);
     vscode.commands.registerCommand('powershell-universal.editScript', editScriptCommand);
+    vscode.workspace.onDidSaveTextDocument((file) => {
+        if(file.fileName.includes('.universal.code.script')){
+            const fileName = path.basename(file.fileName);
+            Container.universal.getScriptFilePath(fileName).then((script) => {
+                script.content = file.getText();
+                Container.universal.saveScript(script);
+            });
+            
+        }
+    });
 }
 
 export const openScriptConfigFileCommand = async () => {
@@ -23,9 +34,16 @@ export const openScriptConfigFileCommand = async () => {
 
 export const editScriptCommand = async (item : ScriptTreeItem) => {
     const settings = await Container.universal.getSettings();
-    const filePath = path.join(settings.repositoryPath, item.script.fullPath);
+    const filePath = path.join(settings.repositoryPath, '.universal.code.script', item.script.fullPath);
+    const codePath = path.join(settings.repositoryPath, '.universal.code.script');
+    const script = await Container.universal.getScript(item.script.id);
+    if (!fs.existsSync(codePath)){
+        fs.mkdirSync(codePath);
+    }
+    fs.writeFileSync(filePath, script.content);
+    
 
-    const textDocument = await vscode.workspace.openTextDocument(filePath);
+    const textDocument = await vscode.workspace.openTextDocument(filePath);    
 
     vscode.window.showTextDocument(textDocument);
 }

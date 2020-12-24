@@ -6,6 +6,7 @@ export type Dashboard = {
     status: DashboardStatus;
     processId : number;
     filePath : string;
+    content : string;
     dashboardComponents : Array<DashboardComponent>
 }
 
@@ -89,6 +90,7 @@ export type Script = {
     id : number;
     name : string;
     fullPath : string;
+    content : string;
 }
 
 export type ScriptParameter = {
