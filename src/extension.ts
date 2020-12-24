@@ -55,6 +55,20 @@ export async function activate(context: vscode.ExtensionContext) {
 		await universal.grantAppToken();
 	}
 
+	const releasedVersion = await universal.getReleasedVersion();
+	const version = await universal.getVersion();
+	
+	if(releasedVersion != version){
+		const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
+
+		if (result === "Download") {
+
+			var disposable = vscode.window.setStatusBarMessage(`Downloading PowerShell Universal...`)
+			await downloadUniversal();
+			disposable.dispose();
+		}
+	}
+
 	if (firstTime)
 	{
 		const result = await vscode.window.showInformationMessage("You're ready to rock! PowerShell Universal is up and running.", "Go to Admin Console", "Learn More");
