@@ -8,10 +8,6 @@ PowerShell Universal is the ultimate platform for building web-based IT tools. T
 
 ## Features
 
-### Download and Install Universal
-
-The extension can automatically download and install Universal. When the extension starts, if the binaries are present, it will start a Universal server. 
-
 ### APIs
 
 ![](https://github.com/ironmansoftware/universal-code/raw/master/images/apis.png)
@@ -43,6 +39,10 @@ The extension can automatically download and install Universal. When the extensi
 ![](https://github.com/ironmansoftware/universal-code/raw/master/images/config.png)
 
 - Edit configuration scripts
+
+### Samples 
+
+Automatically insert samples from the [PowerShell Universal Sample Repository](https://github.com/ironmansoftware/universal-samples)
 
 ### Auto-import modules
 
