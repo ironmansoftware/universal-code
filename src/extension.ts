@@ -8,7 +8,7 @@ import { InfoTreeViewProvider } from './info-treeview';
 import help from './commands/helpCommand';
 import { downloadUniversalCommand, downloadUniversal } from './commands/downloadUniversal';
 import { startUniversal, startUniversalCommand } from './commands/startUniversal';
-import { load } from './settings';
+import { load, SetUrl } from './settings';
 import { registerDashboardCommands } from './commands/dashboards';
 import { ApiTreeViewProvider } from './api-treeview';
 import { registerEndpointCommands } from './commands/endpoints';
@@ -16,73 +16,65 @@ import { ScriptTreeViewProvider } from './script-treeview';
 import { registerScriptCommands } from './commands/scripts';
 import { registerConfigCommands } from './commands/config';
 import { ConfigTreeViewProvider } from './configuration-treeview';
+import { registerConnectCommands } from './commands/connect';
+var compareVersions = require('compare-versions');
 
 export async function activate(context: vscode.ExtensionContext) {
+	registerConnectCommands(context);
 
 	const universal = new Universal(context);
 	Container.initialize(context, universal);
 
-	const settings = load();
-	var firstTime = false;
-	if (settings.serverPath === "" && settings.startServer) {
-		firstTime = true;
-		const result = await vscode.window.showInformationMessage("PowerShell Universal not found. Would you like to download and start the server?", "Download");
+	let settings = load();
+	if (settings.appToken === "") {
+		const result = await vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Connect");
 
 		if (result === "Download") {
-
-			var disposable = vscode.window.setStatusBarMessage(`Downloading PowerShell Universal...`)
-			await downloadUniversal();
-			disposable.dispose();
+			vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
 		}
+		await vscode.commands.executeCommand("powershell-universal.connect");
+	} else if (settings.url == "") {
+		let address = settings.computerName;
+        if (!address.toLocaleLowerCase().startsWith('http'))
+        {
+            address = `http://${address}`;
+        }
+
+		let url = `${address}:${settings.port}`
+		
+		await SetUrl(url);
 	}
+
+	settings = load();
 
 	if (settings.startServer)
 	{
-		disposable = vscode.window.setStatusBarMessage("Starting up PowerShell Universal...")
+		var disposable = vscode.window.setStatusBarMessage("Starting up PowerShell Universal...")
 		await startUniversal();
 		disposable.dispose();
-	}
 
-	disposable = vscode.window.setStatusBarMessage(`Connecting to PowerShell Universal at http://${settings.computerName}:${settings.port}...`)
-	if (!await universal.waitForAlive())
-	{
-		return;
-	}
-	disposable.dispose();
-	
-	if (settings.appToken === "")
-	{	
-		await universal.grantAppToken();
+		disposable = vscode.window.setStatusBarMessage(`Connecting to PowerShell Universal at ${settings.url}...`)
+		if (!await universal.waitForAlive())
+		{
+			return;
+		}
+		disposable.dispose();
 	}
 
 	const releasedVersion = await universal.getReleasedVersion();
 	const version = await universal.getVersion();
-	
+
 	if(releasedVersion != version){
 		const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
-
 		if (result === "Download") {
-
-			var disposable = vscode.window.setStatusBarMessage(`Downloading PowerShell Universal...`)
-			await downloadUniversal();
-			disposable.dispose();
+			vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
 		}
 	}
 
-	if (firstTime)
-	{
-		const result = await vscode.window.showInformationMessage("You're ready to rock! PowerShell Universal is up and running.", "Go to Admin Console", "Learn More");
-		if (result === "Go to Admin Console")
-		{
-			vscode.env.openExternal(vscode.Uri.parse("http://localhost:5000"))
-		}
-
-		if (result === "Learn More")
-		{
-			vscode.env.openExternal(vscode.Uri.parse("https://youtu.be/ISoZbY9YPvo"))
-		}
+	if (compareVersions(version, "1.5.0") == -1) {
+		await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
 	}
-
+	
 	vscode.window.registerUriHandler({
 		handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
 			if (uri.path.startsWith('/debug')) {
@@ -119,6 +111,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerEndpointCommands(context);
 	registerScriptCommands(context);
 	registerConfigCommands(context);
+	
 }
 
 // this method is called when your extension is deactivated

@@ -7,17 +7,19 @@ export interface ISettings {
     appToken: string;
     serverPath : string;
     startServer: boolean;
+    url: string;
 }
 
 export function load() : ISettings {
     const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
 
     return {
-        port: configuration.get<number>("port", 10000),
+        port: configuration.get<number>("port", 5000),
         computerName: configuration.get<string>("computerName", "localhost"),
         appToken: configuration.get<string>("appToken", ""),
         serverPath: configuration.get<string>("serverPath", ""),
         startServer: configuration.get<boolean>("startServer", false),
+        url: configuration.get<string>("url", "http://localhost:5000"),
     }
 }
 
@@ -29,4 +31,14 @@ export async function SetAppToken(value : string) {
 export async function SetServerPath(value : string) {
     const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
     await configuration.update("serverPath", value, vscode.ConfigurationTarget.Global);
+}
+
+export async function SetUrl(value : string) {
+    const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
+    await configuration.update("url", value, vscode.ConfigurationTarget.Global);
+}
+
+export async function SetPort(value : number) {
+    const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
+    await configuration.update("port", value, vscode.ConfigurationTarget.Global);
 }

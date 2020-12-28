@@ -12,10 +12,10 @@ const help = () => {
                 url = "https://forums.universaldashboard.io"
                 break;
             case "Issues":
-                url = "https://github.com/ironmansoftware/powershell-universal"
+                url = "mailto:support@ironmansoftware.com"
                 break;
             case "Pricing":
-                url = "https://www.ironmansoftware.com/pricing"
+                url = "https://www.ironmansoftware.com/pricing/powershell-universal"
                 break;
         }
 

@@ -33,13 +33,13 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
 export const manageDashboardsCommand = async () => {
     const settings = load();
     
-    vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}/admin/dashboards`));
+    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/dashboards`));
 }
 
 export const viewDashboardCommand = async (dashboard : DashboardTreeItem) => {
     const settings = load();
     
-    vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}${dashboard.dashboard.baseUrl}`));
+    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}${dashboard.dashboard.baseUrl}`));
 }
 
 export const stopDashboardCommand = async (dashboard : DashboardTreeItem) => {

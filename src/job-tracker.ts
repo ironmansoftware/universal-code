@@ -37,7 +37,7 @@ export const trackJob = (id : number) => {
         if (result === "View Job")
         {
             const settings = load();
-            vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}/admin/job/${id}`));
+            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/job/${id}`));
         }
 
         lastStatus = job.status;

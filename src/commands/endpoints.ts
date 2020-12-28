@@ -25,11 +25,11 @@ export const insertInvokeRestMethodCommand = async (endpoint : EndpointTreeItem)
 
     var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
 
-    terminal?.sendText(`Invoke-RestMethod -Uri "http://${settings.computerName}:${settings.port}${endpoint.endpoint.url.replace(':', '$')}" -Method ${endpoint.endpoint.method}`, false);
+    terminal?.sendText(`Invoke-RestMethod -Uri "${settings.url}${endpoint.endpoint.url.replace(':', '$')}" -Method ${endpoint.endpoint.method}`, false);
 }
 
 export const manageEndpointsCommand = async () => {
     const settings = load();
     
-    vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}/admin/api`));
+    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/api`));
 }

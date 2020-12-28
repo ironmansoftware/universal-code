@@ -57,7 +57,7 @@ export const invokeScriptCommand = async (item : ScriptTreeItem) => {
     
         if (result === "View Script")
         {
-            vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}/admin/script/${item.script.id}`));
+            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/script/${item.script.fullPath}`));
         }
     } else {
         const jobId = await Container.universal.runScript(item.script.id);
@@ -65,7 +65,7 @@ export const invokeScriptCommand = async (item : ScriptTreeItem) => {
     
         if (result === "View Job")
         {
-            vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}/admin/job/${jobId}`));
+            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/job/${jobId}`));
         }
     
         trackJob(jobId);
@@ -77,5 +77,5 @@ export const invokeScriptCommand = async (item : ScriptTreeItem) => {
 export const manageScriptsCommand = async () => {
     const settings = load();
     
-    vscode.env.openExternal(vscode.Uri.parse(`http://${settings.computerName}:${settings.port}/admin/scripts`));
+    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/scripts`));
 }

@@ -4,7 +4,7 @@ PowerShell Universal is the ultimate platform for building web-based IT tools. T
 
 - [Documentation](https://docs.ironmansoftware.com)
 - [Forums](https://forums.universaldashboard.io)
-- [Purchasing](https://ironmansoftware.com/powershell-universal)
+- [Purchasing](https://ironmansoftware.com/pricing/powershell-universal)
 
 ## Features
 
@@ -38,7 +38,6 @@ The extension can automatically download and install Universal. When the extensi
 - Edit scripts
 - Run scripts and receive notifications on job status
 
-
 ### Configuration 
 
 ![](https://github.com/ironmansoftware/universal-code/raw/master/images/config.png)
@@ -59,8 +58,7 @@ The dashboard will automatically import modules for a dashboard so that IntelliS
 
 This extension contributes the following settings:
 
-* `powershellUniversal.port`: Port that the Universal server is listening on. Defaults to 5000.
-* `powershellUniversal.computerName`: Computer that the server is running on. Defaults to localhost.
+* `powershellUniversal.url`: The URL to your PowerShell Universal server.
 * `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up. 
 * `powershellUniversal.serverPath`: The path to the binaries for the Universal server. This defaults to %AppData%\PowerShellUniversal
 * `powershellUniversal.startServer`: Whether to start the PowerShell Universal server when the extension is activated. This defaults to true.

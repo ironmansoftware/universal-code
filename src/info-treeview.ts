@@ -29,7 +29,7 @@ export class InfoTreeViewProvider implements vscode.TreeDataProvider<vscode.Tree
             return [
                 new Node('Documentation', 'book'),
                 new Node('Forums', 'account'),
-                new Node('Issues', 'github'),
+                new Node('Support', 'question'),
                 new Node('Pricing', 'key')
             ]
         }

@@ -14,20 +14,14 @@ export class Universal {
 
         const settings = load();
 
-        if (settings.appToken == null || settings.computerName == null) 
+        if (settings.appToken == null || settings.appToken === "") 
         {
             vscode.window.showErrorMessage("Not connected");
             return;
         }
 
-        let address = settings.computerName;
-        if (!address.toLocaleLowerCase().startsWith('http'))
-        {
-            address = `http://${address}`;
-        }
-
         return axios({ 
-            url: `${address}:${settings.port}${path}`,
+            url: `${settings.url}${path}`,
             method,
             headers : {
                 authorization: `Bearer ${settings.appToken}`,
@@ -55,22 +49,18 @@ export class Universal {
     async waitForAlive() {
         const settings = load();
 
-        let address = settings.computerName;
-        if (!address.toLocaleLowerCase().startsWith('http'))
-        {
-            address = `http://${address}`;
-        }
-
+        let disposable = vscode.window.setStatusBarMessage(`Attempting to connect to PowerShell Universal at ${settings.url}`)
         var retries = 0;
 
         while(retries < 60) {
             try 
             {
                 await axios({ 
-                    url: `${address}:${settings.port}/api/v1/alive`,
+                    url: `${settings.url}/api/v1/alive`,
                     method: "get"
                 });
 
+                disposable.dispose();
                 return true;
             }
             catch {}
@@ -78,25 +68,20 @@ export class Universal {
             retries++;
         }
 
-        vscode.window.showWarningMessage("Failed to connect to PowerShell Universal. You can configure the connection information in settings.");
+        vscode.window.showWarningMessage(`Failed to connect to PowerShell Universal. Ensure that the server is running on ${settings.url}.`);
 
+        disposable.dispose();
         return false;
     }
 
     async grantAppToken() {
         const settings = load();
 
-        let address = settings.computerName;
-        if (!address.toLocaleLowerCase().startsWith('http'))
-        {
-            address = `http://${address}`;
-        }
-
         const transport = axios.create({
             withCredentials: true
         })
 
-        var response = await transport.post(`${address}:${settings.port}/api/v1/signin`, {
+        var response = await transport.post(`${settings.url}/api/v1/signin`, {
             username: 'admin',
             password: 'any'
         });
@@ -105,23 +90,13 @@ export class Universal {
 
         transport.defaults.headers.Cookie = cookie;
 
-        const appToken = await transport.get(`${address}:${settings.port}/api/v1/appToken/grant`, {
+        const appToken = await transport.get(`${settings.url}/api/v1/appToken/grant`, {
             headers: {
                 Cookie: cookie
             }
         });
 
-        SetAppToken(appToken.data.token);
-    }
-
-    connect(computerName : string, appToken : string) {
-        // this.context.globalState.update(COMPUTER_NAME, computerName);
-        // this.context.globalState.update(APPTOKEN, appToken);
-
-        // this.computerName = computerName;
-        // this.appToken = appToken;
-
-        // this.sendTerminalCommand(`Connect-UAServer -ComputerName '${computerName}' -AppToken ${appToken}`);
+        await SetAppToken(appToken.data.token);
     }
 
     addDashboard() : Promise<Dashboard> {
@@ -253,9 +228,9 @@ export class Universal {
         })
     }
 
-    refreshConfig() : Promise<number> {
+    refreshConfig() : Promise<any> {
         return new Promise((resolve, reject) => {
-            this.request(`/api/v1/configuration`, 'POST')?.then(() => resolve()).catch(x => {
+            this.request(`/api/v1/configuration`, 'POST')?.then(() => resolve(null)).catch(x => {
                 reject('Failed refresh configuration.');
             })
         })
