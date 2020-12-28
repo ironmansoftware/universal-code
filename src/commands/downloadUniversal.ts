@@ -49,7 +49,7 @@ export const downloadUniversal = async () => {
                         var zip = new AdmZip(info.path);
                         zip.extractAllTo(universalPath, true);
 
-                        SetServerPath(path.join(process.env.APPDATA, "PowerShellUniversal")).then(() => resolve());
+                        SetServerPath(path.join(process.env.APPDATA, "PowerShellUniversal")).then(() => resolve(null));
                     });
 
                     https.get(`https://imsreleases.blob.core.windows.net/universal/production/${data}/Universal.${platform}-x64.${data}.zip`, function(response : any) {

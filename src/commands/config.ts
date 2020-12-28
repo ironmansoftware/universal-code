@@ -3,6 +3,7 @@ import {ConfigTreeItem  } from './../configuration-treeview';
 import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
+import { SampleFile } from '../types';
 
 
 export const registerConfigCommands = (context : vscode.ExtensionContext) => {
@@ -16,20 +17,22 @@ export const registerConfigCommands = (context : vscode.ExtensionContext) => {
     });
 }
 
-export const openConfigCommand = async (item : ConfigTreeItem) => {
-    const settings = await Container.universal.getSettings();
-    const filePath = path.join(settings.repositoryPath, '.universal.code.configuration', item.fileName);
-    const codePath = path.join(settings.repositoryPath, '.universal.code.configuration');
+export const openConfigCommand = async (item : ConfigTreeItem | SampleFile) => {
+    const os = require('os');
+
+    const filePath = path.join(os.tmpdir(), '.universal.code.configuration', item.fileName);
+    const codePath = path.join(os.tmpdir(), '.universal.code.configuration');
     const config = await Container.universal.getConfiguration(item.fileName);
     if (!fs.existsSync(codePath)){
         fs.mkdirSync(codePath);
     }
     fs.writeFileSync(filePath, config);
     
-
     const textDocument = await vscode.workspace.openTextDocument(filePath);    
 
     vscode.window.showTextDocument(textDocument);
+
+    return textDocument;
 }
 
 

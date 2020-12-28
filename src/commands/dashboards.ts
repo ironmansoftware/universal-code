@@ -80,8 +80,8 @@ export const importModulesCommand = async (dashboard : DashboardTreeItem) => {
 }
 
 export const openFileCommand = async (dashboard : DashboardTreeItem) => {
-    const settings = await Container.universal.getSettings();    
-    const codePath = path.join(settings.repositoryPath, '.universal.code.dashboard');
+    const os = require('os');
+    const codePath = path.join(os.tmpdir(), '.universal.code.dashboard');
     //Use the id in the path so that we can save the dashboard
     const codePathId = path.join(codePath, dashboard.dashboard.id.toString());
     const filePath = path.join(codePathId, dashboard.dashboard.filePath);

@@ -33,6 +33,7 @@
 		"onView:universalEndpointProviderView",
 		"onView:universalScriptProviderView",
 		"onView:universalConfigProviderView",
+		"onView:sampleProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
 		"onCommand:powershell-universal.startUniversal"
 	],
@@ -163,6 +164,16 @@
 				"command": "powershell-universal.connect",
 				"title": "PowerShell Universal: Connect",
 				"icon": "$(debug-disconnect)"
+			},
+			{
+				"command": "powershell-universal.syncSamples",
+				"title": "PowerShell Universal: Update Samples",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "powershell-universal.insertSample",
+				"title": "PowerShell Universal: Insert Sample",
+				"icon": "$(add)"
 			}
 		],
 		"viewsContainers": {
@@ -191,6 +202,10 @@
 				{
 					"id": "universalConfigProviderView",
 					"name": "Configuration"
+				},
+				{
+					"id": "sampleProviderView",
+					"name": "Samples"
 				},
 				{
 					"id": "universalInfoProviderView",
@@ -261,6 +276,11 @@
 				{
 					"command": "powershell-universal.refreshEndpointTreeView",
 					"when": "view == universalEndpointProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.syncSamples",
+					"when": "view == sampleProviderView",
 					"group": "navigation"
 				},
 				{
@@ -342,6 +362,11 @@
 					"command": "powershell-universal.openConfigFile",
 					"when": "view == universalConfigProviderView && viewItem == configfile",
 					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.insertSample",
+					"when": "view == sampleProviderView && viewItem == sample",
+					"group": "inline"
 				}
 			]
 		}
@@ -372,6 +397,7 @@
 		"axios": "^0.19.2",
 		"compare-versions": "^3.6.0",
 		"progress": "^2.0.3",
-		"temp": "^0.9.1"
+		"temp": "^0.9.1",
+		"yaml": "^1.10.0"
 	}
 }

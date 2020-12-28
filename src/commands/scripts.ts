@@ -33,9 +33,9 @@ export const openScriptConfigFileCommand = async () => {
 }
 
 export const editScriptCommand = async (item : ScriptTreeItem) => {
-    const settings = await Container.universal.getSettings();
-    const filePath = path.join(settings.repositoryPath, '.universal.code.script', item.script.fullPath);
-    const codePath = path.join(settings.repositoryPath, '.universal.code.script');
+    const os = require('os');
+    const filePath = path.join(os.tmpdir(), '.universal.code.script', item.script.fullPath);
+    const codePath = path.join(os.tmpdir(), '.universal.code.script');
     const script = await Container.universal.getScript(item.script.id);
     if (!fs.existsSync(codePath)){
         fs.mkdirSync(codePath);

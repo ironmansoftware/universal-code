@@ -17,6 +17,8 @@ import { registerScriptCommands } from './commands/scripts';
 import { registerConfigCommands } from './commands/config';
 import { ConfigTreeViewProvider } from './configuration-treeview';
 import { registerConnectCommands } from './commands/connect';
+import { registerSampleCommands, SampleService } from './samples';
+import { SampleTreeViewProvider } from './sample-treeview';
 var compareVersions = require('compare-versions');
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -93,11 +95,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	const endpointProvider = new ApiTreeViewProvider();
 	const scriptProvider = new ScriptTreeViewProvider();
 	const configProvider = new ConfigTreeViewProvider();
+	const samplesProvider = new SampleTreeViewProvider();
 
 	vscode.window.createTreeView<vscode.TreeItem>('universalDashboardProviderView', { treeDataProvider: moduleProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalEndpointProviderView', { treeDataProvider: endpointProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalScriptProviderView', { treeDataProvider: scriptProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalConfigProviderView', { treeDataProvider: configProvider });
+	vscode.window.createTreeView<vscode.TreeItem>('sampleProviderView', { treeDataProvider: samplesProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalInfoProviderView', { treeDataProvider: infoProvider });
 	
 	vscode.commands.registerCommand('powershell-universal.refreshTreeView', () => moduleProvider.refresh());
@@ -111,7 +115,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerEndpointCommands(context);
 	registerScriptCommands(context);
 	registerConfigCommands(context);
-	
+	registerSampleCommands(context);
+
+	await vscode.commands.executeCommand("powershell-universal.syncSamples");
 }
 
 // this method is called when your extension is deactivated

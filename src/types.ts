@@ -99,5 +99,38 @@ export type ScriptParameter = {
 
 export type Settings = {
     repositoryPath : string;
+} 
+
+export class SampleFolder {
+    public name : string;
+    public path : string;
+
+    constructor(name : string, path : string) {
+        this.name = name;
+        this.path = path;
+    }
 }
 
+export class Sample {
+    public title : string;
+    public description : string;
+    public version : string;
+    public files : Array<SampleFile>;
+
+    constructor(title : string, description : string, version: string, files : Array<SampleFile>) {
+        this.title = title;
+        this.description = description;
+        this.version = version;
+        this.files = files;
+    }
+}
+
+export class SampleFile {
+    constructor(file : string, content : string) {
+        this.fileName = file;
+        this.content = content;
+    }
+
+    public fileName: string;
+    public content: string;
+}
