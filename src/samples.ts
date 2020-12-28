@@ -16,12 +16,10 @@ export const registerSampleCommands = (context : vscode.ExtensionContext) => {
         await sampleService.synchronizeSamples();
     });
     vscode.commands.registerCommand('powershell-universal.insertSample', insertSampleCommand);
+    vscode.commands.registerCommand('powershell-universal.viewSampleOnGitHub', viewSampleOnGitHubCommand);
 }
 
 const insertSampleCommand = async (sample : SampleTreeItem) => {
-
-    Container.universal.saveConfiguration("../nice.ps1", 'coolstuff');
-
     for(let file of sample.sample.files) {
         let document : vscode.TextDocument | undefined = await vscode.commands.executeCommand("powershell-universal.openConfigFile", file);
         if (document) {
@@ -37,6 +35,10 @@ const insertSampleCommand = async (sample : SampleTreeItem) => {
             vscode.workspace.applyEdit(we);
         }
     }
+}
+
+const viewSampleOnGitHubCommand = async (sample : SampleTreeItem) => {
+    vscode.env.openExternal(vscode.Uri.parse(sample.sample.url));
 }
 
 export class SampleService {
@@ -77,7 +79,10 @@ export class SampleService {
                         return new SampleFile(sampleFileName, script);
                     })
 
-                    return new Sample(info.title, info.description, info.version, files);
+                    const sampleBase = itemPath.replace(samplesPath, '').split('\\').join('/')
+                    const url = `https://github.com/ironmansoftware/universal-samples/blob/main${sampleBase}`
+
+                    return new Sample(info.title, info.description, info.version, files, url);
                 }
                 else 
                 {
@@ -96,7 +101,9 @@ export class SampleService {
 
                 var file = new SampleFile(info.file, script);
 
-                return new Sample(info.title, info.description, info.version, [file]);
+                const sampleBase = itemPath.replace(samplesPath, '').split('\\').join('/')
+                const url = `https://github.com/ironmansoftware/universal-samples/blob/main${sampleBase}`
+                return new Sample(info.title, info.description, info.version, [file], url);
             }
         })
     }

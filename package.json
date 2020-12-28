@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.7.0",
+	"version": "1.7.1",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -162,18 +162,23 @@
 			},
 			{
 				"command": "powershell-universal.connect",
-				"title": "PowerShell Universal: Connect",
+				"title": "Connect",
 				"icon": "$(debug-disconnect)"
 			},
 			{
 				"command": "powershell-universal.syncSamples",
-				"title": "PowerShell Universal: Update Samples",
+				"title": "Update Samples",
 				"icon": "$(sync)"
 			},
 			{
 				"command": "powershell-universal.insertSample",
-				"title": "PowerShell Universal: Insert Sample",
+				"title": "Insert Sample",
 				"icon": "$(add)"
+			},
+			{
+				"command": "powershell-universal.viewSampleOnGitHub",
+				"title": "View Sample on GitHub",
+				"icon": "$(github)"
 			}
 		],
 		"viewsContainers": {
@@ -365,6 +370,11 @@
 				},
 				{
 					"command": "powershell-universal.insertSample",
+					"when": "view == sampleProviderView && viewItem == sample",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.viewSampleOnGitHub",
 					"when": "view == sampleProviderView && viewItem == sample",
 					"group": "inline"
 				}

@@ -116,12 +116,14 @@ export class Sample {
     public description : string;
     public version : string;
     public files : Array<SampleFile>;
+    public url : string;
 
-    constructor(title : string, description : string, version: string, files : Array<SampleFile>) {
+    constructor(title : string, description : string, version: string, files : Array<SampleFile>, url : string) {
         this.title = title;
         this.description = description;
         this.version = version;
         this.files = files;
+        this.url = url;
     }
 }
 
