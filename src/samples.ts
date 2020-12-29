@@ -1,14 +1,24 @@
-import { start } from 'repl';
 import * as vscode from 'vscode';
-import { getVSCodeDownloadUrl } from 'vscode-test/out/util';
-import { Container } from './container';
 import { SampleTreeItem } from './sample-treeview';
+import { load, SetSamplesDirectory } from './settings';
 import { Sample, SampleFile, SampleFolder } from './types';
 const path = require('path');
 const fs = require('fs');
 const YAML = require('yaml')
 
-const samplesPath = path.join(process.env.APPDATA, "universal-samples");
+const getSamplesPath = async () => {
+    const settings = load();
+    const samplesPath = process.env.APPDATA + "";
+
+    if (settings.samplesDirectory === "") {
+        await SetSamplesDirectory(samplesPath);
+        return samplesPath;
+    }
+
+    return settings.samplesDirectory;
+}
+
+
 
 export const registerSampleCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.syncSamples', async () => {
@@ -43,6 +53,12 @@ const viewSampleOnGitHubCommand = async (sample : SampleTreeItem) => {
 
 export class SampleService {
     async synchronizeSamples() {
+
+        const settings = load();
+        if (!settings.syncSamples) return;
+
+        const sampleRoot = await getSamplesPath();
+        const samplesPath = path.join(sampleRoot, "universal-samples")
         
         if (fs.existsSync(samplesPath))
         {
@@ -51,12 +67,20 @@ export class SampleService {
             await vscode.commands.executeCommand("git.close", samplesPath)
         }
         else 
-        {
-            await vscode.commands.executeCommand("git.clone", 'https://github.com/ironmansoftware/universal-samples.git', process.env.APPDATA)
+        {            
+            await vscode.commands.executeCommand("git.clone", 'https://github.com/ironmansoftware/universal-samples.git', sampleRoot)
         }
     }
 
-    getRootSamples() : Array<SampleFolder> {
+    async getRootSamples() : Promise<Array<SampleFolder>> {
+        const sampleRoot = await getSamplesPath();
+        const samplesPath = path.join(sampleRoot, "universal-samples")
+
+        if (!fs.existsSync(samplesPath))
+        {
+            return [];
+        }
+
         return fs.readdirSync(samplesPath).filter((fileName : string) => {
             return (fileName !== "README.md" && fileName !== "LICENSE" && fileName !== ".git" )
         }).map((fileName : string) => {
@@ -64,7 +88,10 @@ export class SampleService {
         })
     }
 
-    getFolderChildren(folder : SampleFolder) : Array<Sample | SampleFolder> {
+    async getFolderChildren(folder : SampleFolder) : Promise<Array<Sample | SampleFolder>> {
+        const sampleRoot = await getSamplesPath();
+        const samplesPath = path.join(sampleRoot, "universal-samples")
+
         return fs.readdirSync(folder.path).map((fileName : string) => {
             const itemPath = path.join(folder.path, fileName);
             if (fs.lstatSync(itemPath).isDirectory())

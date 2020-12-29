@@ -58,7 +58,9 @@ The dashboard will automatically import modules for a dashboard so that IntelliS
 
 This extension contributes the following settings:
 
-* `powershellUniversal.url`: The URL to your PowerShell Universal server.
 * `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up. 
+* `powershellUniversal.url`: The URL to your PowerShell Universal server.
+* `powershellUniversal.samplesDirectory`: Directory for samples. 
+* `powershellUniversal.syncSamples`: Whether to synchronize samples from GitHub.
 * `powershellUniversal.serverPath`: The path to the binaries for the Universal server. This defaults to %AppData%\PowerShellUniversal
 * `powershellUniversal.startServer`: Whether to start the PowerShell Universal server when the extension is activated. This defaults to true.

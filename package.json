@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.7.1",
+	"version": "1.7.2",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -253,6 +253,16 @@
 					"type": "boolean",
 					"default": "false",
 					"description": "Whether to start the PowerShell Universal server when the extension is activated."
+				},
+				"powerShellUniversal.samplesDirectory": {
+					"type": "string",
+					"default": "",
+					"description": "Storage location for samples."
+				},
+				"powerShellUniversal.syncSamples": {
+					"type": "boolean",
+					"default": "true",
+					"description": "Whether to automatically synchronize samples from GitHub when the extension starts."
 				}
 			}
 		},

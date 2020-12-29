@@ -16,14 +16,14 @@ export class SampleTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
     async getChildren(element?: vscode.TreeItem | undefined) {
         if (element == null)
         {
-            return this.service.getRootSamples().map(folder => new SampleFolderTreeItem(folder));
+            return (await this.service.getRootSamples()).map(folder => new SampleFolderTreeItem(folder));
         }
 
         if (element instanceof SampleFolderTreeItem) 
 		{
             var parentTreeItem = element as SampleFolderTreeItem; 
             
-            return this.service.getFolderChildren(parentTreeItem.folder).map(item => {
+            return (await this.service.getFolderChildren(parentTreeItem.folder)).map(item => {
                 if (item instanceof Sample) {
                     const sample = item as Sample;
                     return new SampleTreeItem(sample)

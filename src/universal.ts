@@ -74,7 +74,7 @@ export class Universal {
         return false;
     }
 
-    async grantAppToken() {
+    async grantAppToken() : Promise<boolean> {
         const settings = load();
 
         const transport = axios.create({
@@ -85,6 +85,16 @@ export class Universal {
             username: 'admin',
             password: 'any'
         });
+
+        if (response.data.errorMessage && response.data.errorMessage !== '')
+        {
+            var result = await vscode.window.showErrorMessage("We couldn't generate an App Token automatically. You will have to do it manually.", "View Admin Console");
+            if (result === "View Admin Console")
+            {
+                vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/settings/security`))
+            }
+            return false;
+        }
 
         const [cookie] = response.headers["set-cookie"];
 
@@ -97,6 +107,8 @@ export class Universal {
         });
 
         await SetAppToken(appToken.data.token);
+
+        return true;
     }
 
     addDashboard() : Promise<Dashboard> {

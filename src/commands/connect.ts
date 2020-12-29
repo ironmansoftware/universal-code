@@ -25,7 +25,10 @@ export const connectToUniversal = async () => {
                     return;
                 }
 
-                await Container.universal.grantAppToken();
+                if (!await Container.universal.grantAppToken())
+                {
+                    return;
+                }
 
                 vscode.window.showInformationMessage("You are now connected to PowerShell Universal. Use the PowerShell Universal activity pane to manage resources.");
             }
