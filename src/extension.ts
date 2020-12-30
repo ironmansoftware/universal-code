@@ -16,7 +16,7 @@ import { ScriptTreeViewProvider } from './script-treeview';
 import { registerScriptCommands } from './commands/scripts';
 import { registerConfigCommands } from './commands/config';
 import { ConfigTreeViewProvider } from './configuration-treeview';
-import { registerConnectCommands } from './commands/connect';
+import { registerConnectCommands, tryAutoConnect } from './commands/connect';
 import { registerSampleCommands, SampleService } from './samples';
 import { SampleTreeViewProvider } from './sample-treeview';
 var compareVersions = require('compare-versions');
@@ -29,12 +29,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let settings = load();
 	if (settings.appToken === "") {
-		const result = await vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Connect");
-
-		if (result === "Download") {
-			vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+		if (await tryAutoConnect())
+		{
+			vscode.window.showInformationMessage("You're connected to PowerShell Universal.");
 		}
-		await vscode.commands.executeCommand("powershell-universal.connect");
+		else 
+		{
+			const result = await vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Connect");
+
+			if (result === "Download") {
+				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+			}
+			await vscode.commands.executeCommand("powershell-universal.connect");
+		}
+
 	} else if (settings.url == "") {
 		let address = settings.computerName;
         if (!address.toLocaleLowerCase().startsWith('http'))

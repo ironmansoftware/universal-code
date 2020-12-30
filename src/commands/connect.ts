@@ -50,3 +50,17 @@ export const connectToUniversal = async () => {
         }
     }
 }
+
+export const tryAutoConnect = async () => {
+    const defaultUrl = "http://localhost:5000";
+    if (await Container.universal.isAlive(defaultUrl))
+    {
+        await SetUrl(defaultUrl);
+        if (await Container.universal.grantAppToken())
+        {
+            return true;
+        }
+        await SetUrl("");
+    }
+    return false;
+}

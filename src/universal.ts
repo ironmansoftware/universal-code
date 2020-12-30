@@ -46,6 +46,17 @@ export class Universal {
         return response?.data;
     }
 
+    async isAlive(url : string) {
+        try {
+            await axios({ 
+                url: `${url}/api/v1/alive`,
+                method: "get"
+            });
+            return true;
+        } catch {}
+        return false; 
+    }
+
     async waitForAlive() {
         const settings = load();
 
@@ -53,18 +64,11 @@ export class Universal {
         var retries = 0;
 
         while(retries < 60) {
-            try 
+            if (await this.isAlive(settings.url))
             {
-                await axios({ 
-                    url: `${settings.url}/api/v1/alive`,
-                    method: "get"
-                });
-
                 disposable.dispose();
                 return true;
             }
-            catch {}
-
             retries++;
         }
 
