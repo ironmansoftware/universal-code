@@ -71,19 +71,31 @@ export async function activate(context: vscode.ExtensionContext) {
 		disposable.dispose();
 	}
 
-	const releasedVersion = await universal.getReleasedVersion();
 	const version = await universal.getVersion();
-
-	if(releasedVersion != version){
-		const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
-		if (result === "Download") {
-			vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-		}
-	}
 
 	if (compareVersions(version, "1.5.0") == -1) {
 		await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
 	}
+
+	try 
+	{
+		const releasedVersion = await universal.getReleasedVersion();
+		
+	
+		if(releasedVersion != version){
+			const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
+			if (result === "Download") {
+				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+			}
+		}
+	} 
+	catch 
+	{
+		console.log("Failed to check for updates.");
+	}
+
+
+
 	
 	vscode.window.registerUriHandler({
 		handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
