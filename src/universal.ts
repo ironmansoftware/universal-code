@@ -36,7 +36,8 @@ export class Universal {
 
     getVersion() : Promise<string> {
         return new Promise((resolve) => {
-            this.request('/api/v1/version', 'GET')?.then(x => resolve(x.data)).catch(x => {                
+            this.request('/api/v1/version', 'GET')?.then(x => resolve(x.data)).catch(x => {    
+                resolve("failed");            
             })
         })
     }

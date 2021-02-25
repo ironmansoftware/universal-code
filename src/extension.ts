@@ -72,31 +72,40 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	const version = await universal.getVersion();
-
-	if (compareVersions(version, "1.5.0") == -1) {
-		await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
-	}
-
-	try 
+	if (version === 'failed')
 	{
-		const releasedVersion = await universal.getReleasedVersion();
-		
-	
-		if(releasedVersion != version){
-			const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
-			if (result === "Download") {
-				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-			}
+		var result = await vscode.window.showErrorMessage("Failed to connect to PowerShell Universal. Universal may not be running or you need to update your settings.", "Download", "Settings");
+		if (result === "Download")
+		{
+			vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
 		}
-	} 
-	catch 
-	{
-		console.log("Failed to check for updates.");
+
+		if (result === "Settings")
+		{
+			vscode.commands.executeCommand('workbench.action.openSettings2', "PowerShell Universal");
+		}
+	}
+	else if (compareVersions(version, "1.5.0") == -1) {
+		await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
+		return;
+	} else {
+		try 
+		{
+			const releasedVersion = await universal.getReleasedVersion();
+			
+			if(releasedVersion != version){
+				const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
+				if (result === "Download") {
+					vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+				}
+			}
+		} 
+		catch 
+		{
+			console.log("Failed to check for updates.");
+		}	
 	}
 
-
-
-	
 	vscode.window.registerUriHandler({
 		handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
 			if (uri.path.startsWith('/debug')) {

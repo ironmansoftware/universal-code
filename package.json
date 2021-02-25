@@ -71,11 +71,6 @@
 				"icon": "$(debug-restart)"
 			},
 			{
-				"command": "powershell-universal.importModules",
-				"title": "Import Modules",
-				"icon": "$(package)"
-			},
-			{
 				"command": "powershell-universal.openDashboardFile",
 				"title": "Open Dashboard File",
 				"icon": "$(go-to-file)"
@@ -342,11 +337,6 @@
 				},
 				{
 					"command": "powershell-universal.openDashboardFile",
-					"when": "view == universalDashboardProviderView && viewItem == dashboard",
-					"group": "inline"
-				},
-				{
-					"command": "powershell-universal.importModules",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
 					"group": "inline"
 				},

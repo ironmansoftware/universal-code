@@ -44,10 +44,6 @@ PowerShell Universal is the ultimate platform for building web-based IT tools. T
 
 Automatically insert samples from the [PowerShell Universal Sample Repository](https://github.com/ironmansoftware/universal-samples)
 
-### Auto-import modules
-
-The dashboard will automatically import modules for a dashboard so that IntelliSense works properly.
-
 ## Requirements
 
 - Windows, Linux or Mac

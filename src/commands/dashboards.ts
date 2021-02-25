@@ -12,7 +12,6 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
     vscode.commands.registerCommand('powershell-universal.stopDashboard', stopDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.startDashboard', startDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.restartDashboard', restartDashboardCommand);
-    vscode.commands.registerCommand('powershell-universal.importModules', importModulesCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
     vscode.commands.registerCommand('powershell-universal.connectToDashboard', connectToDashboardCommand);
@@ -61,24 +60,6 @@ export const restartDashboardCommand = async (dashboard : DashboardTreeItem) => 
     vscode.window.showInformationMessage(`Dashboard restarted. Process ID: ${d.processId}`);
 }
 
-export const importModulesCommand = async (dashboard : DashboardTreeItem) => {
-    var settings = load();    
-
-    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
-
-    terminal?.sendText(`Import-Module '${path.join(settings.serverPath, 'Cmdlets', 'Universal.psd1')}' -Force`);
-    terminal?.sendText(`Import-Module '${dashboard.dashboard.dashboardFramework.path}\\*.psd1' -Force`);
-
-    if (dashboard.dashboard.dashboardComponents)
-    {
-        dashboard.dashboard.dashboardComponents.forEach(x => {
-            const path = x.path.endsWith(".psd1") ? x.path : x.path + "\\*.psd1";
-
-            terminal?.sendText(`Import-Module '${path}' -Force`);
-        });
-    }
-}
-
 export const openFileCommand = async (dashboard : DashboardTreeItem) => {
     const os = require('os');
     const codePath = path.join(os.tmpdir(), '.universal.code.dashboard');
@@ -97,8 +78,6 @@ export const openFileCommand = async (dashboard : DashboardTreeItem) => {
     const textDocument = await vscode.workspace.openTextDocument(filePath);    
 
     vscode.window.showTextDocument(textDocument);
-
-    importModulesCommand(dashboard);
 }
 
 export const openDashboardConfigFileCommand = async () => {
