@@ -33,6 +33,18 @@ export const openScriptConfigFileCommand = async () => {
 }
 
 export const editScriptCommand = async (item : ScriptTreeItem) => {
+    var settings = load();
+    if (settings.localEditing)
+    {
+        await editScriptLocal(item);
+    }
+    else 
+    {
+        await editScriptRemote(item);
+    }
+}
+
+export const editScriptRemote = async (item : ScriptTreeItem) => {
     const os = require('os');
     const filePath = path.join(os.tmpdir(), '.universal.code.script', item.script.fullPath);
     const codePath = path.join(os.tmpdir(), '.universal.code.script');
@@ -41,9 +53,17 @@ export const editScriptCommand = async (item : ScriptTreeItem) => {
         fs.mkdirSync(codePath);
     }
     fs.writeFileSync(filePath, script.content);
-    
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);    
+
+    vscode.window.showTextDocument(textDocument);
+}
+
+export const editScriptLocal = async (item : ScriptTreeItem) => {
+    const settings = await Container.universal.getSettings();
+    const filePath = path.join(settings.repositoryPath, item.script.fullPath);
+
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
 
     vscode.window.showTextDocument(textDocument);
 }

@@ -60,3 +60,4 @@ This extension contributes the following settings:
 * `powershellUniversal.syncSamples`: Whether to synchronize samples from GitHub.
 * `powershellUniversal.serverPath`: The path to the binaries for the Universal server. This defaults to %AppData%\PowerShellUniversal
 * `powershellUniversal.startServer`: Whether to start the PowerShell Universal server when the extension is activated. This defaults to true.
+* `powershellUniversal.localEditing`: Whether to edit local configuration files or using the REST API

@@ -94,10 +94,11 @@ export async function activate(context: vscode.ExtensionContext) {
 			const releasedVersion = await universal.getReleasedVersion();
 			
 			if(releasedVersion != version){
-				const result = await vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download");
-				if (result === "Download") {
-					vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-				}
+				vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download").then(x => {
+					if (result === "Download") {
+						vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+					}
+				});
 			}
 		} 
 		catch 

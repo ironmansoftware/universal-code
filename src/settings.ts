@@ -10,6 +10,7 @@ export interface ISettings {
     url: string;
     samplesDirectory: string;
     syncSamples: boolean;
+    localEditing: boolean;
 }
 
 export function load() : ISettings {
@@ -23,7 +24,8 @@ export function load() : ISettings {
         startServer: configuration.get<boolean>("startServer", false),
         url: configuration.get<string>("url", "http://localhost:5000"),
         samplesDirectory: configuration.get<string>("samplesDirectory", ""),
-        syncSamples: configuration.get<boolean>("syncSamples", true)
+        syncSamples: configuration.get<boolean>("syncSamples", true),
+        localEditing: configuration.get<boolean>("localEditing", false)
     }
 }
 

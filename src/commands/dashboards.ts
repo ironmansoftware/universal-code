@@ -15,6 +15,7 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
     vscode.commands.registerCommand('powershell-universal.connectToDashboard', connectToDashboardCommand);
+    vscode.commands.registerCommand('powershell-universal.importModules', importModulesCommand);
     vscode.commands.registerCommand('powershell-universal.viewDashboardLog', viewDashboardLogCommand);
     vscode.workspace.onDidSaveTextDocument((file) => {
         if(file.fileName.includes('.universal.code.dashboard')){
@@ -28,6 +29,25 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
         }
     });
 }
+
+export const importModulesCommand = async (dashboard : DashboardTreeItem) => {
+    var settings = load();    
+
+    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
+
+    terminal?.sendText(`Import-Module '${path.join(settings.serverPath, 'Cmdlets', 'Universal.psd1')}' -Force`);
+    terminal?.sendText(`Import-Module '${dashboard.dashboard.dashboardFramework.path}\\*.psd1' -Force`);
+
+    if (dashboard.dashboard.dashboardComponents)
+    {
+        dashboard.dashboard.dashboardComponents.forEach(x => {
+            const path = x.path.endsWith(".psd1") ? x.path : x.path + "\\*.psd1";
+
+            terminal?.sendText(`Import-Module '${path}' -Force`);
+        });
+    }
+}
+
 
 export const manageDashboardsCommand = async () => {
     const settings = load();
@@ -61,6 +81,18 @@ export const restartDashboardCommand = async (dashboard : DashboardTreeItem) => 
 }
 
 export const openFileCommand = async (dashboard : DashboardTreeItem) => {
+    var settings = load();
+    if (settings.localEditing)
+    {
+        await openFileLocal(dashboard);
+    }
+    else 
+    {
+        await openFileRemote(dashboard);
+    }
+}
+
+export const openFileRemote = async (dashboard : DashboardTreeItem) => {
     const os = require('os');
     const codePath = path.join(os.tmpdir(), '.universal.code.dashboard');
     //Use the id in the path so that we can save the dashboard
@@ -78,6 +110,17 @@ export const openFileCommand = async (dashboard : DashboardTreeItem) => {
     const textDocument = await vscode.workspace.openTextDocument(filePath);    
 
     vscode.window.showTextDocument(textDocument);
+}
+
+export const openFileLocal = async (dashboard : DashboardTreeItem) => {
+    const settings = await Container.universal.getSettings();
+    const filePath = path.join(settings.repositoryPath, dashboard.dashboard.filePath);
+
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
+
+    vscode.window.showTextDocument(textDocument);
+
+    importModulesCommand(dashboard);
 }
 
 export const openDashboardConfigFileCommand = async () => {

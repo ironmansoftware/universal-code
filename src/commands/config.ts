@@ -4,6 +4,7 @@ import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 import { SampleFile } from '../types';
+import { load } from '../settings';
 
 
 export const registerConfigCommands = (context : vscode.ExtensionContext) => {
@@ -17,7 +18,19 @@ export const registerConfigCommands = (context : vscode.ExtensionContext) => {
     });
 }
 
-export const openConfigCommand = async (item : ConfigTreeItem | SampleFile) => {
+export const openConfigCommand =  async (item : ConfigTreeItem | SampleFile) => {
+    var settings = load();
+    if (settings.localEditing)
+    {
+        await openConfigLocal(item);
+    }
+    else 
+    {
+        await openConfigRemote(item);
+    }
+}
+
+export const openConfigRemote = async (item : ConfigTreeItem | SampleFile) => {
     const os = require('os');
 
     const filePath = path.join(os.tmpdir(), '.universal.code.configuration', item.fileName);
@@ -34,6 +47,20 @@ export const openConfigCommand = async (item : ConfigTreeItem | SampleFile) => {
 
     return textDocument;
 }
+
+export const openConfigLocal = async (item : ConfigTreeItem | SampleFile) => {
+    const settings = await Container.universal.getSettings();
+    const filePath = path.join(settings.repositoryPath, '.universal', item.fileName);
+
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, '');
+    }
+
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
+
+    vscode.window.showTextDocument(textDocument);
+}
+
 
 
 export const refreshConfig = async () => {
