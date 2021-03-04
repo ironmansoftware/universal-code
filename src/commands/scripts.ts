@@ -63,6 +63,12 @@ export const editScriptLocal = async (item : ScriptTreeItem) => {
     const settings = await Container.universal.getSettings();
     const filePath = path.join(settings.repositoryPath, item.script.fullPath);
 
+    if (!fs.existsSync(filePath))
+    {
+        await vscode.window.showErrorMessage(`Failed to find file ${filePath}. If you have local editing on and are accessing a remote file, you may need to turn off local editing.`);
+        return 
+    }
+
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 
     vscode.window.showTextDocument(textDocument);
