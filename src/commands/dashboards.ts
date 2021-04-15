@@ -130,12 +130,29 @@ export const openFileLocal = async (dashboard : DashboardTreeItem) => {
 }
 
 export const openDashboardConfigFileCommand = async () => {
-    const settings = await Container.universal.getSettings();
-    const filePath = path.join(settings.repositoryPath, '.universal', 'dashboards.ps1');
+    var settings = load();
+    if (settings.localEditing)
+    {
+        const psuSettings = await Container.universal.getSettings();
+        const filePath = path.join(psuSettings.repositoryPath, '.universal', 'dashboards.ps1');
+        const textDocument = await vscode.workspace.openTextDocument(filePath);
+        vscode.window.showTextDocument(textDocument);
+    }
+    else 
+    {
+        const os = require('os');
 
-    const textDocument = await vscode.workspace.openTextDocument(filePath);
-
-    vscode.window.showTextDocument(textDocument);
+        const filePath = path.join(os.tmpdir(), '.universal.code.configuration', 'dashboards.ps1');
+        const codePath = path.join(os.tmpdir(), '.universal.code.configuration');
+        const config = await Container.universal.getConfiguration('dashboards.ps1');
+        if (!fs.existsSync(codePath)){
+            fs.mkdirSync(codePath);
+        }
+        fs.writeFileSync(filePath, config);
+        
+        const textDocument = await vscode.workspace.openTextDocument(filePath);    
+        vscode.window.showTextDocument(textDocument);
+    }
 }
 
 export const connectToDashboardCommand = async (item : DashboardTreeItem) => {
