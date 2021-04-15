@@ -4,7 +4,28 @@ import {ScriptTreeItem } from './../script-treeview';
 import { Container } from '../container';
 import { trackJob } from '../job-tracker';
 const path = require('path');
+const os = require('os');
 import * as fs from 'fs';
+
+function normalizeDriveLetter(path: string): string {
+	if (hasDriveLetter(path)) {
+		return path.charAt(0).toUpperCase() + path.slice(1);
+	}
+
+	return path;
+}
+
+function hasDriveLetter(path: string): boolean {
+	if (os.platform() == 'win32') {
+		return isWindowsDriveLetter(path.charCodeAt(0)) && path.charCodeAt(1) === 58;
+	}
+
+	return false;
+}
+
+function isWindowsDriveLetter(char0: number): boolean {
+	return char0 >= 65 && char0 <= 90 || char0 >= 97 && char0 <= 122;
+}
 
 export const registerScriptCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openScriptConfigFile', openScriptConfigFileCommand);
@@ -13,7 +34,10 @@ export const registerScriptCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.editScript', editScriptCommand);
     vscode.workspace.onDidSaveTextDocument((file) => {
         if(file.fileName.includes('.universal.code.script')){
-            const fileName = path.basename(file.fileName);
+            const codePath = path.join(os.tmpdir(), '.universal.code.script');
+            const normCodePath = normalizeDriveLetter(codePath);
+            const normFileName = normalizeDriveLetter(file.fileName);
+            const fileName = normFileName.replace(normCodePath, "").replace(/^\\*/, "").replace(/^\/*/, "");
             Container.universal.getScriptFilePath(fileName).then((script) => {
                 script.content = file.getText();
                 Container.universal.saveScript(script);
@@ -45,13 +69,13 @@ export const editScriptCommand = async (item : ScriptTreeItem) => {
 }
 
 export const editScriptRemote = async (item : ScriptTreeItem) => {
-    const os = require('os');
     const filePath = path.join(os.tmpdir(), '.universal.code.script', item.script.fullPath);
     const codePath = path.join(os.tmpdir(), '.universal.code.script');
     const script = await Container.universal.getScript(item.script.id);
     if (!fs.existsSync(codePath)){
         fs.mkdirSync(codePath);
     }
+    fs.mkdirSync(path.dirname(filePath), { "recursive": true });
     fs.writeFileSync(filePath, script.content);
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);    
