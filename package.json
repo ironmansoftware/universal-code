@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.8.2",
+	"version": "1.9.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -222,21 +222,9 @@
 			"type": "object",
 			"title": "PowerShell Universal",
 			"properties": {
-				"powerShellUniversal.port": {
-					"type": "number",
-					"default": 5000,
-					"deprecationMessage": "Deprecated: Please include the port in the URL.",
-					"description": "The port that PowerShell Universal is running on. This also configures which port to start Universal on."
-				},
-				"powerShellUniversal.computerName": {
-					"type": "string",
-					"default": "localhost",
-					"deprecationMessage": "Deprecated: Please include the computer name in the URL",
-					"description": "The local or remote computer to connect to."
-				},
 				"powerShellUniversal.url": {
 					"type": "string",
-					"default": "",
+					"default": "http://localhost:5000",
 					"description": "The URL of the PowerShell Universal server."
 				},
 				"powerShellUniversal.appToken": {
@@ -414,6 +402,7 @@
 	},
 	"dependencies": {
 		"adm-zip": "^0.4.16",
+		"atob": "^2.1.2",
 		"axios": "^0.19.2",
 		"compare-versions": "^3.6.0",
 		"progress": "^2.0.3",

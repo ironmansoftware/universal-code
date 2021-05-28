@@ -22,6 +22,7 @@ import { SampleTreeViewProvider } from './sample-treeview';
 var compareVersions = require('compare-versions');
 
 export async function activate(context: vscode.ExtensionContext) {
+
 	registerConnectCommands(context);
 
 	const universal = new Universal(context);
@@ -35,25 +36,14 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		else 
 		{
-			const result = await vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Connect");
-
-			if (result === "Download") {
-				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-			}
-			await vscode.commands.executeCommand("powershell-universal.connect");
+			vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Connect").then(result => {
+				if (result === "Download") {
+					vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+				}
+				vscode.commands.executeCommand("powershell-universal.connect");
+			});
 		}
-
-	} else if (settings.url == "") {
-		let address = settings.computerName;
-        if (!address.toLocaleLowerCase().startsWith('http'))
-        {
-            address = `http://${address}`;
-        }
-
-		let url = `${address}:${settings.port}`
-		
-		await SetUrl(url);
-	}
+	} 
 
 	settings = load();
 
@@ -71,44 +61,47 @@ export async function activate(context: vscode.ExtensionContext) {
 		disposable.dispose();
 	}
 
-	const version = await universal.getVersion();
-	if (version === 'failed')
+	if (settings.appToken !== "")
 	{
-		var result = await vscode.window.showErrorMessage("Failed to connect to PowerShell Universal. Universal may not be running or you need to update your settings.", "Download", "Settings");
-		if (result === "Download")
+		const version = await universal.getVersion();
+		if (version === 'failed')
 		{
-			vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-		}
-
-		if (result === "Settings")
-		{
-			vscode.commands.executeCommand('workbench.action.openSettings2', "PowerShell Universal");
-		}
-	}
-	else if (compareVersions(version, "1.5.0") == -1) {
-		await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
-		return;
-	} else {
-		try 
-		{
-			const releasedVersion = await universal.getReleasedVersion();
-			
-			if(releasedVersion != version){
-				vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download").then(x => {
-					if (result === "Download") {
-						vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-					}
-				});
+			var result = await vscode.window.showErrorMessage("Failed to connect to PowerShell Universal. Universal may not be running or you need to update your settings.", "Download", "Settings");
+			if (result === "Download")
+			{
+				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
 			}
-		} 
-		catch 
-		{
-			console.log("Failed to check for updates.");
-		}	
+	
+			if (result === "Settings")
+			{
+				vscode.commands.executeCommand('workbench.action.openSettings2', "PowerShell Universal");
+			}
+		}
+		else if (compareVersions(version, "1.5.0") == -1) {
+			await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
+			return;
+		} else {
+			try 
+			{
+				const releasedVersion = await universal.getReleasedVersion();
+				
+				if(releasedVersion != version){
+					vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download").then(x => {
+						if (result === "Download") {
+							vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
+						}
+					});
+				}
+			} 
+			catch 
+			{
+				console.log("Failed to check for updates.");
+			}	
+		}
 	}
 
 	vscode.window.registerUriHandler({
-		handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
+		handleUri: (uri: vscode.Uri): vscode.ProviderResult<void> => {
 			if (uri.path.startsWith('/debug')) {
 				const querystring = require('querystring');
 				const query = querystring.parse(uri.query);
@@ -117,6 +110,14 @@ export async function activate(context: vscode.ExtensionContext) {
 				Container.universal.sendTerminalCommand(`Debug-Runspace -ID ${query.RS}`);
 			}
 
+			if (uri.path.startsWith('/connect')) {
+				var atob = require('atob');
+				const querystring = require('querystring');
+				const query = querystring.parse(uri.query);
+				const url = atob(query.CB);
+
+				Container.universal.connectUniversal(url);
+			}
 		}
 	});
 

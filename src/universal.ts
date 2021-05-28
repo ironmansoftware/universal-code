@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog } from './types';
 import axios, { AxiosPromise } from 'axios';
 var path = require('path');
-import {load, SetAppToken} from './settings';
+import {load, SetAppToken, SetUrl} from './settings';
 
 export class Universal {
     private context : vscode.ExtensionContext;
@@ -300,5 +300,20 @@ export class Universal {
 
     debugDashboardEndpoint(id : string) {
         this.sendTerminalCommand(`Get-PSUDashboardEndpointRunspace -Id ${id} | Debug-Runspace`);
+    }
+
+    connectUniversal(url : string) {
+        axios.get(url).then(x => {
+            SetUrl(x.data.url);
+            SetAppToken(x.data.appToken);
+            vscode.window.showInformationMessage(`You are connected to ${x.data.url}`);
+
+            vscode.commands.executeCommand('powershell-universal.refreshTreeView');
+            vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
+            vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
+
+        }).catch(() => {
+            vscode.window.showErrorMessage('Failed to connect to Universal.');
+        })
     }
 }
