@@ -332,4 +332,11 @@ export class Universal {
             vscode.window.showErrorMessage('Failed to connect to Universal.');
         })
     }
+
+    async showConnectionError(message : string) {
+        const result = await vscode.window.showErrorMessage(message + " This is a connection error. Click Connect to setup a new connection.", "Connect");
+        if (result === 'Connect') {
+            vscode.commands.executeCommand('powershell-universal.connect');
+        }
+    }
 }

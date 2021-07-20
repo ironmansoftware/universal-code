@@ -130,8 +130,6 @@ export const openFileLocal = async (dashboard : DashboardTreeItem) => {
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 
     vscode.window.showTextDocument(textDocument);
-
-    importModulesCommand(dashboard);
 }
 
 export const openDashboardConfigFileCommand = async () => {

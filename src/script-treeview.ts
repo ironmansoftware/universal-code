@@ -21,7 +21,7 @@ export class ScriptTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
             }
             catch (err)
             {
-                vscode.window.showErrorMessage("Failed to query scripts. " + err);
+                Container.universal.showConnectionError("Failed to query scripts. " + err);
                 return [];
             }
         }

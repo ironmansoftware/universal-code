@@ -47,7 +47,7 @@ export class DashboardFrameworksTreeItem extends ParentTreeItem {
         }
         catch (err)
         {
-            vscode.window.showErrorMessage("Failed to query dashboard frameworks. " + err);
+            Container.universal.showConnectionError("Failed to query dashboard frameworks. " + err);
             return [];
         }
     }
@@ -67,7 +67,7 @@ export class DashboardComponentsTreeItem extends ParentTreeItem {
         }
         catch (err)
         {
-            vscode.window.showErrorMessage("Failed to query dashboards. " + err);
+            Container.universal.showConnectionError("Failed to query dashboard components. " + err);
             return [];
         }
     }
@@ -88,7 +88,7 @@ export class DashboardsTreeItem extends ParentTreeItem {
         }
         catch (err)
         {
-            vscode.window.showErrorMessage("Failed to query dashboards. " + err);
+            Container.universal.showConnectionError("Failed to query dashboards. " + err);
             return [];
         }
     }

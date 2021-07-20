@@ -24,7 +24,7 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
             } 
             catch (err)
             {
-                vscode.window.showErrorMessage("Failed to query configuration files. " + err);
+                Container.universal.showConnectionError("Failed to query configuration files. " + err);
                 return [];
             }
 
