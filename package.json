@@ -184,6 +184,16 @@
 				"command": "powershell-universal.importModules",
 				"title": "Import Modules",
 				"icon": "$(package)"
+			},
+			{
+				"command": "powershell-universal.installDashboardModule",
+				"title": "Install Module",
+				"icon": "$(cloud-download)"
+			},
+			{
+				"command": "powershell-universal.installDashboardFrameworkModule",
+				"title": "Install Module",
+				"icon": "$(cloud-download)"
 			}
 		],
 		"viewsContainers": {
@@ -351,6 +361,16 @@
 				{
 					"command": "powershell-universal.openDashboardFile",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.installDashboardModule",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardComponent",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.installDashboardFrameworkModule",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardFramework",
 					"group": "inline"
 				},
 				{

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework } from './types';
 import axios, { AxiosPromise } from 'axios';
 import {load, SetAppToken, SetUrl} from './settings';
 
@@ -162,6 +162,23 @@ export class Universal {
             })
         })
     }
+
+    getDashboardComponents() : Promise<Array<DashboardComponent>> {
+        return new Promise((resolve, reject) => {
+            this.request('/api/v1/dashboardcomponent', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getDashboardFrameworks() : Promise<Array<DashboardFramework>> {
+        return new Promise((resolve, reject) => {
+            this.request('/api/v1/dashboardframework', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
 
     saveDashboard(id : number, dashboard : Dashboard) {
         return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {load} from './../settings';
-import {DashboardTreeItem } from './../dashboard-treeview';
+import {DashboardComponentTreeItem, DashboardFrameworkTreeItem, DashboardTreeItem } from './../dashboard-treeview';
 import { Container } from '../container';
 import { DashboardLogItem, DashboardLog } from '../types';
 const path = require('path');
@@ -17,6 +17,9 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
     vscode.commands.registerCommand('powershell-universal.connectToDashboard', connectToDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.importModules', importModulesCommand);
     vscode.commands.registerCommand('powershell-universal.viewDashboardLog', viewDashboardLogCommand);
+    vscode.commands.registerCommand('powershell-universal.installDashboardModule', installModuleCommand);
+    vscode.commands.registerCommand('powershell-universal.installDashboardFrameworkModule', installModuleCommand);
+
     vscode.workspace.onDidSaveTextDocument((file) => {
         if(file.fileName.includes('.universal.code.dashboard')){
             //Get the id of the dashboard from the path
@@ -165,4 +168,8 @@ export const connectToDashboardCommand = async (item : DashboardTreeItem) => {
 
 export const viewDashboardLogCommand = async (item : DashboardTreeItem) => {
     await item.showLog();
+}
+
+export const installModuleCommand = async (item : DashboardComponentTreeItem | DashboardFrameworkTreeItem) => {
+    Container.universal.sendTerminalCommand(`Install-Module -Name '${item.dashboardComponent.name}' -RequiredVersion '${item.dashboardComponent.version}'`);
 }

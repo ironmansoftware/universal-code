@@ -160,7 +160,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const lastModuleCheck : number = context.globalState.get('psu.lastmodulecheck') || 0;
 	const now = Date.now();
 
-	if (settings.checkModules) && now - lastModuleCheck > 1000 * 60 * 60 * 24)
+	if (settings.checkModules && (now - lastModuleCheck) > 1000 * 60 * 60 * 24)
 	{
 		vscode.window.showInformationMessage("Checking PowerShell Universal module state. Updated modules will be installed. You can disable this check by disabling the Check Modules setting.");
 		Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
