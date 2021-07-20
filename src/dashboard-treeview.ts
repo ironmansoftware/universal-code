@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Container } from './container';
-import { Dashboard, DashboardFramework, DashboardEndpoint, DashboardStatus } from './types';
+import { Dashboard, DashboardFramework, DashboardEndpoint, DashboardStatus, DashboardLogItem } from './types';
 import ParentTreeItem from './parentTreeItem';
 export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
@@ -18,8 +18,9 @@ export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode
             {
                 return await Container.universal.getDashboards().then(x => x.map(y => new DashboardTreeItem(y)));
             }
-            catch 
+            catch (err)
             {
+                vscode.window.showErrorMessage("Failed to query dashboards. " + err);
                 return [];
             }
         }
@@ -38,6 +39,7 @@ export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode
 
 export class DashboardTreeItem extends vscode.TreeItem {
     public dashboard : Dashboard;
+    private logIndex : number;
 
     constructor(dashboard : Dashboard) 
     {
@@ -48,6 +50,35 @@ export class DashboardTreeItem extends vscode.TreeItem {
         const icon = dashboard.status == DashboardStatus.Started ? "debug-start" : "debug-stop";
         const themeIcon = new vscode.ThemeIcon(icon);
         this.iconPath = themeIcon;
+        this.logIndex = 0;
+
+        setInterval(async () => await this.reloadLog(), 5000);
+    }
+
+    async reloadLog() {
+        const log = await Container.universal.getDashboardLog(this.dashboard.id);
+
+        const json : Array<DashboardLogItem> = JSON.parse(log.log);
+        const newLog = json.slice(this.logIndex);
+    
+        const logChannel = Container.getPanel(`Dashboard (${this.dashboard.name})`);
+        newLog.forEach(item => {
+            logChannel.appendLine( `[${item.Timestamp}] ${item.Data}`);
+        });
+
+        this.logIndex = json.length;
+    }
+
+    async clearLog() {
+        const logChannel = Container.getPanel(`Dashboard (${this.dashboard.name})`);
+        logChannel.clear();
+        this.logIndex = 0;
+    }
+
+    async showLog() {
+        const logChannel = Container.getPanel(`Dashboard (${this.dashboard.name})`);
+        await this.reloadLog();
+        logChannel.show();
     }
 
     contextValue = "dashboard";

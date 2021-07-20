@@ -19,8 +19,9 @@ export class ScriptTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
             {
                 return await Container.universal.getScripts().then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new ScriptTreeItem(y)));
             }
-            catch 
+            catch (err)
             {
+                vscode.window.showErrorMessage("Failed to query scripts. " + err);
                 return [];
             }
         }

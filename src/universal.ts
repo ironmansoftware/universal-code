@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog } from './types';
 import axios, { AxiosPromise } from 'axios';
-var path = require('path');
 import {load, SetAppToken, SetUrl} from './settings';
 
 export class Universal {
@@ -119,7 +118,7 @@ export class Universal {
     addDashboard() : Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/dashboard', 'POST')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query dashboards.');
+                reject(x.message);
             })
         })
     }
@@ -127,7 +126,7 @@ export class Universal {
     startDashboard(id : number) : Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/status`, 'PUT')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to start dashboard.');
+                reject(x.message);
             })
         })
     }
@@ -135,7 +134,7 @@ export class Universal {
     stopDashboard(id : number) : Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/status`, 'DELETE')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to stop dashboard.');
+                reject(x.message);
             })
         })
     }
@@ -143,7 +142,7 @@ export class Universal {
     getDashboard(id : number) : Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query dashboards.');
+                reject(x.message);
             })
         })
     }
@@ -151,7 +150,7 @@ export class Universal {
     getDashboardLog(id : number) : Promise<DashboardLog> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/log`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query dashboard log.');
+                reject(x.message);
             })
         })
     }
@@ -159,7 +158,7 @@ export class Universal {
     getDashboards() : Promise<Array<Dashboard>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/dashboard', 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query dashboards.');
+                reject(x.message);
             })
         })
     }
@@ -167,7 +166,7 @@ export class Universal {
     saveDashboard(id : number, dashboard : Dashboard) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'PUT', dashboard)?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to save dashboard.');
+                reject(x.message);
             })
         })
     }
@@ -175,7 +174,7 @@ export class Universal {
     getDiagnostics(id : number) : Promise<DashboardDiagnostics> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/diagnostics`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query dashboard diagnostics.');
+                reject(x.message);
             })
         })
     }
@@ -183,7 +182,7 @@ export class Universal {
     getEndpoints() : Promise<Array<Endpoint>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/endpoint', 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query endpoints.');
+                reject(x.message);
             })
         })
     }
@@ -191,7 +190,7 @@ export class Universal {
     getJob(id : number) : Promise<Job> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/job/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query job.');
+                reject(x.message);
             })
         })
     }
@@ -199,7 +198,7 @@ export class Universal {
     getScripts() : Promise<Array<Script>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query scripts.');
+                reject(x.message);
             })
         })
     }
@@ -207,7 +206,7 @@ export class Universal {
     getScript(id : number) : Promise<Script> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query script.');
+                reject(x.message);
             })
         })
     }
@@ -215,7 +214,7 @@ export class Universal {
     getScriptFilePath(filePath : string) : Promise<Script> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/path/${filePath}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query script.');
+                reject(x.message);
             })
         })
     }
@@ -223,7 +222,7 @@ export class Universal {
     saveScript(script : Script) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/`, 'PUT', script)?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to save script.');
+                reject(x.message);
             })
         })
     }
@@ -231,7 +230,7 @@ export class Universal {
     getScriptParameters(id : number) : Promise<Array<ScriptParameter>> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/${id}/parameter`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query job.');
+                reject(x.message);
             })
         })
     }
@@ -240,7 +239,7 @@ export class Universal {
         return new Promise((resolve, reject) => {
             const jobContext = {}
             this.request(`/api/v1/script/${id}`, 'POST', jobContext)?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query scripts.');
+                reject(x.message);
             })
         })
     }
@@ -248,7 +247,7 @@ export class Universal {
     refreshConfig() : Promise<any> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration`, 'POST')?.then(() => resolve(null)).catch(x => {
-                reject('Failed refresh configuration.');
+                reject(x.message);
             })
         })
     }
@@ -256,7 +255,7 @@ export class Universal {
     getSettings() : Promise<Settings> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/settings`, 'GET')?.then(x => resolve(x.data[0])).catch(x => {
-                reject('Failed to query settings.');
+                reject(x.message);
             })
         })
     }
@@ -264,7 +263,7 @@ export class Universal {
     getConfigurations() : Promise<Array<string>> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration`, 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to query configurations.');
+                reject(x.message);
             })
         })
     }
@@ -280,7 +279,7 @@ export class Universal {
     saveConfiguration(fileName : string, data : string) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration/${fileName}`, 'PUT', data)?.then(x => resolve(x.data)).catch(x => {
-                reject('Failed to save configuration.');
+                reject(x.message);
             })
         })
     }

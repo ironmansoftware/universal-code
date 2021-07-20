@@ -11,6 +11,8 @@ task BuildExtension {
 
         vsce package
 
+        Copy-Item "$PSScriptRoot\src\Universal.VSCode.psm1" "$PSScriptRoot\out"
+
         Copy-Item (Join-Path $PSScriptRoot "*.vsix") (Join-Path $PSScriptRoot "kit")
     }
 }

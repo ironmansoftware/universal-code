@@ -1,5 +1,5 @@
 import { Universal } from "./universal";
-import { ExtensionContext } from "vscode";
+import { ExtensionContext, OutputChannel, window } from "vscode";
 
 export class Container {
     static initialize(context: ExtensionContext, universal: Universal) {
@@ -16,4 +16,14 @@ export class Container {
 	static get context() {
 		return this._context;
 	}
+
+    private static _outputPanels: Array<OutputChannel> = [];
+    static getPanel(name: string) {
+        let panel = this._outputPanels.find(panel => panel.name === name);
+        if (!panel) {
+            panel = window.createOutputChannel(name);
+            this._outputPanels.push(panel);
+        }   
+        return panel;
+    }    
 }

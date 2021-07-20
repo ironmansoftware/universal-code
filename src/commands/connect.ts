@@ -18,7 +18,7 @@ export const connectToUniversal = async () => {
         if (url) {
             await SetUrl(url);
 
-            let result = await vscode.window.showInformationMessage("We need an App Token to connect to the server. We can grant one automatically if you haven't configured security yet. If you'd like to create one yourself, you can do so in the admin console.", "Grant App Token", "Enter App Token", "View Admin Console");
+            let result = await vscode.window.showInformationMessage("We need an App Token to connect to the server. We can grant one automatically if you haven't configured security yet. If you'd like to create one yourself, you can do so in the admin console.", "Grant App Token", "Enter App Token", "Connect via Admin Console");
             if (result === "Grant App Token") {
                 if (!await Container.universal.waitForAlive())
                 {
@@ -33,8 +33,8 @@ export const connectToUniversal = async () => {
                 vscode.window.showInformationMessage("You are now connected to PowerShell Universal. Use the PowerShell Universal activity pane to manage resources.");
             }
 
-            if (result === "View Admin Console") {
-                vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/settings/security`))
+            if (result === "Connect via Admin Console") {
+                vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/settings/configurations`))
             }
 
             if (result !== "Grant App Token") {

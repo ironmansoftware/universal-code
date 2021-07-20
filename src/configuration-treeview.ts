@@ -15,10 +15,19 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
     async getChildren(element?: vscode.TreeItem | undefined) {
         if (element == null)
         {
-            const configs = await Container.universal.getConfigurations();
-            var configTree: ConfigTreeItem[] = [];
-            configs.forEach(c => configTree.push(new ConfigTreeItem(c,c)));
-            return configTree;
+            try
+            {
+                const configs = await Container.universal.getConfigurations();
+                var configTree: ConfigTreeItem[] = [];
+                configs.forEach(c => configTree.push(new ConfigTreeItem(c,c)));
+                return configTree;
+            } 
+            catch (err)
+            {
+                vscode.window.showErrorMessage("Failed to query configuration files. " + err);
+                return [];
+            }
+
         }
     }
 

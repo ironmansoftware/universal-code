@@ -115,7 +115,7 @@ export const invokeScriptCommand = async (item : ScriptTreeItem) => {
     
         if (result === "View Job")
         {
-            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/job/${jobId}`));
+            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/jobs/${jobId}`));
         }
     
         trackJob(jobId);

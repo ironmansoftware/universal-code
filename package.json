@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "1.9.0",
+	"version": "1.10.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -57,6 +57,11 @@
 			},
 			{
 				"command": "powershell-universal.refreshScriptTreeView",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "powershell-universal.refreshConfigurationTreeView",
 				"title": "Refresh",
 				"icon": "$(refresh)"
 			},
@@ -256,6 +261,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Edit files locally rather than using the REST API."
+				},
+				"powerShellUniversal.checkModules": {
+					"type": "boolean",
+					"default": true,
+					"description": "Checks module versions and updates them when starting the extension."
 				}
 			}
 		},
@@ -294,6 +304,11 @@
 				{
 					"command": "powershell-universal.refreshScriptTreeView",
 					"when": "view == universalScriptProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.refreshConfigurationTreeView",
+					"when": "view == universalConfigProviderView",
 					"group": "navigation"
 				},
 				{
@@ -406,6 +421,7 @@
 		"axios": "^0.19.2",
 		"compare-versions": "^3.6.0",
 		"progress": "^2.0.3",
+		"semver": "^7.3.5",
 		"temp": "^0.9.1",
 		"yaml": "^1.10.0"
 	}

@@ -63,6 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	if (settings.appToken !== "")
 	{
+		var semver = require('semver');
 		const version = await universal.getVersion();
 		if (version === 'failed')
 		{
@@ -77,15 +78,15 @@ export async function activate(context: vscode.ExtensionContext) {
 				vscode.commands.executeCommand('workbench.action.openSettings2', "PowerShell Universal");
 			}
 		}
-		else if (compareVersions(version, "1.5.0") == -1) {
-			await vscode.window.showErrorMessage("This extension requires PowerShell Universal 1.5.0 or newer.");
+		else if (semver.lt(version, "2.0.0") == -1) {
+			await vscode.window.showErrorMessage("This extension requires PowerShell Universal 2.0.0 or newer.");
 			return;
 		} else {
 			try 
 			{
 				const releasedVersion = await universal.getReleasedVersion();
 				
-				if(releasedVersion != version){
+				if(semver.gt(releasedVersion, version)){
 					vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download").then(x => {
 						if (result === "Download") {
 							vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
@@ -117,6 +118,11 @@ export async function activate(context: vscode.ExtensionContext) {
 				const url = atob(query.CB);
 
 				Container.universal.connectUniversal(url);
+
+				vscode.commands.executeCommand('powershell-universal.refreshTreeView');
+				vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
+				vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
+				vscode.commands.executeCommand('powershell-universal.refreshConfigurationTreeView');
 			}
 		}
 	});
@@ -138,6 +144,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('powershell-universal.refreshTreeView', () => moduleProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshEndpointTreeView', () => endpointProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshScriptTreeView', () => scriptProvider.refresh());
+	vscode.commands.registerCommand('powershell-universal.refreshConfigurationTreeView', () => configProvider.refresh());
 	
 	downloadUniversalCommand();
 	startUniversalCommand();
@@ -149,6 +156,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerSampleCommands(context);
 
 	await vscode.commands.executeCommand("powershell-universal.syncSamples");
+
+	const lastModuleCheck : number = context.globalState.get('psu.lastmodulecheck') || 0;
+	const now = Date.now();
+
+	if (settings.checkModules) && now - lastModuleCheck > 1000 * 60 * 60 * 24)
+	{
+		vscode.window.showInformationMessage("Checking PowerShell Universal module state. Updated modules will be installed. You can disable this check by disabling the Check Modules setting.");
+		Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
+		context.globalState.update('psu.lastmodulecheck', now);
+	}
 }
 
 // this method is called when your extension is deactivated

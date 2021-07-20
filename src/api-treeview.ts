@@ -19,8 +19,9 @@ export class ApiTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeI
             {
                 return await Container.universal.getEndpoints().then(x => x.map(y => new EndpointTreeItem(y)));
             }
-            catch 
+            catch (ex)
             {
+                vscode.window.showErrorMessage("Failed to query API endpoints. " + ex);
                 return [];
             }
         }

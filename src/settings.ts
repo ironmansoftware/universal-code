@@ -9,6 +9,7 @@ export interface ISettings {
     samplesDirectory: string;
     syncSamples: boolean;
     localEditing: boolean;
+    checkModules: boolean;
 }
 
 export function load() : ISettings {
@@ -21,7 +22,8 @@ export function load() : ISettings {
         url: configuration.get<string>("url", "http://localhost:5000"),
         samplesDirectory: configuration.get<string>("samplesDirectory", ""),
         syncSamples: configuration.get<boolean>("syncSamples", true),
-        localEditing: configuration.get<boolean>("localEditing", false)
+        localEditing: configuration.get<boolean>("localEditing", false),
+        checkModules: configuration.get<boolean>("checkModules", false)
     }
 }
 
@@ -48,4 +50,9 @@ export async function SetUrl(value : string) {
 export async function SetPort(value : number) {
     const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
     await configuration.update("port", value, vscode.ConfigurationTarget.Global);
+}
+
+export async function SetCheckModules(value : boolean) {
+    const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
+    await configuration.update("checkModules", value, vscode.ConfigurationTarget.Global);
 }

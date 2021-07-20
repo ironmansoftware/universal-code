@@ -78,6 +78,8 @@ export const restartDashboardCommand = async (dashboard : DashboardTreeItem) => 
     vscode.commands.executeCommand('powershell-universal.refreshTreeView');
 
     vscode.window.showInformationMessage(`Dashboard restarted. Process ID: ${d.processId}`);
+
+    await dashboard.clearLog();
 }
 
 export const openFileCommand = async (dashboard : DashboardTreeItem) => {
@@ -162,19 +164,5 @@ export const connectToDashboardCommand = async (item : DashboardTreeItem) => {
 }
 
 export const viewDashboardLogCommand = async (item : DashboardTreeItem) => {
-
-    const log = await Container.universal.getDashboardLog(item.dashboard.id);
-
-    const json : Array<DashboardLogItem> = JSON.parse(log.log);
-
-    var logFile = '';
-    json.forEach(item => {
-        logFile += `[${item.Timestamp}] ${item.Data} \r\n` 
-    });
-
-    const textDocument = await vscode.workspace.openTextDocument({        
-        content: logFile
-    });
-
-    vscode.window.showTextDocument(textDocument);
+    await item.showLog();
 }
