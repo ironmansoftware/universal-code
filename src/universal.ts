@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework, JobPagedViewModel, JobLog } from './types';
 import axios, { AxiosPromise } from 'axios';
 import {load, SetAppToken, SetUrl} from './settings';
 
@@ -212,9 +212,25 @@ export class Universal {
         })
     }
 
+    getJobLog(id : number) : Promise<JobLog> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/job/${id}/log`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
     getScripts() : Promise<Array<Script>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getJobs() : Promise<JobPagedViewModel> {
+        return new Promise((resolve, reject) => {
+            this.request('/api/v1/job?take=50&orderBy=Id&orderDirection=Descending', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
         })

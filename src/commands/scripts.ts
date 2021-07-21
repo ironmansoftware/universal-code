@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import {load} from './../settings';
-import {ScriptTreeItem } from './../script-treeview';
+import {JobTreeItem, ScriptTreeItem } from '../automation-treeview';
 import { Container } from '../container';
 import { trackJob } from '../job-tracker';
 const path = require('path');
@@ -32,6 +32,9 @@ export const registerScriptCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.invokeScript', invokeScriptCommand);
     vscode.commands.registerCommand('powershell-universal.manageScripts', manageScriptsCommand);
     vscode.commands.registerCommand('powershell-universal.editScript', editScriptCommand);
+    vscode.commands.registerCommand('powershell-universal.viewJobLog', viewJobLogCommand);
+    vscode.commands.registerCommand('powershell-universal.viewJob', viewJobCommand);
+    
     vscode.workspace.onDidSaveTextDocument((file) => {
         if(file.fileName.includes('.universal.code.script')){
             const codePath = path.join(os.tmpdir(), '.universal.code.script');
@@ -128,4 +131,26 @@ export const manageScriptsCommand = async () => {
     const settings = load();
     
     vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/scripts`));
+}
+
+let jobLogChannel = vscode.window.createOutputChannel("PowerShell Universal - Job");
+
+export const viewJobLogCommand = async (jobItem : JobTreeItem) => {
+
+    jobLogChannel.clear();
+    jobLogChannel.show();
+    jobLogChannel.append(`Loading log for job ${jobItem.job.id}...`);
+
+    Container.universal.getJobLog(jobItem.job.id).then((log) => {
+        jobLogChannel.clear();
+        JSON.parse(log.log).forEach((line : any) => {
+            jobLogChannel.appendLine(line.Timestamp + " - " + line.Data);
+        });
+    });   
+}
+
+export const viewJobCommand = async (jobItem : JobTreeItem) => {
+    const settings = load();
+
+    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/jobs/${jobItem.job.id}`));
 }

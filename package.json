@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "2.0.1",
+	"version": "2.1.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -194,6 +194,16 @@
 				"command": "powershell-universal.installDashboardFrameworkModule",
 				"title": "Install Module",
 				"icon": "$(cloud-download)"
+			},
+			{
+				"command": "powershell-universal.viewJob",
+				"title": "View Job",
+				"icon": "$(link-external)"
+			},
+			{
+				"command": "powershell-universal.viewJobLog",
+				"title": "View Job Log",
+				"icon": "$(book)"
 			}
 		],
 		"viewsContainers": {
@@ -212,12 +222,12 @@
 					"name": "APIs"
 				},
 				{
-					"id": "universalDashboardProviderView",
-					"name": "Dashboards"
+					"id": "universalScriptProviderView",
+					"name": "Automation"
 				},
 				{
-					"id": "universalScriptProviderView",
-					"name": "Scripts"
+					"id": "universalDashboardProviderView",
+					"name": "Dashboards"
 				},
 				{
 					"id": "universalConfigProviderView",
@@ -394,6 +404,16 @@
 				{
 					"command": "powershell-universal.editScript",
 					"when": "view == universalScriptProviderView && viewItem == script",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.viewJob",
+					"when": "view == universalScriptProviderView && viewItem == job",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.viewJobLog",
+					"when": "view == universalScriptProviderView && viewItem == job",
 					"group": "inline"
 				},
 				{

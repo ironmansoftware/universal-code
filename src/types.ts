@@ -72,6 +72,15 @@ export type Job = {
     id : number; 
     status : JobStatus;
     script : Script;
+    scriptFullPath: string;
+}
+
+export type JobLog = {
+    log : string;
+}
+
+export type JobPagedViewModel = {
+    page: Array<Job>;
 }
 
 export enum JobStatus {

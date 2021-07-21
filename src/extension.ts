@@ -12,7 +12,7 @@ import { load, SetUrl } from './settings';
 import { registerDashboardCommands } from './commands/dashboards';
 import { ApiTreeViewProvider } from './api-treeview';
 import { registerEndpointCommands } from './commands/endpoints';
-import { ScriptTreeViewProvider } from './script-treeview';
+import { AutomationTreeViewProvider } from './automation-treeview';
 import { registerScriptCommands } from './commands/scripts';
 import { registerConfigCommands } from './commands/config';
 import { ConfigTreeViewProvider } from './configuration-treeview';
@@ -130,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const moduleProvider = new DashboardTreeViewProvider();
 	const infoProvider = new InfoTreeViewProvider();
 	const endpointProvider = new ApiTreeViewProvider();
-	const scriptProvider = new ScriptTreeViewProvider();
+	const scriptProvider = new AutomationTreeViewProvider();
 	const configProvider = new ConfigTreeViewProvider();
 	const samplesProvider = new SampleTreeViewProvider();
 
