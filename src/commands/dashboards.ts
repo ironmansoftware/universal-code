@@ -6,6 +6,8 @@ import { DashboardLogItem, DashboardLog } from '../types';
 const path = require('path');
 import * as fs from 'fs';
 
+let files : Array<any> = [];
+
 export const registerDashboardCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.manageDashboards', manageDashboardsCommand);
     vscode.commands.registerCommand('powershell-universal.viewDashboard', viewDashboardCommand);
@@ -22,14 +24,16 @@ export const registerDashboardCommands = (context : vscode.ExtensionContext) => 
 
     vscode.workspace.onDidSaveTextDocument((file) => {
         if(file.fileName.includes('.universal.code.dashboard')){
-            //Get the id of the dashboard from the path
-            const id = path.basename(path.dirname(file.fileName));
-            Container.universal.getDashboard(id).then((dashboard) => {
+            const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
+            Container.universal.getDashboard(info.id).then((dashboard) => {
                 dashboard.content = file.getText();
-                Container.universal.saveDashboard(id, dashboard);
+                Container.universal.saveDashboard(info.id, dashboard);
             });
-            
         }
+    });
+
+    vscode.workspace.onDidCloseTextDocument((file) => {
+        files = files.filter(x => x.filePath !== file.fileName);
     });
 }
 
@@ -103,14 +107,19 @@ export const openFileRemote = async (dashboard : DashboardTreeItem) => {
     //Use the id in the path so that we can save the dashboard
     const codePathId = path.join(codePath, dashboard.dashboard.id.toString());
     const filePath = path.join(codePathId, dashboard.dashboard.filePath);
+    
     const dashboardFile = await Container.universal.getDashboard(dashboard.dashboard.id);
-    if (!fs.existsSync(codePath)){
-        fs.mkdirSync(codePath);
+    var dirName = path.dirname(filePath);
+    if (!fs.existsSync(dirName)){
+        fs.mkdirSync(dirName, { recursive: true });
     }
-    if (!fs.existsSync(codePathId)){
-        fs.mkdirSync(codePathId);
-    }
+
     fs.writeFileSync(filePath, dashboardFile.content);   
+
+    files.push({
+        id: dashboard.dashboard.id,
+        filePath: filePath
+    });
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);    
 
