@@ -14,7 +14,7 @@ function Install-UniversalModule {
         if ($UniversalOnline.Version -gt $Universal.Version)
         {
             Write-Host 'Updating Universal module to $($UniversalOnline.Version)...'
-            Upgrade-Module -Name 'Universal'
+            Update-Module -Name 'Universal'
         }
     }
 
@@ -33,7 +33,7 @@ function Install-UniversalModule {
         if ($UniversalDashboardOnline.Version -gt $UniversalDashboard.Version)
         {
             Write-Host "Updating the UniversalDashboard module to $($UniversalDashboardOnline.Version)..."
-            Upgrade-Module -Name 'UniversalDashboard'
+            Update-Module -Name 'UniversalDashboard'
         }
     }
 }
