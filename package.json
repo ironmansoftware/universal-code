@@ -204,6 +204,11 @@
 				"command": "powershell-universal.viewJobLog",
 				"title": "View Job Log",
 				"icon": "$(book)"
+			},
+			{
+				"command": "powershell-universal.getJobPipelineOutput",
+				"title": "Get Job Pipeline Output",
+				"icon": "$(terminal-powershell)"
 			}
 		],
 		"viewsContainers": {
@@ -408,6 +413,11 @@
 				},
 				{
 					"command": "powershell-universal.viewJob",
+					"when": "view == universalScriptProviderView && viewItem == job",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.getJobPipelineOutput",
 					"when": "view == universalScriptProviderView && viewItem == job",
 					"group": "inline"
 				},

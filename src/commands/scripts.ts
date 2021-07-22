@@ -34,6 +34,8 @@ export const registerScriptCommands = (context : vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.editScript', editScriptCommand);
     vscode.commands.registerCommand('powershell-universal.viewJobLog', viewJobLogCommand);
     vscode.commands.registerCommand('powershell-universal.viewJob', viewJobCommand);
+    vscode.commands.registerCommand('powershell-universal.getJobPipelineOutput', getJobPipelineOutputCommand);
+    
     
     vscode.workspace.onDidSaveTextDocument((file) => {
         if(file.fileName.includes('.universal.code.script')){
@@ -154,3 +156,8 @@ export const viewJobCommand = async (jobItem : JobTreeItem) => {
 
     vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/jobs/${jobItem.job.id}`));
 }
+
+export const getJobPipelineOutputCommand = async(jobItem : JobTreeItem) => {
+    const settings = load();
+    Container.universal.sendTerminalCommand(`Get-PSUJobPipelineOutput -JobId ${jobItem.job.id} -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`);
+};

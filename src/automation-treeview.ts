@@ -78,7 +78,7 @@ export class JobsTreeItem extends ParentTreeItem {
     async getChildren(): Promise<vscode.TreeItem[]> {
         try 
         {
-            return await Container.universal.getJobs().then(x => x.page.map(y => new JobTreeItem(y)));
+            return await Container.universal.getJobs().then(x => x.page.sort((a, b) => (a.id < b.id) ? 1 : -1).map(y => new JobTreeItem(y)));
         }
         catch (err)
         {
