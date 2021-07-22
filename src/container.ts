@@ -7,6 +7,15 @@ export class Container {
         this._universal = universal;
     }
 
+    private static _connected : boolean;
+    static get connected() {
+		return this._connected;
+    }
+    
+    static set connected(value: boolean) {
+        this._connected = value;
+    }
+
     private static _universal: Universal;
 	static get universal() {
 		return this._universal;

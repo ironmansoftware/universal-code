@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework, JobPagedViewModel, JobLog } from './types';
 import axios, { AxiosPromise } from 'axios';
 import {load, SetAppToken, SetUrl} from './settings';
+import { Container } from './container';
 
 export class Universal {
     private context : vscode.ExtensionContext;
@@ -323,6 +324,16 @@ export class Universal {
             vscode.window.showErrorMessage("PowerShell Terminal is missing!");
         }
 
+        if (!Container.connected) 
+        {
+            const settings = load();
+            if (settings.appToken && settings.url && settings.appToken !== '' && settings.url !== '')
+            {
+                terminal?.sendText(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`, true);
+                Container.connected = true;
+            }
+        }
+
         terminal?.sendText(command, true);
     }
 
@@ -339,6 +350,8 @@ export class Universal {
             SetUrl(x.data.url);
             SetAppToken(x.data.appToken);
             vscode.window.showInformationMessage(`You are connected to ${x.data.url}`);
+
+            Container.connected = false;
 
             vscode.commands.executeCommand('powershell-universal.refreshTreeView');
             vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');

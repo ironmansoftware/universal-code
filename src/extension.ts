@@ -180,11 +180,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
 		context.globalState.update('psu.lastmodulecheck', now);
 	}
-
-	if (settings.appToken && settings.url && settings.appToken !== '' && settings.url !== '')
-	{
-		Container.universal.sendTerminalCommand(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`)
-	}
 }
 
 // this method is called when your extension is deactivated
