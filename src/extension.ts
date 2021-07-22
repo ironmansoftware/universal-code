@@ -23,6 +23,20 @@ var compareVersions = require('compare-versions');
 
 export async function activate(context: vscode.ExtensionContext) {
 
+    var extension = vscode.extensions.getExtension("ms-vscode.PowerShell");
+    if (!extension)
+    {
+        extension = vscode.extensions.getExtension("ms-vscode.PowerShell-Preview");
+    }
+
+    if (!extension) {
+        vscode.window.showErrorMessage("PowerShell Universal requires the Microsoft PowerShell or PowerShell Preview extension.");
+        return;
+    }
+
+    if (!extension.isActive)
+        await extension.activate();
+
 	registerConnectCommands(context);
 
 	const universal = new Universal(context);
@@ -165,6 +179,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage("Checking PowerShell Universal module state. Updated modules will be installed. You can disable this check by disabling the Check Modules setting.");
 		Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
 		context.globalState.update('psu.lastmodulecheck', now);
+	}
+
+	if (settings.appToken && settings.url && settings.appToken !== '' && settings.url !== '')
+	{
+		Container.universal.sendTerminalCommand(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`)
 	}
 }
 

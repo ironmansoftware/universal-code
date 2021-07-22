@@ -158,6 +158,5 @@ export const viewJobCommand = async (jobItem : JobTreeItem) => {
 }
 
 export const getJobPipelineOutputCommand = async(jobItem : JobTreeItem) => {
-    const settings = load();
-    Container.universal.sendTerminalCommand(`Get-PSUJobPipelineOutput -JobId ${jobItem.job.id} -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`);
+    Container.universal.sendTerminalCommand(`Get-PSUJobPipelineOutput -JobId ${jobItem.job.id}`);
 };
