@@ -8,10 +8,9 @@ task BuildExtension {
 
         Remove-Item (Join-Path $PSScriptRoot "kit") -Force -Recurse -ErrorAction SilentlyContinue
         New-Item (Join-Path $PSScriptRoot "kit") -ItemType Directory
+        Copy-Item "$PSScriptRoot\src\Universal.VSCode.psm1" "$PSScriptRoot\out"
 
         vsce package
-
-        Copy-Item "$PSScriptRoot\src\Universal.VSCode.psm1" "$PSScriptRoot\out"
 
         Copy-Item (Join-Path $PSScriptRoot "*.vsix") (Join-Path $PSScriptRoot "kit")
     }
