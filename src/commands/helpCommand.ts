@@ -9,7 +9,7 @@ const help = () => {
                 url = "https://docs.ironmansoftware.com"
                 break;
             case "Forums":
-                url = "https://forums.universaldashboard.io"
+                url = "https://forums.universaldashboard.com"
                 break;
             case "Issues":
                 url = "mailto:support@ironmansoftware.com"
