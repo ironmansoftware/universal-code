@@ -1,27 +1,26 @@
 export type Dashboard = {
-    id : number;
-    name : string;
-    dashboardFramework : DashboardFramework;
-    baseUrl : string;
+    id: number;
+    name: string;
+    dashboardFramework: DashboardFramework;
+    baseUrl: string;
     status: DashboardStatus;
-    processId : number;
-    filePath : string;
-    content : string;
-    dashboardComponents : Array<DashboardComponent>
+    processId: number;
+    filePath: string;
+    content: string;
+    dashboardComponents: Array<DashboardComponent>
 }
 
 export type DashboardLog = {
-    log : string;
+    log: string;
 }
 
 export type DashboardLogItem = {
-    Data : string;
-    Timestamp : string;
+    Data: string;
+    Timestamp: string;
 }
 
-export enum DashboardStatus
-{
-    Stopped, 
+export enum DashboardStatus {
+    Stopped,
     Started,
     StartFailed,
     Starting,
@@ -30,53 +29,54 @@ export enum DashboardStatus
 
 
 export type DashboardComponent = {
-    id : number;
-    name : string;
-    version : string;
-    path : string;
+    id: number;
+    name: string;
+    version: string;
+    path: string;
 }
 
 export type DashboardFramework = {
-    id : number;
-    name : string;
-    version : string;
-    path : string;
+    id: number;
+    name: string;
+    version: string;
+    path: string;
 }
 
 export type DashboardEndpoint = {
-    id : string;
+    id: string;
 }
 
 export type DashboardSession = {
-    id : string;
-    lastTouched : string;
-    userName : string; 
-    endpoints : Array<DashboardEndpoint>;
+    id: string;
+    lastTouched: string;
+    userName: string;
+    endpoints: Array<DashboardEndpoint>;
 }
 
 export type DashboardDiagnostics = {
-    memory : number;
-    cpu : number; 
-    sessions : Array<DashboardSession>;
-    endpoints : Array<DashboardEndpoint>;
+    memory: number;
+    cpu: number;
+    sessions: Array<DashboardSession>;
+    endpoints: Array<DashboardEndpoint>;
 }
 
 export type Endpoint = {
-    id : number;
-    url : string;
+    id: number;
+    url: string;
     method: string;
-    authentication : boolean;
+    authentication: boolean;
+    scriptBlock: string;
 }
 
 export type Job = {
-    id : number; 
-    status : JobStatus;
-    script : Script;
+    id: number;
+    status: JobStatus;
+    script: Script;
     scriptFullPath: string;
 }
 
 export type JobLog = {
-    log : string;
+    log: string;
 }
 
 export type JobPagedViewModel = {
@@ -96,38 +96,38 @@ export enum JobStatus {
 }
 
 export type Script = {
-    id : number;
-    name : string;
-    fullPath : string;
-    content : string;
+    id: number;
+    name: string;
+    fullPath: string;
+    content: string;
 }
 
 export type ScriptParameter = {
-    id : number;
+    id: number;
 }
 
 export type Settings = {
-    repositoryPath : string;
-} 
+    repositoryPath: string;
+}
 
 export class SampleFolder {
-    public name : string;
-    public path : string;
+    public name: string;
+    public path: string;
 
-    constructor(name : string, path : string) {
+    constructor(name: string, path: string) {
         this.name = name;
         this.path = path;
     }
 }
 
 export class Sample {
-    public title : string;
-    public description : string;
-    public version : string;
-    public files : Array<SampleFile>;
-    public url : string;
+    public title: string;
+    public description: string;
+    public version: string;
+    public files: Array<SampleFile>;
+    public url: string;
 
-    constructor(title : string, description : string, version: string, files : Array<SampleFile>, url : string) {
+    constructor(title: string, description: string, version: string, files: Array<SampleFile>, url: string) {
         this.title = title;
         this.description = description;
         this.version = version;
@@ -137,7 +137,7 @@ export class Sample {
 }
 
 export class SampleFile {
-    constructor(file : string, content : string) {
+    constructor(file: string, content: string) {
         this.fileName = file;
         this.content = content;
     }

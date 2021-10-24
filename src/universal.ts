@@ -1,29 +1,28 @@
 import * as vscode from 'vscode';
 import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework, JobPagedViewModel, JobLog } from './types';
 import axios, { AxiosPromise } from 'axios';
-import {load, SetAppToken, SetUrl} from './settings';
+import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
 
 export class Universal {
-    private context : vscode.ExtensionContext;
-    constructor(context : vscode.ExtensionContext) {
+    private context: vscode.ExtensionContext;
+    constructor(context: vscode.ExtensionContext) {
         this.context = context;
     }
 
-    request(path : string, method: any, data : any = null) : AxiosPromise<any> | undefined {
+    request(path: string, method: any, data: any = null): AxiosPromise<any> | undefined {
 
         const settings = load();
 
-        if (settings.appToken == null || settings.appToken === "") 
-        {
+        if (settings.appToken == null || settings.appToken === "") {
             vscode.window.showErrorMessage("Not connected");
             return;
         }
 
-        return axios({ 
+        return axios({
             url: `${settings.url}${path}`,
             method,
-            headers : {
+            headers: {
                 authorization: `Bearer ${settings.appToken}`,
                 'Content-Type': 'application/json'
             },
@@ -34,28 +33,28 @@ export class Universal {
     load() {
     }
 
-    getVersion() : Promise<string> {
+    getVersion(): Promise<string> {
         return new Promise((resolve) => {
-            this.request('/api/v1/version', 'GET')?.then(x => resolve(x.data)).catch(x => {    
-                resolve("failed");            
+            this.request('/api/v1/version', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                resolve("failed");
             })
         })
     }
 
-    async getReleasedVersion() {        
+    async getReleasedVersion() {
         const response = await axios.get("https://imsreleases.blob.core.windows.net/universal/production/version.txt");
         return response?.data;
     }
 
-    async isAlive(url : string) {
+    async isAlive(url: string) {
         try {
-            await axios({ 
+            await axios({
                 url: `${url}/api/v1/alive`,
                 method: "get"
             });
             return true;
-        } catch {}
-        return false; 
+        } catch { }
+        return false;
     }
 
     async waitForAlive() {
@@ -64,9 +63,8 @@ export class Universal {
         let disposable = vscode.window.setStatusBarMessage(`Attempting to connect to PowerShell Universal at ${settings.url}`)
         var retries = 0;
 
-        while(retries < 60) {
-            if (await this.isAlive(settings.url))
-            {
+        while (retries < 60) {
+            if (await this.isAlive(settings.url)) {
                 disposable.dispose();
                 return true;
             }
@@ -79,7 +77,7 @@ export class Universal {
         return false;
     }
 
-    async grantAppToken() : Promise<boolean> {
+    async grantAppToken(): Promise<boolean> {
         const settings = load();
 
         const transport = axios.create({
@@ -91,11 +89,9 @@ export class Universal {
             password: 'any'
         });
 
-        if (response.data.errorMessage && response.data.errorMessage !== '')
-        {
+        if (response.data.errorMessage && response.data.errorMessage !== '') {
             var result = await vscode.window.showErrorMessage("We couldn't generate an App Token automatically. You will have to do it manually.", "View Admin Console");
-            if (result === "View Admin Console")
-            {
+            if (result === "View Admin Console") {
                 vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/settings/security`))
             }
             return false;
@@ -116,7 +112,7 @@ export class Universal {
         return true;
     }
 
-    addDashboard() : Promise<Dashboard> {
+    addDashboard(): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/dashboard', 'POST')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -124,7 +120,7 @@ export class Universal {
         })
     }
 
-    startDashboard(id : number) : Promise<Dashboard> {
+    startDashboard(id: number): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/status`, 'PUT')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -132,7 +128,7 @@ export class Universal {
         })
     }
 
-    stopDashboard(id : number) : Promise<Dashboard> {
+    stopDashboard(id: number): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/status`, 'DELETE')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -140,7 +136,7 @@ export class Universal {
         })
     }
 
-    getDashboard(id : number) : Promise<Dashboard> {
+    getDashboard(id: number): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -148,7 +144,7 @@ export class Universal {
         })
     }
 
-    getDashboardLog(id : number) : Promise<DashboardLog> {
+    getDashboardLog(id: number): Promise<DashboardLog> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/log`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -156,7 +152,7 @@ export class Universal {
         })
     }
 
-    getDashboards() : Promise<Array<Dashboard>> {
+    getDashboards(): Promise<Array<Dashboard>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/dashboard', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -164,7 +160,7 @@ export class Universal {
         })
     }
 
-    getDashboardComponents() : Promise<Array<DashboardComponent>> {
+    getDashboardComponents(): Promise<Array<DashboardComponent>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/dashboardcomponent', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -172,7 +168,7 @@ export class Universal {
         })
     }
 
-    getDashboardFrameworks() : Promise<Array<DashboardFramework>> {
+    getDashboardFrameworks(): Promise<Array<DashboardFramework>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/dashboardframework', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -181,7 +177,7 @@ export class Universal {
     }
 
 
-    saveDashboard(id : number, dashboard : Dashboard) {
+    saveDashboard(id: number, dashboard: Dashboard) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'PUT', dashboard)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -189,7 +185,7 @@ export class Universal {
         })
     }
 
-    getDiagnostics(id : number) : Promise<DashboardDiagnostics> {
+    getDiagnostics(id: number): Promise<DashboardDiagnostics> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/diagnostics`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -197,7 +193,7 @@ export class Universal {
         })
     }
 
-    getEndpoints() : Promise<Array<Endpoint>> {
+    getEndpoints(): Promise<Array<Endpoint>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/endpoint', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -205,7 +201,7 @@ export class Universal {
         })
     }
 
-    getJob(id : number) : Promise<Job> {
+    getJob(id: number): Promise<Job> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/job/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -213,7 +209,7 @@ export class Universal {
         })
     }
 
-    getJobLog(id : number) : Promise<JobLog> {
+    getJobLog(id: number): Promise<JobLog> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/job/${id}/log`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -221,7 +217,7 @@ export class Universal {
         })
     }
 
-    getScripts() : Promise<Array<Script>> {
+    getScripts(): Promise<Array<Script>> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -229,7 +225,7 @@ export class Universal {
         })
     }
 
-    getJobs() : Promise<JobPagedViewModel> {
+    getJobs(): Promise<JobPagedViewModel> {
         return new Promise((resolve, reject) => {
             this.request('/api/v1/job?take=50&orderBy=Id&orderDirection=Descending', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -237,7 +233,7 @@ export class Universal {
         })
     }
 
-    getScript(id : number) : Promise<Script> {
+    getScript(id: number): Promise<Script> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -245,7 +241,7 @@ export class Universal {
         })
     }
 
-    getScriptFilePath(filePath : string) : Promise<Script> {
+    getScriptFilePath(filePath: string): Promise<Script> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/path/${filePath}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -253,7 +249,7 @@ export class Universal {
         })
     }
 
-    saveScript(script : Script) {
+    saveScript(script: Script) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/`, 'PUT', script)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -261,7 +257,7 @@ export class Universal {
         })
     }
 
-    getScriptParameters(id : number) : Promise<Array<ScriptParameter>> {
+    getScriptParameters(id: number): Promise<Array<ScriptParameter>> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/${id}/parameter`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -269,7 +265,7 @@ export class Universal {
         })
     }
 
-    runScript(id : number) : Promise<number> {
+    runScript(id: number): Promise<number> {
         return new Promise((resolve, reject) => {
             const jobContext = {}
             this.request(`/api/v1/script/${id}`, 'POST', jobContext)?.then(x => resolve(x.data)).catch(x => {
@@ -278,7 +274,7 @@ export class Universal {
         })
     }
 
-    refreshConfig() : Promise<any> {
+    refreshConfig(): Promise<any> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration`, 'POST')?.then(() => resolve(null)).catch(x => {
                 reject(x.message);
@@ -286,7 +282,7 @@ export class Universal {
         })
     }
 
-    getSettings() : Promise<Settings> {
+    getSettings(): Promise<Settings> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/settings`, 'GET')?.then(x => resolve(x.data[0])).catch(x => {
                 reject(x.message);
@@ -294,7 +290,7 @@ export class Universal {
         })
     }
 
-    getConfigurations() : Promise<Array<string>> {
+    getConfigurations(): Promise<Array<string>> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -302,7 +298,24 @@ export class Universal {
         })
     }
 
-    getConfiguration(fileName : string) : Promise<string> {
+    getEndpoint(endpoint: Endpoint): Promise<Endpoint> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/endpoint/${endpoint.id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject();
+            })
+        })
+    }
+
+    saveEndpoint(endpoint: Endpoint): Promise<Endpoint> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/endpoint/${endpoint.id}`, 'PUT', endpoint)?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+
+    getConfiguration(fileName: string): Promise<string> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration/${fileName}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 resolve('');
@@ -310,7 +323,7 @@ export class Universal {
         })
     }
 
-    saveConfiguration(fileName : string, data : string) {
+    saveConfiguration(fileName: string, data: string) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration/${fileName}`, 'PUT', data)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
@@ -318,17 +331,15 @@ export class Universal {
         })
     }
 
-    sendTerminalCommand(command : string) {
+    sendTerminalCommand(command: string) {
         var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
         if (terminal == null) {
             vscode.window.showErrorMessage("PowerShell Terminal is missing!");
         }
 
-        if (!Container.connected) 
-        {
+        if (!Container.connected) {
             const settings = load();
-            if (settings.appToken && settings.url && settings.appToken !== '' && settings.url !== '')
-            {
+            if (settings.appToken && settings.url && settings.appToken !== '' && settings.url !== '') {
                 terminal?.sendText(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`, true);
                 Container.connected = true;
             }
@@ -337,15 +348,15 @@ export class Universal {
         terminal?.sendText(command, true);
     }
 
-    connectDashboard(id : number) {
+    connectDashboard(id: number) {
         this.sendTerminalCommand(`Debug-PSUDashboard -Id ${id}`);
     }
 
-    debugDashboardEndpoint(id : string) {
+    debugDashboardEndpoint(id: string) {
         this.sendTerminalCommand(`Get-PSUDashboardEndpointRunspace -Id ${id} | Debug-Runspace`);
     }
 
-    connectUniversal(url : string) {
+    connectUniversal(url: string) {
         axios.get(url).then(x => {
             SetUrl(x.data.url);
             SetAppToken(x.data.appToken);
@@ -362,7 +373,7 @@ export class Universal {
         })
     }
 
-    async showConnectionError(message : string) {
+    async showConnectionError(message: string) {
         const result = await vscode.window.showErrorMessage(message + " This is a connection error. Click Connect to setup a new connection.", "Connect");
         if (result === 'Connect') {
             vscode.commands.executeCommand('powershell-universal.connect');

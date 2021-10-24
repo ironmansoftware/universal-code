@@ -6,9 +6,40 @@ const path = require('path');
 import * as fs from 'fs';
 
 export const registerEndpointCommands = (context: vscode.ExtensionContext) => {
+    vscode.commands.registerCommand('powershell-universal.openEndpointScriptBlock', openEndpointScriptBlockCommand);
     vscode.commands.registerCommand('powershell-universal.openEndpointConfigFile', openEndpointConfigFileCommand);
     vscode.commands.registerCommand('powershell-universal.insertRestMethod', insertInvokeRestMethodCommand);
     vscode.commands.registerCommand('powershell-universal.manageEndpoints', manageEndpointsCommand);
+}
+
+export const openEndpointScriptBlockCommand = async (node: EndpointTreeItem) => {
+    var settings = load();
+    if (settings.localEditing) {
+        vscode.window.showErrorMessage('Local editing is not supported for this command');
+    }
+    else {
+        const os = require('os');
+
+        const filePath = path.join(os.tmpdir(), '.universal.code.endpoints', `${node.endpoint.id}.ps1`);
+        const codePath = path.join(os.tmpdir(), '.universal.code.endpoints');
+        const config = await Container.universal.getEndpoint(node.endpoint);
+        if (!fs.existsSync(codePath)) {
+            fs.mkdirSync(codePath);
+        }
+        fs.writeFileSync(filePath, config.scriptBlock);
+
+        const textDocument = await vscode.workspace.openTextDocument(filePath);
+        vscode.window.showTextDocument(textDocument);
+        vscode.workspace.onDidSaveTextDocument(async (file) => {
+            if (file.fileName.toLocaleLowerCase() === filePath.toLocaleLowerCase()) {
+                const content = file.getText();
+                const endpoint = await Container.universal.getEndpoint(node.endpoint);
+                endpoint.scriptBlock = content;
+                Container.universal.saveEndpoint(endpoint);
+            }
+        });
+    }
+
 }
 
 export const openEndpointConfigFileCommand = async () => {

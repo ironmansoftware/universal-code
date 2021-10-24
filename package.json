@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "2.3.0",
+	"version": "2.5.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -116,6 +116,11 @@
 				"icon": "$(book)"
 			},
 			{
+				"command": "powershell-universal.openEndpointScriptBlock",
+				"title": "Edit Endpoint",
+				"icon": "$(go-to-file)"
+			},
+			{
 				"command": "powershell-universal.openEndpointConfigFile",
 				"title": "Open endpoints.ps1",
 				"icon": "$(go-to-file)"
@@ -179,11 +184,6 @@
 				"command": "powershell-universal.viewSampleOnGitHub",
 				"title": "View Sample on GitHub",
 				"icon": "$(github)"
-			},
-			{
-				"command": "powershell-universal.importModules",
-				"title": "Import Modules",
-				"icon": "$(package)"
 			},
 			{
 				"command": "powershell-universal.installDashboardModule",
@@ -261,16 +261,6 @@
 					"type": "string",
 					"default": "",
 					"description": "The appToken used to connect to PowerShell Universal"
-				},
-				"powerShellUniversal.serverPath": {
-					"type": "string",
-					"default": "",
-					"description": "The local path to the Universal Server executable"
-				},
-				"powerShellUniversal.startServer": {
-					"type": "boolean",
-					"default": "false",
-					"description": "Whether to start the PowerShell Universal server when the extension is activated."
 				},
 				"powerShellUniversal.samplesDirectory": {
 					"type": "string",
@@ -398,6 +388,11 @@
 				},
 				{
 					"command": "powershell-universal.insertRestMethod",
+					"when": "view == universalEndpointProviderView && viewItem == endpoint",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.openEndpointScriptBlock",
 					"when": "view == universalEndpointProviderView && viewItem == endpoint",
 					"group": "inline"
 				},

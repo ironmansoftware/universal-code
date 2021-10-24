@@ -7,7 +7,6 @@ import { DashboardTreeViewProvider } from './dashboard-treeview';
 import { InfoTreeViewProvider } from './info-treeview';
 import help from './commands/helpCommand';
 import { downloadUniversalCommand, downloadUniversal } from './commands/downloadUniversal';
-import { startUniversal, startUniversalCommand } from './commands/startUniversal';
 import { load, SetUrl } from './settings';
 import { registerDashboardCommands } from './commands/dashboards';
 import { ApiTreeViewProvider } from './api-treeview';
@@ -57,18 +56,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	settings = load();
-
-	if (settings.startServer) {
-		var disposable = vscode.window.setStatusBarMessage("Starting up PowerShell Universal...")
-		await startUniversal();
-		disposable.dispose();
-
-		disposable = vscode.window.setStatusBarMessage(`Connecting to PowerShell Universal at ${settings.url}...`)
-		if (!await universal.waitForAlive()) {
-			return;
-		}
-		disposable.dispose();
-	}
 
 	if (settings.appToken !== "") {
 		var semver = require('semver');
@@ -151,7 +138,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('powershell-universal.refreshConfigurationTreeView', () => configProvider.refresh());
 
 	downloadUniversalCommand();
-	startUniversalCommand();
 	help();
 	registerDashboardCommands(context);
 	registerEndpointCommands(context);
