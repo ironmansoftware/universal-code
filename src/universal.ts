@@ -3,6 +3,7 @@ import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, Scrip
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
+const https = require('https');
 
 export class Universal {
     private context: vscode.ExtensionContext;
@@ -10,27 +11,55 @@ export class Universal {
         this.context = context;
     }
 
+    hasConnection(): boolean {
+        const settings = load();
+        if (settings.appToken === '' && settings.connections.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
     request(path: string, method: any, data: any = null): AxiosPromise<any> | undefined {
 
         const settings = load();
+        const connectionName = this.context.globalState.get("universal.connection");
 
-        if (settings.appToken == null || settings.appToken === "") {
-            vscode.window.showErrorMessage("Not connected");
+        if (!this.hasConnection()) {
             return;
         }
 
+        var appToken = settings.appToken;
+        var url = settings.url;
+        var rejectUnauthorized = true;
+        var windowsAuth = false;
+
+        if (connectionName && connectionName !== 'Default') {
+            const connection = settings.connections.find(m => m.name === connectionName);
+            if (connection) {
+                appToken = connection.appToken;
+                url = connection.url;
+                rejectUnauthorized = connection.allowInvalidCertificate;
+            }
+        }
+
+        const agent = new https.Agent({
+            rejectUnauthorized
+        });
+
         return axios({
-            url: `${settings.url}${path}`,
+            url: `${url}${path}`,
             method,
+            auth: {
+                username: "adamr",
+                password: "PowerShell!!112"
+            },
             headers: {
-                authorization: `Bearer ${settings.appToken}`,
+                authorization: windowsAuth ? null : `Bearer ${appToken}`,
                 'Content-Type': 'application/json'
             },
-            data: data
+            data: data,
+            httpsAgent: agent
         });
-    }
-
-    load() {
     }
 
     getVersion(): Promise<string> {
@@ -154,6 +183,9 @@ export class Universal {
 
     getDashboards(): Promise<Array<Dashboard>> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
             this.request('/api/v1/dashboard', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -162,6 +194,9 @@ export class Universal {
 
     getDashboardComponents(): Promise<Array<DashboardComponent>> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
             this.request('/api/v1/dashboardcomponent', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -170,6 +205,9 @@ export class Universal {
 
     getDashboardFrameworks(): Promise<Array<DashboardFramework>> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
             this.request('/api/v1/dashboardframework', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -195,6 +233,9 @@ export class Universal {
 
     getEndpoints(): Promise<Array<Endpoint>> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
             this.request('/api/v1/endpoint', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -219,6 +260,9 @@ export class Universal {
 
     getScripts(): Promise<Array<Script>> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -227,6 +271,12 @@ export class Universal {
 
     getJobs(): Promise<JobPagedViewModel> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve({
+                    page: []
+                });
+            }
+
             this.request('/api/v1/job?take=50&orderBy=Id&orderDirection=Descending', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -292,6 +342,10 @@ export class Universal {
 
     getConfigurations(): Promise<Array<string>> {
         return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+
             this.request(`/api/v1/configuration`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
@@ -374,9 +428,9 @@ export class Universal {
     }
 
     async showConnectionError(message: string) {
-        const result = await vscode.window.showErrorMessage(message + " This is a connection error. Click Connect to setup a new connection.", "Connect");
-        if (result === 'Connect') {
-            vscode.commands.executeCommand('powershell-universal.connect');
+        const result = await vscode.window.showErrorMessage(message + " This is a connection error. Click Settings to adjust your connection settings.", "Settings");
+        if (result === 'Settings') {
+            vscode.commands.executeCommand('workbench.action.openSettings', "PowerShell Universal");
         }
     }
 }

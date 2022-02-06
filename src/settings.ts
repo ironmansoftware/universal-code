@@ -8,6 +8,14 @@ export interface ISettings {
     syncSamples: boolean;
     localEditing: boolean;
     checkModules: boolean;
+    connections: IConnection[];
+}
+
+export interface IConnection {
+    name: string;
+    appToken: string;
+    url: string;
+    allowInvalidCertificate: boolean;
 }
 
 export function load(): ISettings {
@@ -17,9 +25,10 @@ export function load(): ISettings {
         appToken: configuration.get<string>("appToken", ""),
         url: configuration.get<string>("url", "http://localhost:5000"),
         samplesDirectory: configuration.get<string>("samplesDirectory", ""),
-        syncSamples: configuration.get<boolean>("syncSamples", true),
+        syncSamples: configuration.get<boolean>("syncSamples", false),
         localEditing: configuration.get<boolean>("localEditing", false),
-        checkModules: configuration.get<boolean>("checkModules", false)
+        checkModules: configuration.get<boolean>("checkModules", false),
+        connections: configuration.get<IConnection[]>("connections", []),
     }
 }
 

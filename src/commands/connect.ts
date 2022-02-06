@@ -1,66 +1,24 @@
 import * as vscode from 'vscode';
-import {load, SetAppToken, SetPort, SetServerPath, SetUrl} from './../settings';
+import { SetAppToken, SetUrl } from './../settings';
 import { Container } from '../container';
+import { ConnectionTreeItem } from '../connection-treeview';
 
-export const registerConnectCommands = (context : vscode.ExtensionContext) => {
-    vscode.commands.registerCommand('powershell-universal.connect', connectToUniversal);
+export const registerConnectCommands = (context: vscode.ExtensionContext) => {
+    vscode.commands.registerCommand('powershell-universal.addConnection', AddConnection);
+    vscode.commands.registerCommand('powershell-universal.connection', x => Connection(x, context));
 }
 
-export const connectToUniversal = async () => {
-    let result = await vscode.window.showInformationMessage("To connect to your PowerShell Universal server, you will need to specify the URL (including port) and AppToken to access the server. Ensure that PowerShell Universal is up and running before connecting.", "Connect");
-    if (result === "Connect")
-    {
-        let url = await vscode.window.showInputBox({
-            prompt: "The URL of the PowerShell Universal server (including port)",
-            value: "http://localhost:5000"
-        });
-
-        if (url) {
-            await SetUrl(url);
-
-            let result = await vscode.window.showInformationMessage("We need an App Token to connect to the server. We can grant one automatically if you haven't configured security yet. If you'd like to create one yourself, you can do so in the admin console.", "Grant App Token", "Enter App Token", "Connect via Admin Console");
-            if (result === "Grant App Token") {
-                if (!await Container.universal.waitForAlive())
-                {
-                    return;
-                }
-
-                if (!await Container.universal.grantAppToken())
-                {
-                    return;
-                }
-
-                vscode.window.showInformationMessage("You are now connected to PowerShell Universal. Use the PowerShell Universal activity pane to manage resources.");
-            }
-
-            if (result === "Connect via Admin Console") {
-                vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/settings/configurations`))
-            }
-
-            if (result !== "Grant App Token") {
-                let appToken = await vscode.window.showInputBox({
-                    prompt: "Enter your App Token"
-                });
-
-                if (appToken) {
-                    await SetAppToken(appToken);
-                    vscode.window.showInformationMessage("You are now connected to PowerShell Universal. Use the PowerShell Universal activity pane to manage resources.");
-                }
-            }
-        }
-    }
+export const AddConnection = async (context: vscode.ExtensionContext) => {
+    vscode.commands.executeCommand('workbench.action.openSettings', "PowerShell Universal");
 }
 
-export const tryAutoConnect = async () => {
-    const defaultUrl = "http://localhost:5000";
-    if (await Container.universal.isAlive(defaultUrl))
-    {
-        await SetUrl(defaultUrl);
-        if (await Container.universal.grantAppToken())
-        {
-            return true;
-        }
-        await SetUrl("");
-    }
-    return false;
+export const Connection = async (treeItem: ConnectionTreeItem, context: vscode.ExtensionContext) => {
+    const name = treeItem.connection.name;
+    context.globalState.update("universal.connection", name);
+
+    vscode.commands.executeCommand('powershell-universal.refreshTreeView');
+    vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
+    vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
+    vscode.commands.executeCommand('powershell-universal.refreshConfigurationTreeView');
+    vscode.commands.executeCommand('powershell-universal.refreshConnectionTreeView');
 }

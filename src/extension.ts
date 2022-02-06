@@ -15,10 +15,10 @@ import { AutomationTreeViewProvider } from './automation-treeview';
 import { registerScriptCommands } from './commands/scripts';
 import { registerConfigCommands } from './commands/config';
 import { ConfigTreeViewProvider } from './configuration-treeview';
-import { registerConnectCommands, tryAutoConnect } from './commands/connect';
-import { registerSampleCommands, SampleService } from './samples';
+import { registerConnectCommands } from './commands/connect';
+import { registerSampleCommands } from './samples';
 import { SampleTreeViewProvider } from './sample-treeview';
-var compareVersions = require('compare-versions');
+import { ConnectionTreeViewProvider } from './connection-treeview';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -41,55 +41,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	Container.initialize(context, universal);
 
 	let settings = load();
-	if (settings.appToken === "") {
-		if (await tryAutoConnect()) {
-			vscode.window.showInformationMessage("You're connected to PowerShell Universal.");
-		}
-		else {
-			vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Connect").then(result => {
-				if (result === "Download") {
-					vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-				}
-				vscode.commands.executeCommand("powershell-universal.connect");
-			});
-		}
-	}
-
-	settings = load();
-
-	if (settings.appToken !== "") {
-		var semver = require('semver');
-		const version = await universal.getVersion();
-		if (version === 'failed') {
-			var result = await vscode.window.showErrorMessage("Failed to connect to PowerShell Universal. Universal may not be running or you need to update your settings.", "Download", "Settings");
+	if (settings.appToken === "" && settings.connections.length === 0) {
+		vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Settings").then(result => {
 			if (result === "Download") {
 				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
 			}
 
 			if (result === "Settings") {
-				vscode.commands.executeCommand('workbench.action.openSettings2', "PowerShell Universal");
+				vscode.commands.executeCommand('workbench.action.openSettings', "PowerShell Universal");
 			}
-		}
-		else if (semver.lt(version, "2.0.0") == -1) {
-			await vscode.window.showErrorMessage("This extension requires PowerShell Universal 2.0.0 or newer.");
-			return;
-		} else {
-			try {
-				const releasedVersion = await universal.getReleasedVersion();
-
-				if (semver.gt(releasedVersion, version)) {
-					vscode.window.showInformationMessage(`There's an update available for PowerShell Universal. Would you like to download PowerShell Universal ${releasedVersion}?`, "Download").then(x => {
-						if (result === "Download") {
-							vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
-						}
-					});
-				}
-			}
-			catch
-			{
-				console.log("Failed to check for updates.");
-			}
-		}
+		});
 	}
 
 	vscode.window.registerUriHandler({
@@ -110,6 +71,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 				Container.universal.connectUniversal(url);
 
+
+				vscode.commands.executeCommand('powershell-universal.refreshConnectionTreeView');
 				vscode.commands.executeCommand('powershell-universal.refreshTreeView');
 				vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
 				vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
@@ -118,6 +81,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	const connectionProvider = new ConnectionTreeViewProvider(context);
 	const moduleProvider = new DashboardTreeViewProvider();
 	const infoProvider = new InfoTreeViewProvider();
 	const endpointProvider = new ApiTreeViewProvider();
@@ -125,6 +89,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const configProvider = new ConfigTreeViewProvider();
 	const samplesProvider = new SampleTreeViewProvider();
 
+	vscode.window.createTreeView<vscode.TreeItem>('universalConnectionProviderView', { treeDataProvider: connectionProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalDashboardProviderView', { treeDataProvider: moduleProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalEndpointProviderView', { treeDataProvider: endpointProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalScriptProviderView', { treeDataProvider: scriptProvider });
@@ -136,6 +101,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('powershell-universal.refreshEndpointTreeView', () => endpointProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshScriptTreeView', () => scriptProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConfigurationTreeView', () => configProvider.refresh());
+	vscode.commands.registerCommand('powershell-universal.refreshConnectionTreeView', () => connectionProvider.refresh());
 
 	downloadUniversalCommand();
 	help();

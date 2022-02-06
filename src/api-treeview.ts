@@ -13,36 +13,33 @@ export class ApiTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     async getChildren(element?: vscode.TreeItem | undefined) {
-        if (element == null)
-        {
-            try 
-            {
-                return await Container.universal.getEndpoints().then(x => x.map(y => new EndpointTreeItem(y)));
+        if (element == null) {
+            try {
+                const endpoints = await Container.universal.getEndpoints();
+                const items = endpoints.map(y => new EndpointTreeItem(y));
+                return items;
             }
-            catch (ex)
-            {
+            catch (ex) {
                 Container.universal.showConnectionError("Failed to query API endpoints. " + ex);
                 return [];
             }
         }
 
-        if (element instanceof ParentTreeItem) 
-		{
-            var parentTreeItem = element as ParentTreeItem; 
+        if (element instanceof ParentTreeItem) {
+            var parentTreeItem = element as ParentTreeItem;
             return parentTreeItem.getChildren();
-        }   
+        }
     }
 
-    refresh(node? : vscode.TreeItem): void {
-		this._onDidChangeTreeData.fire(node);
-	}
+    refresh(node?: vscode.TreeItem): void {
+        this._onDidChangeTreeData.fire(node);
+    }
 }
 
 export class EndpointTreeItem extends vscode.TreeItem {
-    public endpoint : Endpoint;
+    public endpoint: Endpoint;
 
-    constructor(endpoint : Endpoint) 
-    {
+    constructor(endpoint: Endpoint) {
         super(`(${endpoint.method.toUpperCase()}) ${endpoint.url}`, vscode.TreeItemCollapsibleState.None);
 
         this.endpoint = endpoint;

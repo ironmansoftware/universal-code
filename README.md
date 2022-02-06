@@ -3,7 +3,7 @@
 PowerShell Universal is the ultimate platform for building web-based IT tools. This extension helps in the development of tools using PowerShell Universal. 
 
 - [Documentation](https://docs.ironmansoftware.com)
-- [Forums](https://forums.universaldashboard.io)
+- [Forums](https://forums.ironmansoftware.com)
 - [Purchasing](https://ironmansoftware.com/pricing/powershell-universal)
 
 ## Features
@@ -58,6 +58,5 @@ This extension contributes the following settings:
 * `powershellUniversal.url`: The URL to your PowerShell Universal server.
 * `powershellUniversal.samplesDirectory`: Directory for samples. 
 * `powershellUniversal.syncSamples`: Whether to synchronize samples from GitHub.
-* `powershellUniversal.serverPath`: The path to the binaries for the Universal server. This defaults to %AppData%\PowerShellUniversal
-* `powershellUniversal.startServer`: Whether to start the PowerShell Universal server when the extension is activated. This defaults to true.
 * `powershellUniversal.localEditing`: Whether to edit local configuration files or using the REST API
+* `powershellUniversal.connections`: An array of connections.
