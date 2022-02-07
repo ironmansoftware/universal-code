@@ -417,20 +417,32 @@ export class Universal {
             vscode.window.showInformationMessage(`You are connected to ${x.data.url}`);
 
             Container.connected = false;
-
-            vscode.commands.executeCommand('powershell-universal.refreshTreeView');
-            vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
-            vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
-
+            vscode.commands.executeCommand('powershell-universal.refreshAllTreeViews');
         }).catch(() => {
             vscode.window.showErrorMessage('Failed to connect to Universal.');
         })
     }
 
     async showConnectionError(message: string) {
-        const result = await vscode.window.showErrorMessage(message + " This is a connection error. Click Settings to adjust your connection settings.", "Settings");
+        const result = await vscode.window.showErrorMessage(message + " This is a connection error. Click Settings to adjust your connection settings or App Tokens to generate a new token.", "Settings", "App Tokens");
         if (result === 'Settings') {
             vscode.commands.executeCommand('workbench.action.openSettings', "PowerShell Universal");
+        }
+
+        if (result === 'App Tokens') {
+            const settings = load();
+            const connectionName = this.context.globalState.get("universal.connection");
+
+            var url = settings.url;
+
+            if (connectionName && connectionName !== 'Default') {
+                const connection = settings.connections.find(m => m.name === connectionName);
+                if (connection) {
+                    url = connection.url;
+                }
+            }
+
+            vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/security/tokens`));
         }
     }
 }

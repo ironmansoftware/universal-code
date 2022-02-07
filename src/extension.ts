@@ -71,12 +71,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 				Container.universal.connectUniversal(url);
 
-
-				vscode.commands.executeCommand('powershell-universal.refreshConnectionTreeView');
-				vscode.commands.executeCommand('powershell-universal.refreshTreeView');
-				vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
-				vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
-				vscode.commands.executeCommand('powershell-universal.refreshConfigurationTreeView');
+				vscode.commands.executeCommand('powershell-universal.refreshAllTreeViews');
 			}
 		}
 	});
@@ -102,6 +97,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('powershell-universal.refreshScriptTreeView', () => scriptProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConfigurationTreeView', () => configProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConnectionTreeView', () => connectionProvider.refresh());
+
+	vscode.commands.registerCommand('powershell-universal.refreshAllTreeViews', () => {
+		vscode.commands.executeCommand('powershell-universal.refreshTreeView');
+		vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
+		vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
+		vscode.commands.executeCommand('powershell-universal.refreshConfigurationTreeView');
+		vscode.commands.executeCommand('powershell-universal.refreshConnectionTreeView');
+	});
 
 	downloadUniversalCommand();
 	help();

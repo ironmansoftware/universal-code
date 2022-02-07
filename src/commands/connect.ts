@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import { SetAppToken, SetUrl } from './../settings';
-import { Container } from '../container';
 import { ConnectionTreeItem } from '../connection-treeview';
 
 export const registerConnectCommands = (context: vscode.ExtensionContext) => {
@@ -16,9 +14,5 @@ export const Connection = async (treeItem: ConnectionTreeItem, context: vscode.E
     const name = treeItem.connection.name;
     context.globalState.update("universal.connection", name);
 
-    vscode.commands.executeCommand('powershell-universal.refreshTreeView');
-    vscode.commands.executeCommand('powershell-universal.refreshEndpointTreeView');
-    vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
-    vscode.commands.executeCommand('powershell-universal.refreshConfigurationTreeView');
-    vscode.commands.executeCommand('powershell-universal.refreshConnectionTreeView');
+    vscode.commands.executeCommand('powershell-universal.refreshAllTreeViews');
 }

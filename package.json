@@ -57,6 +57,11 @@
 				"icon": "$(debug-restart)"
 			},
 			{
+				"command": "powershell-universal.refreshAllTreeViews",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "powershell-universal.refreshTreeView",
 				"title": "Refresh",
 				"icon": "$(refresh)"
@@ -522,6 +527,7 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
+		"@microsoft/signalr": "^6.0.1",
 		"adm-zip": "^0.4.16",
 		"atob": "^2.1.2",
 		"axios": "^0.19.2",
