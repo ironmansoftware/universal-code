@@ -1,6 +1,6 @@
 # PowerShell Universal 
 
-PowerShell Universal is the ultimate platform for building web-based IT tools. This extension helps in the development of tools using PowerShell Universal. 
+PowerShell Universal is a single of pane of glass to manage your automation environment. This extension helps in the development of tools using PowerShell Universal. 
 
 - [Documentation](https://docs.ironmansoftware.com)
 - [Forums](https://forums.ironmansoftware.com)
