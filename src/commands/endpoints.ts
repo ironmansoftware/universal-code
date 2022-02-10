@@ -5,11 +5,27 @@ import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs';
 
+let files: Array<any> = [];
+
 export const registerEndpointCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openEndpointScriptBlock', openEndpointScriptBlockCommand);
     vscode.commands.registerCommand('powershell-universal.openEndpointConfigFile', openEndpointConfigFileCommand);
     vscode.commands.registerCommand('powershell-universal.insertRestMethod', insertInvokeRestMethodCommand);
     vscode.commands.registerCommand('powershell-universal.manageEndpoints', manageEndpointsCommand);
+
+    vscode.workspace.onDidSaveTextDocument(async (file) => {
+        if (file.fileName.includes('.universal.code.endpoints')) {
+            const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
+            Container.universal.getEndpoint(info.id).then((endpoint) => {
+                endpoint.scriptBlock = file.getText();
+                Container.universal.saveEndpoint(endpoint);
+            });
+        }
+    });
+
+    vscode.workspace.onDidCloseTextDocument((file) => {
+        files = files.filter(x => x.filePath !== file.fileName);
+    });
 }
 
 export const openEndpointScriptBlockCommand = async (node: EndpointTreeItem) => {
@@ -30,13 +46,10 @@ export const openEndpointScriptBlockCommand = async (node: EndpointTreeItem) => 
 
         const textDocument = await vscode.workspace.openTextDocument(filePath);
         vscode.window.showTextDocument(textDocument);
-        vscode.workspace.onDidSaveTextDocument(async (file) => {
-            if (file.fileName.toLocaleLowerCase() === filePath.toLocaleLowerCase()) {
-                const content = file.getText();
-                const endpoint = await Container.universal.getEndpoint(node.endpoint);
-                endpoint.scriptBlock = content;
-                Container.universal.saveEndpoint(endpoint);
-            }
+
+        files.push({
+            id: node.endpoint.id,
+            filePath: filePath
         });
     }
 
