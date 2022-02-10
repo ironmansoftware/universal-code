@@ -57,6 +57,11 @@
 				"icon": "$(debug-restart)"
 			},
 			{
+				"command": "powershell-universal.refreshAllTreeViews",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "powershell-universal.refreshTreeView",
 				"title": "Refresh",
 				"icon": "$(refresh)"
@@ -275,12 +280,12 @@
 				"powerShellUniversal.url": {
 					"type": "string",
 					"default": "http://localhost:5000",
-					"description": "The URL of the PowerShell Universal server."
+					"description": "The URL of the PowerShell Universal server. To specify multiple connections, use the Connections setting."
 				},
 				"powerShellUniversal.appToken": {
 					"type": "string",
 					"default": "",
-					"description": "The appToken used to connect to PowerShell Universal"
+					"description": "The App Token used to connect to PowerShell Universal. To specify multiple connections, use the Connections setting."
 				},
 				"powerShellUniversal.samplesDirectory": {
 					"type": "string",
@@ -304,7 +309,7 @@
 				},
 				"powerShellUniversal.connections": {
 					"type": "array",
-					"description": "Specifies an array of connections to PowerShell Universal instances. Defining connections as an array will override the appToken and URL settings.",
+					"description": "Specifies an array of connections to PowerShell Universal instances.",
 					"scope": "machine",
 					"uniqueItems": true,
 					"items": {
@@ -522,6 +527,7 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
+		"@microsoft/signalr": "^6.0.1",
 		"adm-zip": "^0.4.16",
 		"atob": "^2.1.2",
 		"axios": "^0.19.2",
