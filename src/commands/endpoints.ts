@@ -16,7 +16,7 @@ export const registerEndpointCommands = (context: vscode.ExtensionContext) => {
     vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.endpoints')) {
             const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
-            Container.universal.getEndpoint(info.id).then((endpoint) => {
+            Container.universal.getEndpoint(info).then((endpoint) => {
                 endpoint.scriptBlock = file.getText();
                 Container.universal.saveEndpoint(endpoint);
             });
