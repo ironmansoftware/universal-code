@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "2.8.2",
+	"version": "2.10.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -503,7 +503,40 @@
 					"group": "inline"
 				}
 			]
-		}
+		},
+		"walkthroughs": [
+			{
+				"id": "universal.welcome",
+				"title": "Get Started with PowerShell Universal",
+				"description": "Install and configure PowerShell Universal",
+				"steps": [
+					{
+						"id": "universal.welcome.install",
+						"title": "Install PowerShell Universal",
+						"description": "Download and install the PowerShell Universal server to get started.",
+						"media": {
+							"markdown": "walkthroughs/getting-started/1-install.md"
+						}
+					},
+					{
+						"id": "universal.welcome.login",
+						"title": "Login to PowerShell Universal",
+						"description": "Login to your PowerShell Universal instance.",
+						"media": {
+							"markdown": "walkthroughs/getting-started/2-login.md"
+						}
+					},
+					{
+						"id": "universal.welcome.connect",
+						"title": "Connect VS Code to PowerShell Universal",
+						"description": "Connect the VS Code extension to your PowerShell Universal server.",
+						"media": {
+							"markdown": "walkthroughs/getting-started/3-connect.md"
+						}
+					}
+				]
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

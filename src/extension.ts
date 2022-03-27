@@ -42,6 +42,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let settings = load();
 	if (settings.appToken === "" && settings.connections.length === 0) {
+		vscode.commands.executeCommand('workbench.action.openWalkthrough', 'universal.welcome');
+
 		vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Settings").then(result => {
 			if (result === "Download") {
 				vscode.env.openExternal(vscode.Uri.parse("https://ironmansoftware.com/downloads"));
