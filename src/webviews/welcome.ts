@@ -79,7 +79,12 @@ export default class WelcomePanel {
             undefined
         );
 
-        panel.webview.html = format(content, [bootstrapCss.toString(), js.toString(), images.toString()]);
+        let theme = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'theme.css'));
+        if (vscode.window.activeColorTheme.kind == vscode.ColorThemeKind.Dark) {
+            theme = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'theme.dark.css'));
+        }
+
+        panel.webview.html = format(content, [bootstrapCss.toString(), js.toString(), images.toString(), theme.toString()]);
 
         // Listen for when the panel is disposed
         // This happens when the user closes the panel or when the panel is closed programmatically
