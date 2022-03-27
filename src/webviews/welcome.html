@@ -1,0 +1,352 @@
+<html>
+
+<head>
+    <link href="{0}" rel="stylesheet">
+    <script src="{1}/bootstrap.bundle.min.js"></script>
+    <script src="{1}/fontawesome.js"></script>
+
+    <script>
+        function walkthrough() {
+            const vscode = acquireVsCodeApi();
+            vscode.postMessage("walkthrough")
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container" style="padding-top: 20px">
+        <div class="text-center">
+            <h1><img src="{2}/ps-logo.png" />&nbsp;&nbsp;PowerShell Universal Extension for VS Code</h1>
+            <a class="btn btn-primary" title="Open the Get Started with PowerShell Universal walkthrough" href="#"
+                onclick="walkthrough()"><i class="fas fa-walking"></i> Getting Started Walkthrough</a>
+            <a class="btn btn-primary" href="https://docs.powershelluniversal.com"><i class="fas fa-book"></i>
+                Documentation</a>
+            <a class="btn btn-primary" href="https://forums.ironmansoftware.com"><i class="fas fa-users"></i>
+                Community</a>
+        </div>
+
+        <hr />
+
+        <h3 id="features">About PowerShell Universal</h3>
+
+        <p class="lead">PowerShell Universal provides an extensive list of features that will help you or your
+            organization
+            centralize and secure your automation environment and empower your end users.</p>
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="apis"><i class="fas fa-plug"></i> APIs</h3>
+                <p class="lead">Expose scripts as RESTful HTTP APIs for integration from any platform.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/api/endpoints" target="_blank">HTTP Endpoints</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/api/endpoints#returning-custom-responses"
+                            target="_blank">Custom Responses</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security/app-tokens"
+                            target="_blank">Token-Based Authentication</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/api/rate-limiting" target="_blank">Rate
+                            Limiting</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/api/endpoints#processing-files"
+                            target="_blank">Large
+                            File Support</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/api/endpoints#documenting-apis"
+                            target="_blank">Open
+                            API Documentation</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/published-folders" target="_blank">File
+                            Hosting</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-rest.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+
+        <hr />
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="automation"><i class="fas fa-robot"></i> Automation</h3>
+                <p class="lead">Execute, schedule, secure and audit scripts in an easy-to-use, web-interface.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/automation/schedules"
+                            target="_blank">Scheduling</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/scripts#running-a-script-as-another-user"
+                            target="_blank">Run As Support</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/environments" target="_blank">Mutliple
+                            Environments</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/scripts#running-a-script-with-parameters"
+                            target="_blank">Automatic Form Generation</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/jobs#feedback" target="_blank">Feedback
+                            Integration</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/jobs#view-job-pipeline-output"
+                            target="_blank">Pipeline Output</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/triggers" target="_blank">Event
+                            Triggers</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/scripts#concurrent-jobs"
+                            target="_blank">Concurrency Controls</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/automation/terminals" target="_blank">Ad-Hoc
+                            Terminals</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-jobs.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="uis"><i class="far fa-window-maximize"></i> User Interfaces</h3>
+                <p class="lead">Build web-based tools for internal users with highly interactive user interfaces that
+                    run
+                    your scripts.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/about" target="_blank">Interactive
+                            Dashboards</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/inputs/form"
+                            target="_blank">Input Forms</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/data-display/table"
+                            target="_blank">Customizable Tables</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/data-visualization/charts"
+                            target="_blank">Charts</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/dynamic-regions"
+                            target="_blank">Dynamic Regions</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/navigation/stepper"
+                            target="_blank">Steppers (Wizards)</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/utilities/transitions"
+                            target="_blank">Transitions</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/pages" target="_blank">Drag and
+                            Drop
+                            Pages</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/pages/form"
+                            target="_blank">Integration
+                            with Scripts and APIs</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/components/building-custom-components"
+                            target="_blank">Extensible Platform</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/userinterfaces/dashboards/themes"
+                            target="_blank">Custom Styling and Branding</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-dashboard.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="hosting"><i class="fas fa-server"></i> Hosting</h3>
+                <p class="lead">PowerShell Universal is cross-platform and can be hosted on-premise, in the cloud or
+                    even on
+                    a Raspberry Pi.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/get-started" target="_blank">Windows, Linux and OS
+                            X</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/getting-started/docker" target="_blank">Docker
+                            Containers</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/hosting/azure" target="_blank">Azure</a>
+                        and <a href="https://docs.powershelluniversal.com/config/hosting/hosting-iis"
+                            target="_blank">IIS</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/getting-started#msi-install-windows"
+                            target="_blank">Windows Service</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/hosting#configuring-https"
+                            target="_blank">HTTPS</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-hosting.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="security"><i class="fas fa-lock"></i> Security</h3>
+                <p class="lead">Grant role-based access to different aspects of your automation environment with your
+                    choice
+                    of authentication and authorization integrations. </p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/config/security/openid-connect"
+                            target="_blank">OpenID
+                            Connect</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security/ws-federation"
+                            target="_blank">WS-Federation</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security#forms-authentication"
+                            target="_blank">Basic Authentication</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security/client-certificate"
+                            target="_blank">Client Certificate</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security/saml2" target="_blank">SAML2</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security#windows-authentication"
+                            target="_blank">Windows Authentication</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security#policy-assignment"
+                            target="_blank">Script-Based Authorization</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security#role-to-claim-mapping"
+                            target="_blank">Claims-Based Authorization</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security/access-controls"
+                            target="_blank">Script Access Controls</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/security#built-in-roles"
+                            target="_blank">Custom
+                            and Built-In Roles</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-security.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="development"><i class="fas fa-bug"></i> Development</h3>
+                <p class="lead">Take advantage of rich development tools such as IntelliSense, code formatting, error
+                    checking and debugger integration without leaving your browser. </p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/platform/editor" target="_blank">Rich Editing
+                            Experience</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/repository" target="_blank">Code-First
+                            Configuration</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/debugging/debugging-scripts#integrated-debugger"
+                            target="_blank">Debugging Tools</a></li>
+                    <li><a href="https://www.powershellgallery.com/packages/Universal" target="_blank">PowerShell
+                            Module</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/config/management-api" target="_blank">Management
+                            API</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/visual-studio-code-extension"
+                            target="_blank">Visual
+                            Studio Code Extension</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/debugging/profiling" target="_blank">Performance
+                            Profiler</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/desktop-mode" target="_blank">Desktop
+                            Mode</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/desktop-mode/hotkeys"
+                            target="_blank">Hotkeys</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-development.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="platform"><i class="fas fa-layer-group"></i> Platform</h3>
+                <p class="lead">Configure the platform to meet the needs of your environment.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://docs.powershelluniversal.com/config/environments" target="_blank">PowerShell 7
+                            Support</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/environments" target="_blank">Windows
+                            PowerShell Support</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/modules" target="_blank">PowerShell
+                            Modules</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/variables" target="_blank">Variables</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/variables#vaults"
+                            target="_blank">Password
+                            and Secret Management</a></li>
+                    <li><a href="https://docs.powershelluniversal.com/config/git" target="_blank">Git Integration</a>
+                    </li>
+                    <li><a href="https://docs.powershelluniversal.com/platform/monitoring" target="_blank">Application
+                            Insights Integration</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-modules.png" width="90%" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-sm-auto">
+                <h3 id="community"><i class="fas fa-users"></i> Community</h3>
+                <p class="lead">Join the growing community of users managing their automation environments with
+                    PowerShell
+                    Universal.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-sm-auto">
+                <ul class="checklist">
+                    <li><a href="https://forums.ironmansoftware.com" target="_blank">Forums</a></li>
+                    <li><a href="https://discord.gg/tQMEYwbGVn" target="_blank">Discord</a></li>
+                    <li><a href="https://ironmansoftware.com/powershell-universal/templates"
+                            target="_blank">Templates</a>
+                    </li>
+                    <li><a href="https://github.com/ironmansoftware/issues" target="_blank">Issue Tracker</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-sm-auto">
+                <div class="text-center" style="margin-top: 20px">
+                    <img src="{2}/psu-community.png" width="90%" />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

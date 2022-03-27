@@ -36,11 +36,20 @@
 		"onView:universalConfigProviderView",
 		"onView:sampleProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
-		"onCommand:powershell-universal.startUniversal"
+		"onCommand:powershell-universal.startUniversal",
+		"onCommand:powershell-universal.walkthrough"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
+			{
+				"command": "powershell-universal.welcome",
+				"title": "Welcome"
+			},
+			{
+				"command": "powershell-universal.walkthrough",
+				"title": "PowerShell Universal: Getting Started Walkthrough"
+			},
 			{
 				"command": "powershell-universal.addConnection",
 				"title": "Add Connection",

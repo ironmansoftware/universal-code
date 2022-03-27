@@ -19,6 +19,8 @@ import { registerConnectCommands } from './commands/connect';
 import { registerSampleCommands } from './samples';
 import { SampleTreeViewProvider } from './sample-treeview';
 import { ConnectionTreeViewProvider } from './connection-treeview';
+import { registerWelcomeCommands } from './commands/welcomeCommand';
+import { registerWalkthroughCommands } from './commands/walkthrough';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -42,7 +44,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let settings = load();
 	if (settings.appToken === "" && settings.connections.length === 0) {
-		vscode.commands.executeCommand('workbench.action.openWalkthrough', 'universal.welcome');
+		vscode.commands.executeCommand('powershell-universal.welcome')
 
 		vscode.window.showInformationMessage("You need to configure the PowerShell Universal extension. If you haven't installed PowerShell Universal, you should download it. If you have PowerShell Universal running, you can connect.", "Download", "Settings").then(result => {
 			if (result === "Download") {
@@ -115,6 +117,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerScriptCommands(context);
 	registerConfigCommands(context);
 	registerSampleCommands(context);
+	registerWelcomeCommands(context);
+	registerWalkthroughCommands(context);
 
 	await vscode.commands.executeCommand("powershell-universal.syncSamples");
 
