@@ -57,7 +57,7 @@ export default class WelcomePanel {
         const images = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'images'));
 
         // Set the webview's initial html content
-        const htmlPath = vscode.Uri.joinPath(this._extensionUri, 'src', 'webviews', 'welcome.html');
+        const htmlPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'welcome.html');
         var fs = require('fs');
         var content = fs.readFileSync(htmlPath.fsPath, 'utf8');
 
