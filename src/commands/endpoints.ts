@@ -4,6 +4,7 @@ import { EndpointTreeItem } from './../api-treeview';
 import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs';
+import { tmpdir } from './utils';
 
 let files: Array<any> = [];
 
@@ -36,8 +37,8 @@ export const openEndpointScriptBlockCommand = async (node: EndpointTreeItem) => 
     else {
         const os = require('os');
 
-        const filePath = path.join(os.tmpdir(), '.universal.code.endpoints', `${node.endpoint.id}.ps1`);
-        const codePath = path.join(os.tmpdir(), '.universal.code.endpoints');
+        const filePath = path.join(tmpdir(), '.universal.code.endpoints', `${node.endpoint.id}.ps1`);
+        const codePath = path.join(tmpdir(), '.universal.code.endpoints');
         const config = await Container.universal.getEndpoint(node.endpoint);
         if (!fs.existsSync(codePath)) {
             fs.mkdirSync(codePath);
@@ -66,8 +67,8 @@ export const openEndpointConfigFileCommand = async () => {
     else {
         const os = require('os');
 
-        const filePath = path.join(os.tmpdir(), '.universal.code.configuration', 'endpoints.ps1');
-        const codePath = path.join(os.tmpdir(), '.universal.code.configuration');
+        const filePath = path.join(tmpdir(), '.universal.code.configuration', 'endpoints.ps1');
+        const codePath = path.join(tmpdir(), '.universal.code.configuration');
         const config = await Container.universal.getConfiguration('endpoints.ps1');
         if (!fs.existsSync(codePath)) {
             fs.mkdirSync(codePath);

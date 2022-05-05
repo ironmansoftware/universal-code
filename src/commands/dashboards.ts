@@ -4,6 +4,7 @@ import { DashboardComponentTreeItem, DashboardFrameworkTreeItem, DashboardTreeIt
 import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs';
+import { tmpdir } from './utils';
 
 let files: Array<any> = [];
 
@@ -80,7 +81,7 @@ export const openFileCommand = async (dashboard: DashboardTreeItem) => {
 
 export const openFileRemote = async (dashboard: DashboardTreeItem) => {
     const os = require('os');
-    const codePath = path.join(os.tmpdir(), '.universal.code.dashboard');
+    const codePath = path.join(tmpdir(), '.universal.code.dashboard');
     //Use the id in the path so that we can save the dashboard
     const codePathId = path.join(codePath, dashboard.dashboard.id.toString());
     const filePath = path.join(codePathId, dashboard.dashboard.filePath);
@@ -128,8 +129,8 @@ export const openDashboardConfigFileCommand = async () => {
     else {
         const os = require('os');
 
-        const filePath = path.join(os.tmpdir(), '.universal.code.configuration', 'dashboards.ps1');
-        const codePath = path.join(os.tmpdir(), '.universal.code.configuration');
+        const filePath = path.join(tmpdir(), '.universal.code.configuration', 'dashboards.ps1');
+        const codePath = path.join(tmpdir(), '.universal.code.configuration');
         const config = await Container.universal.getConfiguration('dashboards.ps1');
         if (!fs.existsSync(codePath)) {
             fs.mkdirSync(codePath);

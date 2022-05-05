@@ -5,6 +5,7 @@ const path = require('path');
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 import { SampleFile } from '../types';
 import { load } from '../settings';
+import { tmpdir } from './utils';
 
 
 export const registerConfigCommands = (context: vscode.ExtensionContext) => {
@@ -31,8 +32,8 @@ export const openConfigCommand = async (item: ConfigTreeItem | SampleFile) => {
 export const openConfigRemote = async (item: ConfigTreeItem | SampleFile) => {
     const os = require('os');
 
-    const filePath = path.join(os.tmpdir(), '.universal.code.configuration', item.fileName);
-    const codePath = path.join(os.tmpdir(), '.universal.code.configuration');
+    const filePath = path.join(tmpdir(), '.universal.code.configuration', item.fileName);
+    const codePath = path.join(tmpdir(), '.universal.code.configuration');
     const config = await Container.universal.getConfiguration(item.fileName);
     if (!fs.existsSync(codePath)) {
         fs.mkdirSync(codePath);
@@ -64,8 +65,8 @@ export const openConfigLocal = async (item: ConfigTreeItem | SampleFile) => {
 export const refreshConfig = async () => {
     try {
         await Container.universal.refreshConfig();
-    } catch (error) {
-        vscode.window.showErrorMessage(error);
+    } catch (error : any) {
+        vscode.window.showErrorMessage(error.message);
         return;
     }
 

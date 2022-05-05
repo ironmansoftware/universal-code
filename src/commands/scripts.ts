@@ -6,6 +6,7 @@ import { trackJob } from '../job-tracker';
 const path = require('path');
 const os = require('os');
 import * as fs from 'fs';
+import { tmpdir } from './utils';
 
 function normalizeDriveLetter(path: string): string {
     if (hasDriveLetter(path)) {
@@ -39,7 +40,7 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
 
     vscode.workspace.onDidSaveTextDocument((file) => {
         if (file.fileName.includes('.universal.code.script')) {
-            const codePath = path.join(os.tmpdir(), '.universal.code.script');
+            const codePath = path.join(tmpdir(), '.universal.code.script');
             const normCodePath = normalizeDriveLetter(codePath);
             const normFileName = normalizeDriveLetter(file.fileName);
             const fileName = normFileName.replace(normCodePath, "").replace(/^\\*/, "").replace(/^\/*/, "");
@@ -72,8 +73,10 @@ export const editScriptCommand = async (item: ScriptTreeItem) => {
 }
 
 export const editScriptRemote = async (item: ScriptTreeItem) => {
-    const filePath = path.join(os.tmpdir(), '.universal.code.script', item.script.fullPath);
-    const codePath = path.join(os.tmpdir(), '.universal.code.script');
+    //https://stackoverflow.com/a/56620552
+    
+    const filePath = path.join(tmpdir(), '.universal.code.script', item.script.fullPath);
+    const codePath = path.join(tmpdir(), '.universal.code.script');
     const script = await Container.universal.getScript(item.script.id);
     if (!fs.existsSync(codePath)) {
         fs.mkdirSync(codePath);
