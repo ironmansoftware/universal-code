@@ -46,7 +46,9 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
             const fileName = normFileName.replace(normCodePath, "").replace(/^\\*/, "").replace(/^\/*/, "");
             Container.universal.getScriptFilePath(fileName).then((script) => {
                 script.content = file.getText();
-                Container.universal.saveScript(script);
+                Container.universal.saveScript(script).catch(e => vscode.window.showErrorMessage(e));
+            }).catch(e => {
+                vscode.window.showErrorMessage(e);
             });
 
         }
@@ -74,7 +76,7 @@ export const editScriptCommand = async (item: ScriptTreeItem) => {
 
 export const editScriptRemote = async (item: ScriptTreeItem) => {
     //https://stackoverflow.com/a/56620552
-    
+
     const filePath = path.join(tmpdir(), '.universal.code.script', item.script.fullPath);
     const codePath = path.join(tmpdir(), '.universal.code.script');
     const script = await Container.universal.getScript(item.script.id);
