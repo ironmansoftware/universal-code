@@ -84,7 +84,7 @@ export const openFileRemote = async (dashboard: DashboardTreeItem) => {
     const codePath = path.join(tmpdir(), '.universal.code.dashboard');
     //Use the id in the path so that we can save the dashboard
     const codePathId = path.join(codePath, dashboard.dashboard.id.toString());
-    const filePath = path.join(codePathId, dashboard.dashboard.filePath);
+    const filePath = path.join(codePathId, dashboard.dashboard.name + ".ps1");
 
     const dashboardFile = await Container.universal.getDashboard(dashboard.dashboard.id);
     var dirName = path.dirname(filePath);
