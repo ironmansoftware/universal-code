@@ -239,6 +239,16 @@
 				"command": "powershell-universal.getJobPipelineOutput",
 				"title": "Get Job Pipeline Output",
 				"icon": "$(terminal-powershell)"
+			},
+			{
+				"command": "powershell-universal.newConfigFile",
+				"title": "New File",
+				"icon": "$(new-file)"
+			},
+			{
+				"command": "powershell-universal.newConfigFolder",
+				"title": "New Folder",
+				"icon": "$(new-folder)"
 			}
 		],
 		"viewsContainers": {
@@ -498,7 +508,17 @@
 				},
 				{
 					"command": "powershell-universal.openConfigFile",
-					"when": "view == universalConfigProviderView && viewItem == configfile",
+					"when": "view == universalConfigProviderView && viewItem == configFile",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.newConfigFile",
+					"when": "view == universalConfigProviderView && viewItem == configFolder",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.newConfigFolder",
+					"when": "view == universalConfigProviderView && viewItem == configFolder",
 					"group": "inline"
 				},
 				{

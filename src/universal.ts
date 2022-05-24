@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework, JobPagedViewModel, JobLog } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework, JobPagedViewModel, JobLog, FileSystemItem } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -381,6 +381,56 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/configuration/${fileName}`, 'PUT', data)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
+            })
+        })
+    }
+
+    saveFileContent(fileName: string, data: string) {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/content/${fileName}`, 'PUT', {
+                content: data
+            })?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getFileContent(fileName: string): Promise<FileSystemItem> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/content/${fileName}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x);
+            })
+        })
+    }
+
+
+    getFiles(fileName: string): Promise<Array<FileSystemItem>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/list/${fileName}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x);
+            })
+        })
+    }
+
+    newFile(fileName: string): Promise<Array<FileSystemItem>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/item/`, 'POST', {
+                fullName: fileName,
+                isLeaf: true
+            })?.then(x => resolve(x.data)).catch(x => {
+                reject(x);
+            })
+        })
+    }
+
+
+    newFolder(folderName: string): Promise<Array<FileSystemItem>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/configuration/item/`, 'POST', {
+                fullName: folderName,
+                isLeaf: false
+            })?.then(x => resolve(x.data)).catch(x => {
+                reject(x);
             })
         })
     }

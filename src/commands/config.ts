@@ -10,13 +10,41 @@ import { tmpdir } from './utils';
 
 export const registerConfigCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openConfigFile', openConfigCommand);
+    vscode.commands.registerCommand('powershell-universal.newConfigFile', newConfigFileCommand);
+    vscode.commands.registerCommand('powershell-universal.newConfigFolder', newConfigFolderCommand);
     vscode.commands.registerCommand('powershell-universal.reloadConfig', refreshConfig);
-    vscode.workspace.onDidSaveTextDocument((file) => {
+    vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.configuration')) {
-            const fileName = path.basename(file.fileName);
-            Container.universal.saveConfiguration(fileName, file.getText());
+            const version = await Container.universal.getVersion();
+            if (version.startsWith("3")) {
+                const codePath = path.join(tmpdir(), '.universal.code.configuration');
+                const fileName = file.fileName.toLocaleLowerCase().replace(codePath.toLocaleLowerCase(), "").substring(1);
+                await Container.universal.saveFileContent(fileName, file.getText());
+            }
+            else {
+                const fileName = path.basename(file.fileName);
+                Container.universal.saveConfiguration(fileName, file.getText());
+            }
         }
     });
+}
+
+export const newConfigFileCommand = async (item: ConfigTreeItem | SampleFile) => {
+    const fileName = await vscode.window.showInputBox({
+        prompt: "Enter a file name"
+    });
+
+    await Container.universal.newFile(item.fileName + "/" + fileName);
+    Container.ConfigFileTreeView.refresh();
+}
+
+export const newConfigFolderCommand = async (item: ConfigTreeItem | SampleFile) => {
+    const fileName = await vscode.window.showInputBox({
+        prompt: "Enter a folder name"
+    });
+
+    await Container.universal.newFolder(item.fileName + "/" + fileName);
+    Container.ConfigFileTreeView.refresh();
 }
 
 export const openConfigCommand = async (item: ConfigTreeItem | SampleFile) => {
@@ -30,15 +58,27 @@ export const openConfigCommand = async (item: ConfigTreeItem | SampleFile) => {
 }
 
 export const openConfigRemote = async (item: ConfigTreeItem | SampleFile) => {
-    const os = require('os');
-
     const filePath = path.join(tmpdir(), '.universal.code.configuration', item.fileName);
     const codePath = path.join(tmpdir(), '.universal.code.configuration');
-    const config = await Container.universal.getConfiguration(item.fileName);
     if (!fs.existsSync(codePath)) {
         fs.mkdirSync(codePath);
     }
-    fs.writeFileSync(filePath, config);
+
+    const version = await Container.universal.getVersion();
+    if (version.startsWith("3")) {
+        const config = await Container.universal.getFileContent(item.fileName);
+
+        const directory = path.dirname(filePath);
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true });
+        }
+
+        fs.writeFileSync(filePath, config.content);
+    }
+    else {
+        const config = await Container.universal.getConfiguration(item.fileName);
+        fs.writeFileSync(filePath, config);
+    }
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 
@@ -65,7 +105,7 @@ export const openConfigLocal = async (item: ConfigTreeItem | SampleFile) => {
 export const refreshConfig = async () => {
     try {
         await Container.universal.refreshConfig();
-    } catch (error) {
+    } catch (error: any) {
         vscode.window.showErrorMessage(error);
         return;
     }

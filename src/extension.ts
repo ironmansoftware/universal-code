@@ -96,6 +96,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.window.createTreeView<vscode.TreeItem>('sampleProviderView', { treeDataProvider: samplesProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalInfoProviderView', { treeDataProvider: infoProvider });
 
+	Container.ConfigFileTreeView = configProvider;
+
 	vscode.commands.registerCommand('powershell-universal.refreshTreeView', () => moduleProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshEndpointTreeView', () => endpointProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshScriptTreeView', () => scriptProvider.refresh());

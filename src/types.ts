@@ -145,3 +145,11 @@ export class SampleFile {
     public fileName: string;
     public content: string;
 }
+
+export type FileSystemItem = {
+    name: string;
+    fullName: string;
+    items: Array<FileSystemItem>;
+    isLeaf: boolean;
+    content: string;
+}
