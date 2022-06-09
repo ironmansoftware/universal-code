@@ -42,6 +42,7 @@ export class Universal {
             }
         }
 
+        https.globalAgent.options.rejectUnauthorized = true
         const agent = new https.Agent({
             rejectUnauthorized
         });
@@ -299,7 +300,7 @@ export class Universal {
         })
     }
 
-    saveScript(script: Script) {
+    saveScript(script: Script): Promise<Script> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/script/`, 'PUT', script)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);

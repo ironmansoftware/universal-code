@@ -38,19 +38,26 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.getJobPipelineOutput', getJobPipelineOutputCommand);
 
 
-    vscode.workspace.onDidSaveTextDocument((file) => {
+    vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.script')) {
             const codePath = path.join(tmpdir(), '.universal.code.script');
             const normCodePath = normalizeDriveLetter(codePath);
             const normFileName = normalizeDriveLetter(file.fileName);
             const fileName = normFileName.replace(normCodePath, "").replace(/^\\*/, "").replace(/^\/*/, "");
-            Container.universal.getScriptFilePath(fileName).then((script) => {
+            try {
+                var script = await Container.universal.getScriptFilePath(fileName);
                 script.content = file.getText();
-                Container.universal.saveScript(script).catch(e => vscode.window.showErrorMessage(e));
-            }).catch(e => {
+                script = await Container.universal.saveScript(script);
+                var version = await Container.universal.getVersion();
+                if (version.startsWith("3")) {
+                    if (script.content !== file.getText()) {
+                        throw "Failed to save script!";
+                    }
+                }
+            }
+            catch (e: any) {
                 vscode.window.showErrorMessage(e);
-            });
-
+            }
         }
     });
 }
