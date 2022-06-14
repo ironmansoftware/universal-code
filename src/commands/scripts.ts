@@ -48,11 +48,8 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
                 var script = await Container.universal.getScriptFilePath(fileName);
                 script.content = file.getText();
                 script = await Container.universal.saveScript(script);
-                var version = await Container.universal.getVersion();
-                if (version.startsWith("3")) {
-                    if (script.content !== file.getText()) {
-                        throw "Failed to save script!";
-                    }
+                if (script.content && script.content !== file.getText()) {
+                    throw "Failed to save script!";
                 }
             }
             catch (e: any) {
