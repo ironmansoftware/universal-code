@@ -36,11 +36,20 @@ export class ApiTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 }
 
+const formatMethod = (endpoint: Endpoint) => {
+    if (Array.isArray(endpoint.method)) {
+        return endpoint.method.map(m => m.toUpperCase()).join(",");
+    }
+    else {
+        return endpoint.method.toUpperCase();
+    }
+}
+
 export class EndpointTreeItem extends vscode.TreeItem {
     public endpoint: Endpoint;
 
     constructor(endpoint: Endpoint) {
-        super(`(${endpoint.method.toUpperCase()}) ${endpoint.url}`, vscode.TreeItemCollapsibleState.None);
+        super(`(${formatMethod(endpoint)}) ${endpoint.url}`, vscode.TreeItemCollapsibleState.None);
 
         this.endpoint = endpoint;
         const icon = endpoint.authentication ? "lock" : "unlock";

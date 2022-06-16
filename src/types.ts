@@ -63,7 +63,7 @@ export type DashboardDiagnostics = {
 export type Endpoint = {
     id: number;
     url: string;
-    method: string;
+    method: string | Array<string>;
     authentication: boolean;
     scriptBlock: string;
 }
