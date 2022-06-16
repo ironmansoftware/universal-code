@@ -105,7 +105,7 @@ export const openConfigLocal = async (item: ConfigTreeItem | SampleFile) => {
 export const refreshConfig = async () => {
     try {
         await Container.universal.refreshConfig();
-    } catch (error: any) {
+    } catch (error) {
         vscode.window.showErrorMessage(error);
         return;
     }
