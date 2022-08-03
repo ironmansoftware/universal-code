@@ -143,7 +143,7 @@ export const openDashboardConfigFileCommand = async () => {
 }
 
 export const connectToDashboardCommand = async (item: DashboardTreeItem) => {
-    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
+    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Extension");
 
     terminal?.sendText(`Enter-PSHostProcess -Id ${item.dashboard.processId}`);
 }

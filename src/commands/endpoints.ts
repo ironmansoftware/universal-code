@@ -85,7 +85,7 @@ export const insertInvokeRestMethodCommand = async (endpoint: EndpointTreeItem) 
 
     const settings = load();
 
-    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
+    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Extension");
 
     terminal?.sendText(`Invoke-RestMethod -Uri "${settings.url}${endpoint.endpoint.url.replace(':', '$')}" -Method ${endpoint.endpoint.method}`, false);
 }

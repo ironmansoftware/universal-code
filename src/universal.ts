@@ -437,7 +437,7 @@ export class Universal {
     }
 
     sendTerminalCommand(command: string) {
-        var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Integrated Console");
+        var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Extension");
         if (terminal == null) {
             vscode.window.showErrorMessage("PowerShell Terminal is missing!");
         }
