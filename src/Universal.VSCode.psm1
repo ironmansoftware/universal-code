@@ -14,22 +14,6 @@ function Install-UniversalModule {
             Update-Module -Name 'Universal'
         }
     }
-
-    Write-Host 'Checking UniversalDashboard module version...'
-
-    $UniversalDashboard = Get-Module -Name 'UniversalDashboard' -ListAvailable -ErrorAction SilentlyContinue
-    if ($null -eq $UniversalDashboard) {
-        Write-Host "Installing UniversalDashboard module..."
-        Install-Module -Name 'UniversalDashboard' -Scope CurrentUser -Force -AllowClobber -ErrorAction SilentlyContinue
-    }
-    else {
-        $UniversalDashboardOnline = Find-Module 'UniversalDashboard' | Select-Object -First 1
-
-        if ($UniversalDashboardOnline.Version -gt $UniversalDashboard.Version) {
-            Write-Host "Updating the UniversalDashboard module to $($UniversalDashboardOnline.Version)..."
-            Update-Module -Name 'UniversalDashboard'
-        }
-    }
 }
 
 Install-UniversalModule
