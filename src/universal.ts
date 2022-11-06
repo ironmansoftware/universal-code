@@ -50,10 +50,6 @@ export class Universal {
         return axios({
             url: `${url}${path}`,
             method,
-            auth: {
-                username: "adamr",
-                password: "PowerShell!!112"
-            },
             headers: {
                 authorization: windowsAuth ? null : `Bearer ${appToken}`,
                 'Content-Type': 'application/json'
@@ -74,6 +70,24 @@ export class Universal {
     async getReleasedVersion() {
         const response = await axios.get("https://imsreleases.blob.core.windows.net/universal/production/version.txt");
         return response?.data;
+    }
+
+    async installAndLoadModule() {
+        try {
+            const settings = load();
+            if (settings.checkModules) {
+                const version = await Container.universal.getVersion();
+
+                Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
+                Container.universal.sendTerminalCommand(`Install-UniversalModule -Version '${version}'`);
+                Container.universal.sendTerminalCommand(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`);
+                Container.connected = true;
+            }
+        }
+        catch
+        {
+
+        }
     }
 
     async isAlive(url: string) {
@@ -441,15 +455,6 @@ export class Universal {
         if (terminal == null) {
             vscode.window.showErrorMessage("PowerShell Terminal is missing!");
         }
-
-        if (!Container.connected) {
-            const settings = load();
-            if (settings.appToken && settings.url && settings.appToken !== '' && settings.url !== '') {
-                terminal?.sendText(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`, true);
-                Container.connected = true;
-            }
-        }
-
         terminal?.sendText(command, true);
     }
 
