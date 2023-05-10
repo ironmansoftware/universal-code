@@ -38,11 +38,11 @@ export class Universal {
             if (connection) {
                 appToken = connection.appToken;
                 url = connection.url;
-                rejectUnauthorized = connection.allowInvalidCertificate;
+                rejectUnauthorized = !connection.allowInvalidCertificate;
             }
         }
 
-        https.globalAgent.options.rejectUnauthorized = true
+        https.globalAgent.options.rejectUnauthorized = true;
         const agent = new https.Agent({
             rejectUnauthorized
         });
