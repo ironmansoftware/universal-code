@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "3.9.0",
+	"version": "4.0.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -107,7 +107,7 @@
 			},
 			{
 				"command": "powershell-universal.openDashboardFile",
-				"title": "Open Dashboard File",
+				"title": "Open App File",
 				"icon": "$(go-to-file)"
 			},
 			{
@@ -122,7 +122,7 @@
 			},
 			{
 				"command": "powershell-universal.connectToDashboard",
-				"title": "Debug Dashboard Process",
+				"title": "Debug App Process",
 				"icon": "$(debug-alt)"
 			},
 			{
@@ -137,7 +137,7 @@
 			},
 			{
 				"command": "powershell-universal.manageDashboards",
-				"title": "PowerShell Universal: Manage Dashboards",
+				"title": "PowerShell Universal: Manage Apps",
 				"icon": "$(link-external)"
 			},
 			{
@@ -216,16 +216,6 @@
 				"icon": "$(github)"
 			},
 			{
-				"command": "powershell-universal.installDashboardModule",
-				"title": "Install Module",
-				"icon": "$(cloud-download)"
-			},
-			{
-				"command": "powershell-universal.installDashboardFrameworkModule",
-				"title": "Install Module",
-				"icon": "$(cloud-download)"
-			},
-			{
 				"command": "powershell-universal.viewJob",
 				"title": "View Job",
 				"icon": "$(link-external)"
@@ -276,7 +266,7 @@
 				},
 				{
 					"id": "universalDashboardProviderView",
-					"name": "Dashboards"
+					"name": "Apps"
 				},
 				{
 					"id": "universalConfigProviderView",
@@ -451,16 +441,6 @@
 				{
 					"command": "powershell-universal.openDashboardFile",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
-					"group": "inline"
-				},
-				{
-					"command": "powershell-universal.installDashboardModule",
-					"when": "view == universalDashboardProviderView && viewItem == dashboardComponent",
-					"group": "inline"
-				},
-				{
-					"command": "powershell-universal.installDashboardFrameworkModule",
-					"when": "view == universalDashboardProviderView && viewItem == dashboardFramework",
 					"group": "inline"
 				},
 				{

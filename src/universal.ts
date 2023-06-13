@@ -188,9 +188,9 @@ export class Universal {
         })
     }
 
-    getDashboardLog(id: number): Promise<DashboardLog> {
+    getDashboardLog(name: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.request(`/api/v1/dashboard/${id}/log`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+            this.request(`/api/v1/logging/log/file?feature=app&resource=${name}&take=1000`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
         })
