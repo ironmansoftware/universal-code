@@ -16,7 +16,7 @@ export const registerConfigCommands = (context: vscode.ExtensionContext) => {
     vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.configuration')) {
             const version = await Container.universal.getVersion();
-            if (version.startsWith("3")) {
+            if (version.startsWith("3") || version.startsWith("4")) {
                 const codePath = path.join(tmpdir(), '.universal.code.configuration');
                 const fileName = file.fileName.toLocaleLowerCase().replace(codePath.toLocaleLowerCase(), "").substring(1);
                 await Container.universal.saveFileContent(fileName, file.getText());
@@ -65,7 +65,7 @@ export const openConfigRemote = async (item: ConfigTreeItem | SampleFile) => {
     }
 
     const version = await Container.universal.getVersion();
-    if (version.startsWith("3")) {
+    if (version.startsWith("3") || version.startsWith("4")) {
         const config = await Container.universal.getFileContent(item.fileName);
 
         const directory = path.dirname(filePath);
@@ -106,7 +106,7 @@ export const refreshConfig = async () => {
     try {
         await Container.universal.refreshConfig();
     } catch (error) {
-        vscode.window.showErrorMessage(error);
+        vscode.window.showErrorMessage(error as string);
         return;
     }
 

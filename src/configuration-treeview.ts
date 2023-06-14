@@ -14,7 +14,7 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
         if (element == null) {
             try {
                 var version = await Container.universal.getVersion();
-                if (version.startsWith("3")) {
+                if (version.startsWith("3") || version.startsWith("4")) {
                     const configs = await Container.universal.getFiles("");
                     var configTree: ConfigTreeItem[] = [];
                     configs.forEach(c => configTree.push(new ConfigTreeItem(c.name, c.fullName, c.isLeaf, c.content)));

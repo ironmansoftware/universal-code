@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, DashboardLog, DashboardComponent, DashboardFramework, JobPagedViewModel, JobLog, FileSystemItem } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -207,29 +207,6 @@ export class Universal {
         })
     }
 
-    getDashboardComponents(): Promise<Array<DashboardComponent>> {
-        return new Promise((resolve, reject) => {
-            if (!this.hasConnection()) {
-                resolve([]);
-            }
-            this.request('/api/v1/dashboardcomponent', 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject(x.message);
-            })
-        })
-    }
-
-    getDashboardFrameworks(): Promise<Array<DashboardFramework>> {
-        return new Promise((resolve, reject) => {
-            if (!this.hasConnection()) {
-                resolve([]);
-            }
-            this.request('/api/v1/dashboardframework', 'GET')?.then(x => resolve(x.data)).catch(x => {
-                reject(x.message);
-            })
-        })
-    }
-
-
     saveDashboard(id: number, dashboard: Dashboard) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'PUT', dashboard)?.then(x => resolve(x.data)).catch(x => {
@@ -361,7 +338,7 @@ export class Universal {
                 resolve([]);
             }
 
-            this.request(`/api/v1/configuration`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+            this.request(`/api/v1/configuration/list`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
         })

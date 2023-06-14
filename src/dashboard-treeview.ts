@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Container } from './container';
-import { Dashboard, DashboardFramework, DashboardEndpoint, DashboardStatus, DashboardLogItem, DashboardComponent } from './types';
+import { Dashboard, DashboardEndpoint, DashboardStatus } from './types';
 import ParentTreeItem from './parentTreeItem';
 export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 

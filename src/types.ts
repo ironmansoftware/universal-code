@@ -1,13 +1,11 @@
 export type Dashboard = {
     id: number;
     name: string;
-    dashboardFramework: DashboardFramework;
     baseUrl: string;
     status: DashboardStatus;
     processId: number;
     filePath: string;
     content: string;
-    dashboardComponents: Array<DashboardComponent>
 }
 
 export type DashboardLog = {
@@ -27,20 +25,6 @@ export enum DashboardStatus {
     Debugging
 }
 
-
-export type DashboardComponent = {
-    id: number;
-    name: string;
-    version: string;
-    path: string;
-}
-
-export type DashboardFramework = {
-    id: number;
-    name: string;
-    version: string;
-    path: string;
-}
 
 export type DashboardEndpoint = {
     id: string;
