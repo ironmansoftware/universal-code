@@ -11,8 +11,8 @@ let files: Array<any> = [];
 export const registerEndpointCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openEndpointScriptBlock', openEndpointScriptBlockCommand);
     vscode.commands.registerCommand('powershell-universal.openEndpointConfigFile', openEndpointConfigFileCommand);
-    vscode.commands.registerCommand('powershell-universal.insertRestMethod', insertInvokeRestMethodCommand);
-    vscode.commands.registerCommand('powershell-universal.manageEndpoints', manageEndpointsCommand);
+    vscode.commands.registerCommand('powershell-universal.insertRestMethod', (item) => insertInvokeRestMethodCommand(item, context));
+    vscode.commands.registerCommand('powershell-universal.manageEndpoints', () => manageEndpointsCommand(context));
 
     vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.endpoints')) {
@@ -81,17 +81,37 @@ export const openEndpointConfigFileCommand = async () => {
 
 }
 
-export const insertInvokeRestMethodCommand = async (endpoint: EndpointTreeItem) => {
+export const insertInvokeRestMethodCommand = async (endpoint: EndpointTreeItem, context: vscode.ExtensionContext) => {
 
     const settings = load();
+
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
 
     var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Extension");
 
-    terminal?.sendText(`Invoke-RestMethod -Uri "${settings.url}${endpoint.endpoint.url.replace(':', '$')}" -Method ${endpoint.endpoint.method}`, false);
+    terminal?.sendText(`Invoke-RestMethod -Uri "${url}${endpoint.endpoint.url.replace(':', '$')}" -Method ${endpoint.endpoint.method}`, false);
 }
 
-export const manageEndpointsCommand = async () => {
+export const manageEndpointsCommand = async (context: vscode.ExtensionContext) => {
     const settings = load();
 
-    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/apis/endpoints`));
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
+
+    vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/apis/endpoints`));
 }

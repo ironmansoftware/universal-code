@@ -9,8 +9,8 @@ import { tmpdir } from './utils';
 let files: Array<any> = [];
 
 export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
-    vscode.commands.registerCommand('powershell-universal.manageDashboards', manageDashboardsCommand);
-    vscode.commands.registerCommand('powershell-universal.viewDashboard', viewDashboardCommand);
+    vscode.commands.registerCommand('powershell-universal.manageDashboards', () => manageDashboardsCommand(context));
+    vscode.commands.registerCommand('powershell-universal.viewDashboard', (item) => viewDashboardCommand(item, context));
     vscode.commands.registerCommand('powershell-universal.stopDashboard', stopDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.startDashboard', startDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.restartDashboard', restartDashboardCommand);
@@ -34,16 +34,36 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
     });
 }
 
-export const manageDashboardsCommand = async () => {
+export const manageDashboardsCommand = async (context: vscode.ExtensionContext) => {
     const settings = load();
 
-    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/dashboards`));
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
+
+    vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/apps`));
 }
 
-export const viewDashboardCommand = async (dashboard: DashboardTreeItem) => {
+export const viewDashboardCommand = async (dashboard: DashboardTreeItem, context: vscode.ExtensionContext) => {
     const settings = load();
 
-    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}${dashboard.dashboard.baseUrl}`));
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
+
+    vscode.env.openExternal(vscode.Uri.parse(`${url}${dashboard.dashboard.baseUrl}`));
 }
 
 export const stopDashboardCommand = async (dashboard: DashboardTreeItem) => {

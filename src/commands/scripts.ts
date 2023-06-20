@@ -30,11 +30,11 @@ function isWindowsDriveLetter(char0: number): boolean {
 
 export const registerScriptCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openScriptConfigFile', openScriptConfigFileCommand);
-    vscode.commands.registerCommand('powershell-universal.invokeScript', invokeScriptCommand);
-    vscode.commands.registerCommand('powershell-universal.manageScripts', manageScriptsCommand);
+    vscode.commands.registerCommand('powershell-universal.invokeScript', item => invokeScriptCommand(item, context));
+    vscode.commands.registerCommand('powershell-universal.manageScripts', () => manageScriptsCommand(context));
     vscode.commands.registerCommand('powershell-universal.editScript', editScriptCommand);
     vscode.commands.registerCommand('powershell-universal.viewJobLog', viewJobLogCommand);
-    vscode.commands.registerCommand('powershell-universal.viewJob', viewJobCommand);
+    vscode.commands.registerCommand('powershell-universal.viewJob', (item) => viewJobCommand(item, context));
     vscode.commands.registerCommand('powershell-universal.getJobPipelineOutput', getJobPipelineOutputCommand);
 
 
@@ -52,7 +52,7 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
                     throw "Failed to save script!";
                 }
             }
-            catch (e) {
+            catch (e: any) {
                 vscode.window.showErrorMessage(e);
             }
         }
@@ -109,22 +109,32 @@ export const editScriptLocal = async (item: ScriptTreeItem) => {
     vscode.window.showTextDocument(textDocument);
 }
 
-export const invokeScriptCommand = async (item: ScriptTreeItem) => {
+export const invokeScriptCommand = async (item: ScriptTreeItem, context: vscode.ExtensionContext) => {
     const settings = load();
+
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
 
     const parameters = await Container.universal.getScriptParameters(item.script.id);
     if (parameters && parameters.length > 0) {
         const result = await vscode.window.showWarningMessage(`Script has parameters and cannot be run from VS Code.`, "View Script");
 
         if (result === "View Script") {
-            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/scripts/${item.script.fullPath}`));
+            vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/automation/scripts/${item.script.fullPath}`));
         }
     } else {
         const jobId = await Container.universal.runScript(item.script.id);
         const result = await vscode.window.showInformationMessage(`Job ${jobId} started.`, "View Job");
 
         if (result === "View Job") {
-            vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/jobs/${jobId}`));
+            vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/automation/jobs/${jobId}`));
         }
 
         trackJob(jobId);
@@ -133,10 +143,20 @@ export const invokeScriptCommand = async (item: ScriptTreeItem) => {
 
 }
 
-export const manageScriptsCommand = async () => {
+export const manageScriptsCommand = async (context: vscode.ExtensionContext) => {
     const settings = load();
 
-    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/scripts`));
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
+
+    vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/automation/scripts`));
 }
 
 let jobLogChannel = vscode.window.createOutputChannel("PowerShell Universal - Job");
@@ -149,16 +169,24 @@ export const viewJobLogCommand = async (jobItem: JobTreeItem) => {
 
     Container.universal.getJobLog(jobItem.job.id).then((log) => {
         jobLogChannel.clear();
-        JSON.parse(log.log).forEach((line: any) => {
-            jobLogChannel.appendLine(line.Timestamp + " - " + line.Data);
-        });
+        jobLogChannel.appendLine(log.log);
     });
 }
 
-export const viewJobCommand = async (jobItem: JobTreeItem) => {
+export const viewJobCommand = async (jobItem: JobTreeItem, context: vscode.ExtensionContext) => {
     const settings = load();
 
-    vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/automation/jobs/${jobItem.job.id}`));
+    const connectionName = context.globalState.get("universal.connection");
+    var url = settings.url;
+
+    if (connectionName && connectionName !== 'Default') {
+        const connection = settings.connections.find(m => m.name === connectionName);
+        if (connection) {
+            url = connection.url;
+        }
+    }
+
+    vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/automation/jobs/${jobItem.job.id}`));
 }
 
 export const getJobPipelineOutputCommand = async (jobItem: JobTreeItem) => {

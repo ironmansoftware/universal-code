@@ -78,9 +78,21 @@ export class Universal {
             if (settings.checkModules) {
                 const version = await Container.universal.getVersion();
 
+                var appToken = settings.appToken;
+                var url = settings.url;
+                const connectionName = this.context.globalState.get("universal.connection");
+
+                if (connectionName && connectionName !== 'Default') {
+                    const connection = settings.connections.find(m => m.name === connectionName);
+                    if (connection) {
+                        appToken = connection.appToken;
+                        url = connection.url;
+                    }
+                }
+
                 Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
                 Container.universal.sendTerminalCommand(`Install-UniversalModule -Version '${version}'`);
-                Container.universal.sendTerminalCommand(`Connect-PSUServer -ComputerName '${settings.url}' -AppToken '${settings.appToken}'`);
+                Container.universal.sendTerminalCommand(`Connect-PSUServer -ComputerName '${url}' -AppToken '${appToken}'`);
                 Container.connected = true;
             }
         }
@@ -104,11 +116,23 @@ export class Universal {
     async waitForAlive() {
         const settings = load();
 
-        let disposable = vscode.window.setStatusBarMessage(`Attempting to connect to PowerShell Universal at ${settings.url}`)
+
         var retries = 0;
 
+        const connectionName = this.context.globalState.get("universal.connection");
+        var url = settings.url;
+
+        if (connectionName && connectionName !== 'Default') {
+            const connection = settings.connections.find(m => m.name === connectionName);
+            if (connection) {
+                url = connection.url;
+            }
+        }
+
+        let disposable = vscode.window.setStatusBarMessage(`Attempting to connect to PowerShell Universal at ${url}`);
+
         while (retries < 60) {
-            if (await this.isAlive(settings.url)) {
+            if (await this.isAlive(url)) {
                 disposable.dispose();
                 return true;
             }
@@ -124,19 +148,29 @@ export class Universal {
     async grantAppToken(): Promise<boolean> {
         const settings = load();
 
+        const connectionName = this.context.globalState.get("universal.connection");
+        var url = settings.url;
+
+        if (connectionName && connectionName !== 'Default') {
+            const connection = settings.connections.find(m => m.name === connectionName);
+            if (connection) {
+                url = connection.url;
+            }
+        }
+
         const transport = axios.create({
             withCredentials: true
-        })
+        });
 
-        var response = await transport.post(`${settings.url}/api/v1/signin`, {
+        var response = await transport.post(`${url}/api/v1/signin`, {
             username: 'admin',
-            password: 'any'
+            password: 'admin'
         });
 
         if (response.data.errorMessage && response.data.errorMessage !== '') {
             var result = await vscode.window.showErrorMessage("We couldn't generate an App Token automatically. You will have to do it manually.", "View Admin Console");
             if (result === "View Admin Console") {
-                vscode.env.openExternal(vscode.Uri.parse(`${settings.url}/admin/settings/security`))
+                vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/settings/security`))
             }
             return false;
         }
@@ -145,7 +179,7 @@ export class Universal {
 
         transport.defaults.headers.Cookie = cookie;
 
-        const appToken = await transport.get(`${settings.url}/api/v1/appToken/grant`, {
+        const appToken = await transport.get(`${url}/api/v1/appToken/grant`, {
             headers: {
                 Cookie: cookie
             }
