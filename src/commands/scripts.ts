@@ -52,7 +52,7 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
                     throw "Failed to save script!";
                 }
             }
-            catch (e: any) {
+            catch (e) {
                 vscode.window.showErrorMessage(e);
             }
         }
