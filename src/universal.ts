@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -19,7 +19,7 @@ export class Universal {
         return true;
     }
 
-    request(path: string, method: any, data: any = null): AxiosPromise<any> | undefined {
+    request(path: string, method: any, data: any = null, contentType = 'application/json'): AxiosPromise<any> | undefined {
 
         const settings = load();
         const connectionName = this.context.globalState.get("universal.connection");
@@ -52,7 +52,7 @@ export class Universal {
             method,
             headers: {
                 authorization: windowsAuth ? null : `Bearer ${appToken}`,
-                'Content-Type': 'application/json'
+                'Content-Type': contentType
             },
             data: data,
             httpsAgent: agent
@@ -348,6 +348,53 @@ export class Universal {
                 resolve([]);
             }
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    newTerminalInstance(terminal: Terminal): Promise<TerminalInstance> {
+        return new Promise((resolve, reject) => {
+            this.request('/api/v1/terminal/instance', 'POST', terminal)?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    stopTerminalInstance(terminalInstanceId: number): Promise<TerminalInstance> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/terminal/instance/${terminalInstanceId}`, 'DELETE')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    executeTerminalCommand(terminalInstanceId: number, command: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/terminal/instance/${terminalInstanceId}`, 'POST', JSON.stringify(command))?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+
+    getTerminals(): Promise<Array<Terminal>> {
+        return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+            this.request('/api/v1/terminal', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getTerminalInstances(): Promise<Array<TerminalInstance>> {
+        return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+            this.request(`/api/v1/terminal/instance`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
         })

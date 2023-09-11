@@ -89,6 +89,10 @@ export enum JobStatus {
     Active
 }
 
+export interface Identity {
+    name: string;
+}
+
 export type Script = {
     id: number;
     name: string;
@@ -139,6 +143,27 @@ export class SampleFile {
     public fileName: string;
     public content: string;
 }
+
+export interface Terminal {
+    name: string;
+    description: string;
+    environment: string;
+}
+
+export interface TerminalInstance {
+    id: number;
+    processId: number;
+    identity: Identity;
+    status: TerminalStatus;
+}
+
+export enum TerminalStatus {
+    Connecting,
+    Connected,
+    Idle,
+    Terminated
+}
+
 
 export type FileSystemItem = {
     name: string;

@@ -21,6 +21,7 @@ import { SampleTreeViewProvider } from './sample-treeview';
 import { ConnectionTreeViewProvider } from './connection-treeview';
 import { registerWelcomeCommands } from './commands/welcomeCommand';
 import { registerWalkthroughCommands } from './commands/walkthrough';
+import { registerTerminalCommands } from './commands/terminals';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -121,6 +122,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerSampleCommands(context);
 	registerWelcomeCommands(context);
 	registerWalkthroughCommands(context);
+	registerTerminalCommands(context);
 
 	await vscode.commands.executeCommand("powershell-universal.syncSamples");
 

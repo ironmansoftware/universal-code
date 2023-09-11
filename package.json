@@ -151,6 +151,11 @@
 				"icon": "$(debug-console)"
 			},
 			{
+				"command": "powershell-universal.openTerminal",
+				"title": "Open Terminal",
+				"icon": "$(debug-console)"
+			},
+			{
 				"command": "powershell-universal.startUniversal",
 				"title": "PowerShell Universal: Start",
 				"icon": "$(play)"
@@ -499,6 +504,11 @@
 				{
 					"command": "powershell-universal.openEndpointScriptBlock",
 					"when": "view == universalEndpointProviderView && viewItem == endpoint",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.openTerminal",
+					"when": "view == universalScriptProviderView && viewItem == terminal",
 					"group": "inline"
 				},
 				{
