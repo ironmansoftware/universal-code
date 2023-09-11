@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { load } from './../settings';
-import { DashboardTreeItem } from './../dashboard-treeview';
+import { DashboardPageTreeItem, DashboardSessionPageTreeItem, DashboardTreeItem } from './../dashboard-treeview';
 import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs';
@@ -12,15 +12,26 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.manageDashboards', () => manageDashboardsCommand(context));
     vscode.commands.registerCommand('powershell-universal.viewDashboard', (item) => viewDashboardCommand(item, context));
     vscode.commands.registerCommand('powershell-universal.stopDashboard', stopDashboardCommand);
+    vscode.commands.registerCommand('powershell-universal.addDashboardPage', addDashboardPageCommand);
+    vscode.commands.registerCommand('powershell-universal.deleteDashboardPage', deleteDashboardPageCommand);
+    vscode.commands.registerCommand('powershell-universal.openDashboardTerminal', openDashboardTerminalCommand);
     vscode.commands.registerCommand('powershell-universal.startDashboard', startDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.restartDashboard', restartDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
+    vscode.commands.registerCommand('powershell-universal.openDashboardPageFile', openPageFile);
     vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
     vscode.commands.registerCommand('powershell-universal.connectToDashboard', connectToDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.viewDashboardLog', viewDashboardLogCommand);
 
     vscode.workspace.onDidSaveTextDocument((file) => {
-        if (file.fileName.includes('.universal.code.dashboard')) {
+        if (file.fileName.includes('.universal.code.dashboardPage')) {
+            const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
+            Container.universal.getDashboardPage(info.dashboardId, info.id).then((page) => {
+                page.content = file.getText();
+                Container.universal.saveDashboardPage(info.id, info.dashboardId, page);
+            });
+        }
+        else if (file.fileName.includes('.universal.code.dashboard')) {
             const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
             Container.universal.getDashboard(info.id).then((dashboard) => {
                 dashboard.content = file.getText();
@@ -50,6 +61,34 @@ export const manageDashboardsCommand = async (context: vscode.ExtensionContext) 
     vscode.env.openExternal(vscode.Uri.parse(`${url}/admin/apps`));
 }
 
+export const openDashboardTerminalCommand = async (pageInfo: DashboardSessionPageTreeItem, context: vscode.ExtensionContext) => {
+    const writeEmitter = new vscode.EventEmitter<string>();
+
+    var str = '';
+    const pty: vscode.Pseudoterminal = {
+        onDidWrite: writeEmitter.event,
+        open: async () => {
+            var output = await Container.universal.executeDashboardTerminal(pageInfo.dashboardId, pageInfo.sessionId, pageInfo.pageId, 'prompt');
+            writeEmitter.fire(output.replace(/\r\n$/, ''));
+        },
+        close: () => { },
+        handleInput: async data => {
+            writeEmitter.fire(data);
+            str += data;
+            if (data === '\r') {
+                writeEmitter.fire('\r\n');
+                var output = await Container.universal.executeDashboardTerminal(pageInfo.dashboardId, pageInfo.sessionId, pageInfo.pageId, str);
+                writeEmitter.fire(output.replace("\r", '\r\n'));
+                var output = await Container.universal.executeDashboardTerminal(pageInfo.dashboardId, pageInfo.sessionId, pageInfo.pageId, 'prompt');
+                writeEmitter.fire(output.replace(/\r\n$/, ''));
+                str = '';
+            }
+        }
+    };
+    const terminal = vscode.window.createTerminal({ name: `App Terminal (${pageInfo.sessionId} \\ ${pageInfo.pageId})`, pty });
+    terminal.show();
+};
+
 export const viewDashboardCommand = async (dashboard: DashboardTreeItem, context: vscode.ExtensionContext) => {
     const settings = load();
 
@@ -64,6 +103,33 @@ export const viewDashboardCommand = async (dashboard: DashboardTreeItem, context
     }
 
     vscode.env.openExternal(vscode.Uri.parse(`${url}${dashboard.dashboard.baseUrl}`));
+}
+
+export const addDashboardPageCommand = async (dashboard: DashboardTreeItem) => {
+    var name = await vscode.window.showInputBox({
+        prompt: "Enter the name of the page",
+    });
+
+    if (name) {
+        await Container.universal.addDashboardPage(dashboard.dashboard.id, {
+            name,
+            modelId: 0,
+            dashboardId: dashboard.dashboard.id,
+            content: ""
+        });
+        vscode.commands.executeCommand('powershell-universal.refreshTreeView');
+    }
+}
+
+export const deleteDashboardPageCommand = async (page: DashboardPageTreeItem) => {
+    var result = await vscode.window.showQuickPick(["Yes", "No"], {
+        placeHolder: `Are you sure you want to delete ${page.page.name}?`
+    });
+
+    if (result === "Yes") {
+        await Container.universal.deleteDashboardPage(page.page.dashboardId, page.page.modelId);
+        vscode.commands.executeCommand('powershell-universal.refreshTreeView');
+    }
 }
 
 export const stopDashboardCommand = async (dashboard: DashboardTreeItem) => {
@@ -130,6 +196,32 @@ export const openFileLocal = async (dashboard: DashboardTreeItem) => {
         await vscode.window.showErrorMessage(`Failed to find file ${filePath}. If you have local editing on and are accessing a remote file, you may need to turn off local editing.`);
         return
     }
+
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
+
+    vscode.window.showTextDocument(textDocument);
+}
+
+export const openPageFile = async (page: DashboardPageTreeItem) => {
+    const os = require('os');
+    const codePath = path.join(tmpdir(), '.universal.code.dashboardPage');
+    //Use the id in the path so that we can save the dashboard
+    const codePathId = path.join(codePath, page.page.modelId.toString());
+    const filePath = path.join(codePathId, page.page.name + ".ps1");
+
+    const dashboardFile = await Container.universal.getDashboardPage(page.page.dashboardId, page.page.modelId);
+    var dirName = path.dirname(filePath);
+    if (!fs.existsSync(dirName)) {
+        fs.mkdirSync(dirName, { recursive: true });
+    }
+
+    fs.writeFileSync(filePath, dashboardFile.content);
+
+    files.push({
+        id: page.page.modelId,
+        dashboardId: page.page.dashboardId,
+        filePath: filePath
+    });
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 

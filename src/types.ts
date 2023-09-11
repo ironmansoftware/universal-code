@@ -8,6 +8,15 @@ export type Dashboard = {
     content: string;
 }
 
+export type DashboardPage = {
+    modelId: number;
+    name: string;
+    url?: string;
+    content?: string;
+    dashboardId: number;
+}
+
+
 export type DashboardLog = {
     log: string;
 }
@@ -35,6 +44,7 @@ export type DashboardSession = {
     lastTouched: string;
     userName: string;
     endpoints: Array<DashboardEndpoint>;
+    pages: Array<string>;
 }
 
 export type DashboardDiagnostics = {

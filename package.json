@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "4.0.2",
+	"version": "4.1.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -111,6 +111,21 @@
 				"icon": "$(go-to-file)"
 			},
 			{
+				"command": "powershell-universal.addDashboardPage",
+				"title": "Add Page",
+				"icon": "$(add)"
+			},
+			{
+				"command": "powershell-universal.deleteDashboardPage",
+				"title": "Delete Page",
+				"icon": "$(trash)"
+			},
+			{
+				"command": "powershell-universal.openDashboardPageFile",
+				"title": "Open App Page File",
+				"icon": "$(go-to-file)"
+			},
+			{
 				"command": "powershell-universal.debugEndpoint",
 				"title": "Debug",
 				"icon": "$(debug-alt)"
@@ -129,6 +144,11 @@
 				"command": "powershell-universal.viewDashboardLog",
 				"title": "View Log",
 				"icon": "$(file)"
+			},
+			{
+				"command": "powershell-universal.openDashboardTerminal",
+				"title": "Open Terminal",
+				"icon": "$(debug-console)"
 			},
 			{
 				"command": "powershell-universal.startUniversal",
@@ -434,6 +454,16 @@
 					"group": "inline"
 				},
 				{
+					"command": "powershell-universal.addDashboardPage",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardPages",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.deleteDashboardPage",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardPage",
+					"group": "inline"
+				},
+				{
 					"command": "powershell-universal.restartDashboard",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
 					"group": "inline"
@@ -444,12 +474,22 @@
 					"group": "inline"
 				},
 				{
+					"command": "powershell-universal.openDashboardPageFile",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardPage",
+					"group": "inline"
+				},
+				{
 					"command": "powershell-universal.viewDashboardLog",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard"
 				},
 				{
 					"command": "powershell-universal.connectToDashboard",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard"
+				},
+				{
+					"command": "powershell-universal.openDashboardTerminal",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardSessionPage",
+					"group": "inline"
 				},
 				{
 					"command": "powershell-universal.insertRestMethod",

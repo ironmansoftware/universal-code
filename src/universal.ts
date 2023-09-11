@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -198,6 +198,22 @@ export class Universal {
         })
     }
 
+    addDashboardPage(dashboardId: number, page: DashboardPage): Promise<DashboardPage> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${dashboardId}/page`, 'POST', page)?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    deleteDashboardPage(dashboardId: number, pageId: number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${dashboardId}/page/${pageId}`, 'DELETE')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
     startDashboard(id: number): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}/status`, 'PUT')?.then(x => resolve(x.data)).catch(x => {
@@ -217,6 +233,30 @@ export class Universal {
     getDashboard(id: number): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getDashboardPages(id: number): Promise<Array<DashboardPage>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${id}/page`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getDashboardPage(dashboardId: number, id: number): Promise<DashboardPage> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${dashboardId}/page/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    getDashboardDiagnostics(id: number): Promise<DashboardDiagnostics> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${id}/diagnostics`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
         })
@@ -244,6 +284,24 @@ export class Universal {
     saveDashboard(id: number, dashboard: Dashboard) {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'PUT', dashboard)?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    saveDashboardPage(id: number, dashboardId: number, page: DashboardPage) {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${dashboardId}/page/${id}`, 'PUT', page)?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            })
+        })
+    }
+
+    executeDashboardTerminal(dashboardId: number, sessionId: string, pageId: string, command: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${dashboardId}/terminal/${sessionId}/${pageId}`, 'POST', {
+                command
+            })?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
             })
         })

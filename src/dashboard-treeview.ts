@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Container } from './container';
-import { Dashboard, DashboardEndpoint, DashboardStatus } from './types';
+import { Dashboard, DashboardEndpoint, DashboardPage, DashboardSession, DashboardStatus } from './types';
 import ParentTreeItem from './parentTreeItem';
 export class DashboardTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
@@ -47,12 +47,25 @@ export class DashboardsTreeItem extends ParentTreeItem {
     }
 }
 
-export class DashboardTreeItem extends vscode.TreeItem {
+export class DashboardTreeItem extends ParentTreeItem {
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            return [
+                new DashboardPagesTreeItem(this.dashboard),
+                new DashboardSessionsTreeItem(this.dashboard),
+            ];
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query apps pages. " + err);
+            return [];
+        }
+    }
+
     public dashboard: Dashboard;
     private logIndex: number;
 
     constructor(dashboard: Dashboard) {
-        super(dashboard.name, vscode.TreeItemCollapsibleState.None);
+        super(dashboard.name, vscode.TreeItemCollapsibleState.Collapsed);
         this.dashboard = dashboard;
         const icon = dashboard.status === DashboardStatus.Started ? "debug-start" : "debug-stop";
         const themeIcon = new vscode.ThemeIcon(icon);
@@ -81,6 +94,134 @@ export class DashboardTreeItem extends vscode.TreeItem {
 
     contextValue = "dashboard";
 }
+
+export class DashboardPagesTreeItem extends ParentTreeItem {
+
+    private dashboard: Dashboard;
+
+    constructor(dashboard: Dashboard) {
+        super("Pages", vscode.TreeItemCollapsibleState.Collapsed);
+
+        this.dashboard = dashboard;
+        this.iconPath = new vscode.ThemeIcon('files');
+    }
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            const pages = await Container.universal.getDashboardPages(this.dashboard.id);
+            return pages.map(y => new DashboardPageTreeItem(y));
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query apps. " + err);
+            return [];
+        }
+    }
+
+    contextValue = "dashboardPages";
+}
+
+export class DashboardPageTreeItem extends vscode.TreeItem {
+    public page: DashboardPage;
+
+    constructor(page: DashboardPage) {
+        super(page.name, vscode.TreeItemCollapsibleState.None);
+        this.page = page;
+        const themeIcon = new vscode.ThemeIcon('file');
+        this.iconPath = themeIcon;
+    }
+
+    contextValue = "dashboardPage";
+}
+
+export class DashboardSessionsTreeItem extends ParentTreeItem {
+
+    private dashboard: Dashboard;
+
+    constructor(dashboard: Dashboard) {
+        super("Sessions", vscode.TreeItemCollapsibleState.Collapsed);
+
+        this.dashboard = dashboard;
+        this.iconPath = new vscode.ThemeIcon('debug-disconnect');
+    }
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            const diagnostics = await Container.universal.getDashboardDiagnostics(this.dashboard.id);
+            return diagnostics.sessions.map(y => new DashboardSessionTreeItem(this.dashboard.id, y));
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query apps. " + err);
+            return [];
+        }
+    }
+
+    contextValue = "dashboardPages";
+}
+
+export class DashboardSessionTreeItem extends ParentTreeItem {
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        return [
+            new DashboardSessionPagesTreeItem(this.dashboardId, this.session)
+        ]
+    }
+    public session: DashboardSession;
+    private dashboardId: number;
+
+
+    constructor(dashboardId: number, session: DashboardSession) {
+        super(`${session.userName} (${session.id})`, vscode.TreeItemCollapsibleState.Collapsed);
+        this.session = session;
+        this.dashboardId = dashboardId;
+        const themeIcon = new vscode.ThemeIcon('file');
+        this.iconPath = themeIcon;
+        this.tooltip = session.lastTouched;
+    }
+
+    contextValue = "dashboardSession";
+}
+
+export class DashboardSessionPagesTreeItem extends ParentTreeItem {
+
+    private session: DashboardSession;
+    private dashboardId: number;
+
+    constructor(dashboardId: number, session: DashboardSession) {
+        super("Tabs", vscode.TreeItemCollapsibleState.Collapsed);
+
+        this.session = session;
+        this.iconPath = new vscode.ThemeIcon('browser');
+        this.dashboardId = dashboardId;
+    }
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            return this.session.pages.map(y => new DashboardSessionPageTreeItem(y, this.session.id, this.dashboardId));
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query session pages. " + err);
+            return [];
+        }
+    }
+
+    contextValue = "dashboardPages";
+}
+
+export class DashboardSessionPageTreeItem extends vscode.TreeItem {
+    public pageId: string;
+    public sessionId: string;
+    public dashboardId: number;
+
+    constructor(pageId: string, sessionId: string, dashboardId: number) {
+        super(pageId, vscode.TreeItemCollapsibleState.None);
+        const themeIcon = new vscode.ThemeIcon('browser');
+        this.iconPath = themeIcon;
+
+        this.pageId = pageId;
+        this.sessionId = sessionId;
+        this.dashboardId = dashboardId;
+    }
+
+    contextValue = "dashboardSessionPage";
+}
+
+
 
 export class DashboardEndpointsTreeItem extends ParentTreeItem {
     public endpoints: Array<DashboardEndpoint>;
@@ -112,6 +253,6 @@ export class DashboardEndpointTreeItem extends vscode.TreeItem {
     }
 
     contextValue = 'endpoint';
-    iconPath = '$(code)'
+    iconPath = '$(code)';
 
 }
