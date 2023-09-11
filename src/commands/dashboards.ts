@@ -73,8 +73,17 @@ export const openDashboardTerminalCommand = async (pageInfo: DashboardSessionPag
         },
         close: () => { },
         handleInput: async data => {
-            writeEmitter.fire(data);
-            str += data;
+
+            if (data.charCodeAt(0) === 127) {
+                str = str.slice(0, -1);
+                writeEmitter.fire('\b \b');
+                return;
+            }
+            else {
+                writeEmitter.fire(data);
+                str += data;
+            }
+
             if (data === '\r') {
                 writeEmitter.fire('\r\n');
                 var output = await Container.universal.executeDashboardTerminal(pageInfo.dashboardId, pageInfo.sessionId, pageInfo.pageId, str);

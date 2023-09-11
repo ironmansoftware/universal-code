@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -495,6 +495,14 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/endpoint/${endpoint.id}`, 'PUT', endpoint)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
+            })
+        })
+    }
+
+    getModules(): Promise<Array<Module>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/module`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                resolve([]);
             })
         })
     }

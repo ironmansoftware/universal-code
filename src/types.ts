@@ -93,6 +93,19 @@ export interface Identity {
     name: string;
 }
 
+export interface Module {
+    name: string;
+    version: string;
+    source: ModuleSource;
+    extension: boolean;
+    readOnly: boolean;
+}
+
+export enum ModuleSource {
+    Local,
+    Gallery
+}
+
 export type Script = {
     id: number;
     name: string;

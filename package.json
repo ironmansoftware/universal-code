@@ -34,6 +34,7 @@
 		"onView:universalEndpointProviderView",
 		"onView:universalScriptProviderView",
 		"onView:universalConfigProviderView",
+		"onView:universalPlatformProviderView",
 		"onView:sampleProviderView",
 		"onCommand:powershell-universal.downloadUniversal",
 		"onCommand:powershell-universal.startUniversal",
@@ -92,6 +93,11 @@
 			},
 			{
 				"command": "powershell-universal.refreshConnectionTreeView",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "powershell-universal.refreshPlatformTreeView",
 				"title": "Refresh",
 				"icon": "$(refresh)"
 			},
@@ -294,6 +300,10 @@
 					"name": "Apps"
 				},
 				{
+					"id": "universalPlatformProviderView",
+					"name": "Platform"
+				},
+				{
 					"id": "universalConfigProviderView",
 					"name": "Configuration"
 				},
@@ -384,6 +394,11 @@
 				{
 					"command": "powershell-universal.refreshConnectionTreeView",
 					"when": "view == universalConnectionProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.refreshPlatformTreeView",
+					"when": "view == universalPlatformProviderView",
 					"group": "navigation"
 				},
 				{
