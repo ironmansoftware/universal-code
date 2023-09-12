@@ -495,13 +495,48 @@ export class Universal {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/endpoint/${endpoint.id}`, 'PUT', endpoint)?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
-            })
-        })
+            });
+        });
+    }
+
+    newModule(name: string): Promise<Module> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/module`, 'POST', {
+                name,
+                version: '1.0.0'
+            })?.then(x => resolve(x.data)).catch(x => {
+                resolve({} as Module);
+            });
+        });
+    }
+
+    updateModule(module: Module): Promise<Module> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/module/${module.id}`, 'PUT', module)?.then(x => resolve(x.data)).catch(x => {
+                resolve({} as Module);
+            });
+        });
     }
 
     getModules(): Promise<Array<Module>> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/module`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                resolve([]);
+            })
+        })
+    }
+
+    getModule(id: number): Promise<Module> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/module/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject();
+            });
+        });
+    }
+
+    getRepositories(): Promise<Array<string>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/module/repository`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 resolve([]);
             })
         })

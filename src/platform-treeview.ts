@@ -35,7 +35,8 @@ export class ModulesTreeItem extends ParentTreeItem {
     async getChildren(): Promise<vscode.TreeItem[]> {
         return [
             new CustomModules(),
-            new PowerShellUniversalModules()
+            new PowerShellUniversalModules(),
+            new RepositoriesTreeViewItem()
         ]
     }
     constructor() {
@@ -72,7 +73,7 @@ export class CustomModules extends ParentTreeItem {
     async getChildren(): Promise<vscode.TreeItem[]> {
         try {
             const modules = await Container.universal.getModules();
-            return modules.filter(m => !m.extension && !m.readOnly).map(x => new CustomModule(x));
+            return modules.filter(m => !m.readOnly).map(x => new CustomModule(x));
         }
         catch (err) {
             Container.universal.showConnectionError("Failed to query modules. " + err);
@@ -84,6 +85,33 @@ export class CustomModules extends ParentTreeItem {
         super("Custom", vscode.TreeItemCollapsibleState.Collapsed);
 
         const themeIcon = new vscode.ThemeIcon("folder");
+        this.iconPath = themeIcon;
+    }
+
+    contextValue = 'customModules';
+}
+
+export class RepositoriesTreeViewItem extends ParentTreeItem {
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            const repos = await Container.universal.getRepositories();
+            return repos.map(x => {
+                const ti = new vscode.TreeItem(x, vscode.TreeItemCollapsibleState.None);
+                const themeIcon = new vscode.ThemeIcon("repo");
+                ti.iconPath = themeIcon;
+                return ti;
+            });
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query repositories. " + err);
+            return [];
+        }
+    }
+
+    constructor() {
+        super("Repositories", vscode.TreeItemCollapsibleState.Collapsed);
+
+        const themeIcon = new vscode.ThemeIcon("repo-forked");
         this.iconPath = themeIcon;
     }
 }
@@ -100,6 +128,7 @@ export class PowerShellUniversalModule extends vscode.TreeItem {
 }
 
 export class CustomModule extends vscode.TreeItem {
+    public module: Module;
     constructor(module: Module) {
         super(module.name, vscode.TreeItemCollapsibleState.None);
 
@@ -107,6 +136,7 @@ export class CustomModule extends vscode.TreeItem {
         this.iconPath = themeIcon;
 
         this.tooltip = `${module.version}`;
+        this.module = module;
     }
 
     contextValue = 'customModule';

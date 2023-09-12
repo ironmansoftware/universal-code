@@ -23,6 +23,7 @@ import { registerWelcomeCommands } from './commands/welcomeCommand';
 import { registerWalkthroughCommands } from './commands/walkthrough';
 import { registerTerminalCommands } from './commands/terminals';
 import { PlatformTreeViewProvider } from './platform-treeview';
+import { registerModuleCommands } from './commands/modules';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -98,7 +99,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.window.createTreeView<vscode.TreeItem>('universalConfigProviderView', { treeDataProvider: configProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('sampleProviderView', { treeDataProvider: samplesProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalInfoProviderView', { treeDataProvider: infoProvider });
-	//vscode.window.createTreeView<vscode.TreeItem>('universalPlatformProviderView', { treeDataProvider: platformProvider });
+	vscode.window.createTreeView<vscode.TreeItem>('universalPlatformProviderView', { treeDataProvider: platformProvider });
 
 	Container.ConfigFileTreeView = configProvider;
 
@@ -107,7 +108,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('powershell-universal.refreshScriptTreeView', () => scriptProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConfigurationTreeView', () => configProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConnectionTreeView', () => connectionProvider.refresh());
-	//vscode.commands.registerCommand('powershell-universal.refreshPlatformTreeView', () => platformProvider.refresh());
+	vscode.commands.registerCommand('powershell-universal.refreshPlatformTreeView', () => platformProvider.refresh());
 
 	vscode.commands.registerCommand('powershell-universal.refreshAllTreeViews', () => {
 		vscode.commands.executeCommand('powershell-universal.refreshTreeView');
@@ -115,6 +116,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('powershell-universal.refreshScriptTreeView');
 		vscode.commands.executeCommand('powershell-universal.refreshConfigurationTreeView');
 		vscode.commands.executeCommand('powershell-universal.refreshConnectionTreeView');
+		vscode.commands.executeCommand('powershell-universal.refreshPlatformTreeView');
 	});
 
 	downloadUniversalCommand();
@@ -127,6 +129,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerWelcomeCommands(context);
 	registerWalkthroughCommands(context);
 	registerTerminalCommands(context);
+	registerModuleCommands(context);
 
 	await vscode.commands.executeCommand("powershell-universal.syncSamples");
 

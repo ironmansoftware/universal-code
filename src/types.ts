@@ -94,11 +94,13 @@ export interface Identity {
 }
 
 export interface Module {
+    id: number;
     name: string;
     version: string;
     source: ModuleSource;
     extension: boolean;
     readOnly: boolean;
+    content: string;
 }
 
 export enum ModuleSource {
@@ -176,7 +178,6 @@ export enum TerminalStatus {
     Idle,
     Terminated
 }
-
 
 export type FileSystemItem = {
     name: string;

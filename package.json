@@ -270,6 +270,16 @@
 				"command": "powershell-universal.newConfigFolder",
 				"title": "New Folder",
 				"icon": "$(new-folder)"
+			},
+			{
+				"command": "powershell-universal.newModule",
+				"title": "New Module",
+				"icon": "$(add)"
+			},
+			{
+				"command": "powershell-universal.editModule",
+				"title": "Edit Module",
+				"icon": "$(go-to-file)"
 			}
 		],
 		"viewsContainers": {
@@ -574,6 +584,16 @@
 				{
 					"command": "powershell-universal.viewSampleOnGitHub",
 					"when": "view == sampleProviderView && viewItem == sample",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.newModule",
+					"when": "view == universalPlatformProviderView && viewItem == customModules",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.editModule",
+					"when": "view == universalPlatformProviderView && viewItem == customModule",
 					"group": "inline"
 				}
 			]
