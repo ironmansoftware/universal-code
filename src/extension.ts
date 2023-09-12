@@ -98,7 +98,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.window.createTreeView<vscode.TreeItem>('universalConfigProviderView', { treeDataProvider: configProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('sampleProviderView', { treeDataProvider: samplesProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalInfoProviderView', { treeDataProvider: infoProvider });
-	vscode.window.createTreeView<vscode.TreeItem>('universalPlatformProviderView', { treeDataProvider: platformProvider });
+	//vscode.window.createTreeView<vscode.TreeItem>('universalPlatformProviderView', { treeDataProvider: platformProvider });
 
 	Container.ConfigFileTreeView = configProvider;
 
@@ -107,7 +107,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('powershell-universal.refreshScriptTreeView', () => scriptProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConfigurationTreeView', () => configProvider.refresh());
 	vscode.commands.registerCommand('powershell-universal.refreshConnectionTreeView', () => connectionProvider.refresh());
-	vscode.commands.registerCommand('powershell-universal.refreshPlatformTreeView', () => platformProvider.refresh());
+	//vscode.commands.registerCommand('powershell-universal.refreshPlatformTreeView', () => platformProvider.refresh());
 
 	vscode.commands.registerCommand('powershell-universal.refreshAllTreeViews', () => {
 		vscode.commands.executeCommand('powershell-universal.refreshTreeView');
