@@ -5,6 +5,6 @@
 </p>
 
 
-PowerShell Universal is a single pane of glass for mananging your automation environment. The server is cross-platform. You can install it by using PowerShell, using a Windows MSI, with Chocolatey, or run as a Docker container. 
+PowerShell Universal is a single pane of glass for managing your automation environment. The server is cross-platform. You can install it by using PowerShell, using a Windows MSI, with Chocolatey, or run as a Docker container. 
 
 [Download](https://ironmansoftware.com/powershell-universal/downloads) | [💡Learn More About Installing PowerShell Universal](https://docs.powershelluniversal.com/getting-started)
