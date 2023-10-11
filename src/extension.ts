@@ -24,6 +24,7 @@ import { registerWalkthroughCommands } from './commands/walkthrough';
 import { registerTerminalCommands } from './commands/terminals';
 import { PlatformTreeViewProvider } from './platform-treeview';
 import { registerModuleCommands } from './commands/modules';
+import { registerDebuggerCommands } from './commands/debugger';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -130,6 +131,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerWalkthroughCommands(context);
 	registerTerminalCommands(context);
 	registerModuleCommands(context);
+	registerDebuggerCommands(context);
 
 	await vscode.commands.executeCommand("powershell-universal.syncSamples");
 

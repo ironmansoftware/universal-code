@@ -282,6 +282,19 @@
 				"icon": "$(go-to-file)"
 			}
 		],
+		"debuggers": [
+			{
+				"type": "powershelluniversal",
+				"label": "PowerShell Universal",
+				"initialConfigurations": [
+					{
+						"type": "powershelluniversal",
+						"request": "attach",
+						"name": "Attach PowerShell Universal Debugger"
+					}
+				]
+			}
+		],
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -654,7 +667,8 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
-		"@microsoft/signalr": "^6.0.1",
+		"@microsoft/signalr": "^6.0.23",
+		"@vscode/debugprotocol": "^1.63.0",
 		"adm-zip": "^0.4.16",
 		"atob": "^2.1.2",
 		"axios": "^0.19.2",
