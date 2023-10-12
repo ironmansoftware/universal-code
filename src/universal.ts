@@ -90,6 +90,11 @@ export class Universal {
                     }
                 }
 
+                if (!vscode.window.terminals.find(x => x.name === "PowerShell Extension")) {
+                    Container.connected = true;
+                    return;
+                }
+
                 Container.universal.sendTerminalCommand(`Import-Module (Join-Path '${__dirname}' 'Universal.VSCode.psm1')`);
                 Container.universal.sendTerminalCommand(`Install-UniversalModule -Version '${version}'`);
                 Container.universal.sendTerminalCommand(`Connect-PSUServer -ComputerName '${url}' -AppToken '${appToken}'`);

@@ -44,11 +44,14 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
             const protocolMessage = JSON.parse(message) as DebugProtocol.ProtocolMessage;
             this.handleMessage(protocolMessage);
         });
+
+        this.hubConnection.onclose(() => {
+            vscode.window.showInformationMessage("Disconnected from PowerShell Universal Debugger.");
+        });
     }
 
     private hubConnection: HubConnection;
     private sendMessage = new vscode.EventEmitter<DebugProtocol.ProtocolMessage>();
-    private sequence: number = 1;
 
     readonly onDidSendMessage: vscode.Event<DebugProtocol.ProtocolMessage> = this.sendMessage.event;
 

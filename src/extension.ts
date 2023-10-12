@@ -27,20 +27,6 @@ import { registerModuleCommands } from './commands/modules';
 import { registerDebuggerCommands } from './commands/debugger';
 
 export async function activate(context: vscode.ExtensionContext) {
-
-	var extension = vscode.extensions.getExtension("ms-vscode.PowerShell");
-	if (!extension) {
-		extension = vscode.extensions.getExtension("ms-vscode.PowerShell-Preview");
-	}
-
-	if (!extension) {
-		vscode.window.showErrorMessage("PowerShell Universal requires the Microsoft PowerShell or PowerShell Preview extension.");
-		return;
-	}
-
-	if (!extension.isActive)
-		await extension.activate();
-
 	registerConnectCommands(context);
 
 	const universal = new Universal(context);
