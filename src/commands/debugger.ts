@@ -40,8 +40,9 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
             .configureLogging(LogLevel.Information)
             .build();
 
-        this.hubConnection.on("message", (message) => {
-            const protocolMessage = JSON.parse(message) as DebugProtocol.ProtocolMessage;
+        this.hubConnection.on("message", (message: string) => {
+            var json = message.split('\r\n')[2];
+            const protocolMessage = JSON.parse(json) as DebugProtocol.ProtocolMessage;
             this.handleMessage(protocolMessage);
         });
 
