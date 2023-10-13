@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -622,12 +622,20 @@ export class Universal {
         terminal?.sendText(command, true);
     }
 
-    connectDashboard(id: number) {
-        this.sendTerminalCommand(`Debug-PSUDashboard -Id ${id}`);
+    getProcesses(): Promise<Array<Process>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/diagnostics/processes`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x);
+            });
+        });
     }
 
-    debugDashboardEndpoint(id: string) {
-        this.sendTerminalCommand(`Get-PSUDashboardEndpointRunspace -Id ${id} | Debug-Runspace`);
+    getRunspaces(processId: number): Promise<Array<Runspace>> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/diagnostics/processes/${processId}/runspaces`, 'GET')?.then(x => resolve(x.data.map((y: any) => { return { ...y, processId }; }))).catch(x => {
+                reject(x);
+            });
+        });
     }
 
     connectUniversal(url: string) {

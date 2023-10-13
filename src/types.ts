@@ -186,3 +186,22 @@ export type FileSystemItem = {
     isLeaf: boolean;
     content: string;
 }
+
+export type Process = {
+    processName: string;
+    description: string;
+    processId: number;
+    environment: Environment
+};
+
+export type Environment = {
+    name: string;
+    description: string;
+};
+
+export type Runspace = {
+    id: number;
+    state: string;
+    availability: string;
+    processId: number;
+}

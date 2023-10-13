@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IConnection, load } from './settings';
 import ParentTreeItem from './parentTreeItem';
 import { Container } from './container';
-import { Module } from './types';
+import { Module, Process, Runspace } from './types';
 
 export class PlatformTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
@@ -16,7 +16,8 @@ export class PlatformTreeViewProvider implements vscode.TreeDataProvider<vscode.
     async getChildren(element?: vscode.TreeItem | undefined) {
         if (element == null) {
             return [
-                new ModulesTreeItem()
+                new ModulesTreeItem(),
+                new ProcessesTreeItem()
             ]
         }
 
@@ -29,6 +30,65 @@ export class PlatformTreeViewProvider implements vscode.TreeDataProvider<vscode.
     refresh(node?: vscode.TreeItem): void {
         this._onDidChangeTreeData.fire(node);
     }
+}
+
+export class ProcessesTreeItem extends ParentTreeItem {
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            const processes = await Container.universal.getProcesses();
+            return processes.map(x => new ProcessTreeItem(x));
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query modules. " + err);
+            return [];
+        }
+    }
+    constructor() {
+        super("Processes", vscode.TreeItemCollapsibleState.Collapsed);
+
+        const themeIcon = new vscode.ThemeIcon("server-process");
+        this.iconPath = themeIcon;
+    }
+}
+
+export class ProcessTreeItem extends ParentTreeItem {
+    public process: Process;
+    async getChildren(): Promise<vscode.TreeItem[]> {
+        try {
+            const runspaces = await Container.universal.getRunspaces(this.process.processId);
+            return runspaces.map(x => new RunspaceTreeItem(x));
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query modules. " + err);
+            return [];
+        }
+    }
+    constructor(process: Process) {
+        super(process.description, vscode.TreeItemCollapsibleState.Collapsed);
+
+        this.process = process;
+
+        const themeIcon = new vscode.ThemeIcon("server-process");
+        this.iconPath = themeIcon;
+    }
+}
+
+
+export class RunspaceTreeItem extends vscode.TreeItem {
+    public runspace: Runspace;
+    constructor(runspace: Runspace) {
+        super(`Runspace ${runspace.id.toString()}`, vscode.TreeItemCollapsibleState.None);
+
+        this.description = runspace.availability;
+        this.tooltip = runspace.state;
+
+        this.runspace = runspace;
+
+        const themeIcon = new vscode.ThemeIcon("circuit-board");
+        this.iconPath = themeIcon;
+    }
+
+    contextValue = 'runspace';
 }
 
 export class ModulesTreeItem extends ParentTreeItem {

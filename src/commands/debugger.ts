@@ -2,10 +2,13 @@ import * as vscode from 'vscode';
 import { load } from '../settings';
 import { HubConnectionBuilder, LogLevel, HubConnection } from '@microsoft/signalr';
 import { DebugProtocol } from '@vscode/debugprotocol';
+import { RunspaceTreeItem } from '../platform-treeview';
 
 let adapter: UniversalDebugAdapter;
 
 export const registerDebuggerCommands = (context: vscode.ExtensionContext) => {
+    vscode.commands.registerCommand('powershell-universal.attachRunspace', (item) => attachRunspace(item, context));
+
     adapter = new UniversalDebugAdapter(context);
 
     vscode.debug.registerDebugAdapterDescriptorFactory('powershelluniversal', {
@@ -14,6 +17,17 @@ export const registerDebuggerCommands = (context: vscode.ExtensionContext) => {
         }
     });
 }
+
+
+export const attachRunspace = async (runspace: RunspaceTreeItem, context: vscode.ExtensionContext) => {
+    await vscode.debug.startDebugging(undefined, {
+        name: "PowerShell Universal",
+        type: "powershelluniversal",
+        request: "attach",
+        processId: runspace.runspace.processId,
+        runspaceId: runspace.runspace.id
+    });
+};
 
 export class UniversalDebugAdapter implements vscode.DebugAdapter {
 
@@ -41,8 +55,7 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
             .build();
 
         this.hubConnection.on("message", (message: string) => {
-            var json = message.split('\r\n')[2];
-            const protocolMessage = JSON.parse(json) as DebugProtocol.ProtocolMessage;
+            const protocolMessage = JSON.parse(message) as DebugProtocol.ProtocolMessage;
             this.handleMessage(protocolMessage);
         });
 

@@ -52,6 +52,11 @@
 				"title": "PowerShell Universal: Getting Started Walkthrough"
 			},
 			{
+				"command": "powershell-universal.attachRunspace",
+				"title": "Attach Runspace",
+				"icon": "$(debug-alt)"
+			},
+			{
 				"command": "powershell-universal.addConnection",
 				"title": "Add Connection",
 				"icon": "$(add)"
@@ -132,19 +137,9 @@
 				"icon": "$(go-to-file)"
 			},
 			{
-				"command": "powershell-universal.debugEndpoint",
-				"title": "Debug",
-				"icon": "$(debug-alt)"
-			},
-			{
 				"command": "powershell-universal.downloadUniversal",
 				"title": "PowerShell Universal: Download",
 				"icon": "$(desktop-download)"
-			},
-			{
-				"command": "powershell-universal.connectToDashboard",
-				"title": "Debug App Process",
-				"icon": "$(debug-alt)"
 			},
 			{
 				"command": "powershell-universal.viewDashboardLog",
@@ -487,6 +482,11 @@
 			],
 			"view/item/context": [
 				{
+					"command": "powershell-universal.attachRunspace",
+					"when": "view == universalPlatformProviderView && viewItem == runspace",
+					"group": "inline"
+				},
+				{
 					"command": "powershell-universal.connection",
 					"when": "view == universalConnectionProviderView && viewItem == connection",
 					"group": "inline"
@@ -523,10 +523,6 @@
 				},
 				{
 					"command": "powershell-universal.viewDashboardLog",
-					"when": "view == universalDashboardProviderView && viewItem == dashboard"
-				},
-				{
-					"command": "powershell-universal.connectToDashboard",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard"
 				},
 				{
