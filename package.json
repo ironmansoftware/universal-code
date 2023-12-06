@@ -5,7 +5,7 @@
 	"publisher": "ironmansoftware",
 	"version": "4.2.0",
 	"engines": {
-		"vscode": "^1.46.0"
+		"vscode": "^1.72.0"
 	},
 	"repository": {
 		"type": "git",
@@ -27,18 +27,7 @@
 		"universal automation"
 	],
 	"activationEvents": [
-		"onUri",
-		"onView:universalConnectionProviderView",
-		"onView:universalInfoProviderView",
-		"onView:universalDashboardProviderView",
-		"onView:universalEndpointProviderView",
-		"onView:universalScriptProviderView",
-		"onView:universalConfigProviderView",
-		"onView:universalPlatformProviderView",
-		"onView:sampleProviderView",
-		"onCommand:powershell-universal.downloadUniversal",
-		"onCommand:powershell-universal.startUniversal",
-		"onCommand:powershell-universal.walkthrough"
+		"onUri"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -663,7 +652,7 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
-		"@microsoft/signalr": "^6.0.23",
+		"@microsoft/signalr": "^8.0.0",
 		"@vscode/debugprotocol": "^1.63.0",
 		"adm-zip": "^0.4.16",
 		"atob": "^2.1.2",

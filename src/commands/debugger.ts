@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { load } from '../settings';
+// @ts-ignore
 import { HubConnectionBuilder, LogLevel, HubConnection } from '@microsoft/signalr';
 import { DebugProtocol } from '@vscode/debugprotocol';
 import { RunspaceTreeItem } from '../platform-treeview';
