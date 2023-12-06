@@ -13,3 +13,7 @@ jobs:
         - name: Build
           run: Invoke-Build
           shell: powershell
+        - uses: actions/upload-artifact@v3
+          with:
+            name: vsix
+            path: kit/*.vsix
