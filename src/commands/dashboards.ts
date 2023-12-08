@@ -20,23 +20,52 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardPageFile', openPageFile);
     vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
-    vscode.commands.registerCommand('powershell-universal.connectToDashboard', connectToDashboardCommand);
     vscode.commands.registerCommand('powershell-universal.viewDashboardLog', viewDashboardLogCommand);
 
-    vscode.workspace.onDidSaveTextDocument((file) => {
+    vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.dashboardPage')) {
             const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
-            Container.universal.getDashboardPage(info.dashboardId, info.id).then((page) => {
+
+            if (!info) {
+                vscode.window.showErrorMessage(`File from a previous session. Re-open file from the Activity Bar.`);
+                return;
+            }
+
+            const dashboards = await Container.universal.getDashboards();
+            const dashboard = dashboards.find(x => x.name === info.dashboardName);
+            if (!dashboard) {
+                vscode.window.showErrorMessage(`Dashboard ${info.dashboardName} not found.`);
+                return;
+            }
+
+            const pages = await Container.universal.getDashboardPages(dashboard.id);
+            const page = pages.find(x => x.name === info.name);
+
+            if (!page) {
+                vscode.window.showErrorMessage(`Page ${info.name} not found.`);
+                return;
+            } else {
                 page.content = file.getText();
-                Container.universal.saveDashboardPage(info.id, info.dashboardId, page);
-            });
+                Container.universal.saveDashboardPage(page.modelId, dashboard.id, page);
+            }
         }
         else if (file.fileName.includes('.universal.code.dashboard')) {
             const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
-            Container.universal.getDashboard(info.id).then((dashboard) => {
+
+            if (!info) {
+                vscode.window.showErrorMessage(`File from a previous session. Re-open file from the Activity Bar.`);
+                return;
+            }
+
+            const dashboards = await Container.universal.getDashboards();
+            const dashboard = dashboards.find(x => x.name === info.name);
+
+            if (dashboard) {
                 dashboard.content = file.getText();
-                Container.universal.saveDashboard(info.id, dashboard);
-            });
+                Container.universal.saveDashboard(dashboard.id, dashboard);
+            } else {
+                vscode.window.showErrorMessage(`Dashboard ${info.name} not found.`);
+            }
         }
     });
 
@@ -163,13 +192,7 @@ export const restartDashboardCommand = async (dashboard: DashboardTreeItem) => {
 }
 
 export const openFileCommand = async (dashboard: DashboardTreeItem) => {
-    var settings = load();
-    if (settings.localEditing) {
-        await openFileLocal(dashboard);
-    }
-    else {
-        await openFileRemote(dashboard);
-    }
+    await openFileRemote(dashboard);
 }
 
 export const openFileRemote = async (dashboard: DashboardTreeItem) => {
@@ -189,22 +212,9 @@ export const openFileRemote = async (dashboard: DashboardTreeItem) => {
 
     files.push({
         id: dashboard.dashboard.id,
+        name: dashboard.dashboard.name,
         filePath: filePath
     });
-
-    const textDocument = await vscode.workspace.openTextDocument(filePath);
-
-    vscode.window.showTextDocument(textDocument);
-}
-
-export const openFileLocal = async (dashboard: DashboardTreeItem) => {
-    const settings = await Container.universal.getSettings();
-    const filePath = path.join(settings.repositoryPath, dashboard.dashboard.filePath);
-
-    if (!fs.existsSync(filePath)) {
-        await vscode.window.showErrorMessage(`Failed to find file ${filePath}. If you have local editing on and are accessing a remote file, you may need to turn off local editing.`);
-        return
-    }
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 
@@ -219,6 +229,7 @@ export const openPageFile = async (page: DashboardPageTreeItem) => {
     const filePath = path.join(codePathId, page.page.name + ".ps1");
 
     const dashboardFile = await Container.universal.getDashboardPage(page.page.dashboardId, page.page.modelId);
+    const dashboard = await Container.universal.getDashboard(page.page.dashboardId);
     var dirName = path.dirname(filePath);
     if (!fs.existsSync(dirName)) {
         fs.mkdirSync(dirName, { recursive: true });
@@ -228,6 +239,8 @@ export const openPageFile = async (page: DashboardPageTreeItem) => {
 
     files.push({
         id: page.page.modelId,
+        name: page.page.name,
+        dashboardName: dashboard.name,
         dashboardId: page.page.dashboardId,
         filePath: filePath
     });
@@ -238,33 +251,18 @@ export const openPageFile = async (page: DashboardPageTreeItem) => {
 }
 
 export const openDashboardConfigFileCommand = async () => {
-    var settings = load();
-    if (settings.localEditing) {
-        const psuSettings = await Container.universal.getSettings();
-        const filePath = path.join(psuSettings.repositoryPath, '.universal', 'dashboards.ps1');
-        const textDocument = await vscode.workspace.openTextDocument(filePath);
-        vscode.window.showTextDocument(textDocument);
+    const os = require('os');
+
+    const filePath = path.join(tmpdir(), '.universal.code.configuration', 'dashboards.ps1');
+    const codePath = path.join(tmpdir(), '.universal.code.configuration');
+    const config = await Container.universal.getConfiguration('dashboards.ps1');
+    if (!fs.existsSync(codePath)) {
+        fs.mkdirSync(codePath);
     }
-    else {
-        const os = require('os');
+    fs.writeFileSync(filePath, config);
 
-        const filePath = path.join(tmpdir(), '.universal.code.configuration', 'dashboards.ps1');
-        const codePath = path.join(tmpdir(), '.universal.code.configuration');
-        const config = await Container.universal.getConfiguration('dashboards.ps1');
-        if (!fs.existsSync(codePath)) {
-            fs.mkdirSync(codePath);
-        }
-        fs.writeFileSync(filePath, config);
-
-        const textDocument = await vscode.workspace.openTextDocument(filePath);
-        vscode.window.showTextDocument(textDocument);
-    }
-}
-
-export const connectToDashboardCommand = async (item: DashboardTreeItem) => {
-    var terminal = vscode.window.terminals.find(x => x.name === "PowerShell Extension");
-
-    terminal?.sendText(`Enter-PSHostProcess -Id ${item.dashboard.processId}`);
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
+    vscode.window.showTextDocument(textDocument);
 }
 
 export const viewDashboardLogCommand = async (item: DashboardTreeItem) => {

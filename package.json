@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "4.2.0",
+	"version": "4.2.1",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
@@ -347,11 +347,6 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Whether to automatically synchronize samples from GitHub when the extension starts."
-				},
-				"powerShellUniversal.localEditing": {
-					"type": "boolean",
-					"default": false,
-					"description": "Edit files locally rather than using the REST API."
 				},
 				"powerShellUniversal.checkModules": {
 					"type": "boolean",
