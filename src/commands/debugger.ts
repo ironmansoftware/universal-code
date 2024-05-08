@@ -21,6 +21,8 @@ export const registerDebuggerCommands = (context: vscode.ExtensionContext) => {
 
 
 export const attachRunspace = async (runspace: RunspaceTreeItem, context: vscode.ExtensionContext) => {
+    adapter.startSession();
+
     await vscode.debug.startDebugging(undefined, {
         name: "PowerShell Universal",
         type: "powershelluniversal",
@@ -33,7 +35,10 @@ export const attachRunspace = async (runspace: RunspaceTreeItem, context: vscode
 export class UniversalDebugAdapter implements vscode.DebugAdapter {
 
     constructor(context: vscode.ExtensionContext) {
-        const connectionName = context.globalState.get("universal.connection");
+        this.connectionName = context.globalState.get("universal.connection");
+    }
+
+    public startSession(): void {
         const settings = load();
 
         var appToken = settings.appToken;
@@ -41,8 +46,8 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
         var rejectUnauthorized = true;
         var windowsAuth = false;
 
-        if (connectionName && connectionName !== 'Default') {
-            const connection = settings.connections.find(m => m.name === connectionName);
+        if (this.connectionName && this.connectionName !== 'Default') {
+            const connection = settings.connections.find(m => m.name === this.connectionName);
             if (connection) {
                 appToken = connection.appToken;
                 url = connection.url;
@@ -65,13 +70,14 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
         });
     }
 
-    private hubConnection: HubConnection;
+    private connectionName: string | undefined;
+    private hubConnection: HubConnection | undefined;
     private sendMessage = new vscode.EventEmitter<DebugProtocol.ProtocolMessage>();
 
     readonly onDidSendMessage: vscode.Event<DebugProtocol.ProtocolMessage> = this.sendMessage.event;
 
     handleMessage(message: DebugProtocol.ProtocolMessage): void {
-        if (this.hubConnection.state === 'Disconnected') {
+        if (this.hubConnection?.state === 'Disconnected') {
             this.hubConnection.start().then(() => {
                 this.handleMessage(message);
             });
@@ -80,7 +86,7 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
 
         switch (message.type) {
             case 'request':
-                this.hubConnection.send("message", JSON.stringify(message));
+                this.hubConnection?.send("message", JSON.stringify(message));
                 break;
             case 'response':
                 this.sendMessage.fire(message);
@@ -92,6 +98,6 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
     }
 
     dispose() {
-        this.hubConnection.stop();
+        this.hubConnection?.stop();
     }
 }

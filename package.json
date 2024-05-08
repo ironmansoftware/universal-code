@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "4.2.2",
+	"version": "4.2.3",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
