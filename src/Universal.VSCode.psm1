@@ -1,6 +1,11 @@
 function Install-UniversalModule {
     param($Version)
 
+    if ($Version -contains "beta") {
+        Write-Warning "This feature is not supported for beta versions"
+        return
+    }
+
     $Parameters = @{
         Name            = "Universal"
         RequiredVersion = $Version

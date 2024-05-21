@@ -65,7 +65,7 @@ export const openConfigRemote = async (item: ConfigTreeItem | SampleFile) => {
     }
 
     const version = await Container.universal.getVersion();
-    if (version.startsWith("3") || version.startsWith("4")) {
+    if (version.startsWith("3") || version.startsWith("4") || version.startsWith("5")) {
         const config = await Container.universal.getFileContent(item.fileName);
 
         const directory = path.dirname(filePath);
