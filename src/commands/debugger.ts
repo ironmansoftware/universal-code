@@ -65,8 +65,22 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
             this.handleMessage(protocolMessage);
         });
 
+        this.hubConnection.on("error", (message: string) => {
+            vscode.window.showErrorMessage(message);
+        });
+
         this.hubConnection.onclose(() => {
             vscode.window.showInformationMessage("Disconnected from PowerShell Universal Debugger.");
+        });
+
+        this.hubConnection.start().then(() => {
+            this.hubConnection?.invoke("connect").then((msg) => {
+                if (msg.success) {
+                    vscode.window.showInformationMessage(msg.message);
+                } else {
+                    vscode.window.showErrorMessage(msg.message);
+                }
+            });
         });
     }
 
@@ -86,7 +100,12 @@ export class UniversalDebugAdapter implements vscode.DebugAdapter {
 
         switch (message.type) {
             case 'request':
-                this.hubConnection?.send("message", JSON.stringify(message));
+                var request = message as DebugProtocol.Request;
+                if (request.command === 'disconnect') {
+                    this.hubConnection?.stop();
+                } else {
+                    this.hubConnection?.send("message", JSON.stringify(message));
+                }
                 break;
             case 'response':
                 this.sendMessage.fire(message);
