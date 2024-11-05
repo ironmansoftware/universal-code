@@ -53,6 +53,7 @@ export class DashboardTreeItem extends ParentTreeItem {
             return [
                 new DashboardPagesTreeItem(this.dashboard),
                 new DashboardSessionsTreeItem(this.dashboard),
+                new DashboardModuleTreeItem(this.dashboard),
             ];
         }
         catch (err) {
@@ -93,6 +94,20 @@ export class DashboardTreeItem extends ParentTreeItem {
     }
 
     contextValue = "dashboard";
+}
+
+
+export class DashboardModuleTreeItem extends vscode.TreeItem {
+    public dashboard: Dashboard;
+
+    constructor(dashboard: Dashboard) {
+        super("Module", vscode.TreeItemCollapsibleState.None);
+        this.dashboard = dashboard;
+        const themeIcon = new vscode.ThemeIcon('code');
+        this.iconPath = themeIcon;
+    }
+
+    contextValue = "dashboardModule";
 }
 
 export class DashboardPagesTreeItem extends ParentTreeItem {

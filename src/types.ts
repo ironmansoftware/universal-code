@@ -6,6 +6,7 @@ export type Dashboard = {
     processId: number;
     filePath: string;
     content: string;
+    moduleContent: string;
 }
 
 export type DashboardPage = {

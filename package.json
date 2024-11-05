@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "4.2.4",
+	"version": "5.0.0",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
@@ -173,6 +173,11 @@
 			{
 				"command": "powershell-universal.openDashboardConfigFile",
 				"title": "Open dashboards.ps1",
+				"icon": "$(go-to-file)"
+			},
+			{
+				"command": "powershell-universal.openDashboardModuleFile",
+				"title": "Open App Module",
 				"icon": "$(go-to-file)"
 			},
 			{
@@ -498,6 +503,11 @@
 				{
 					"command": "powershell-universal.openDashboardFile",
 					"when": "view == universalDashboardProviderView && viewItem == dashboard",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.openDashboardModuleFile",
+					"when": "view == universalDashboardProviderView && viewItem == dashboardModule",
 					"group": "inline"
 				},
 				{

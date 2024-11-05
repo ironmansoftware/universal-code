@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { load } from './../settings';
-import { DashboardPageTreeItem, DashboardSessionPageTreeItem, DashboardTreeItem } from './../dashboard-treeview';
+import { DashboardModuleTreeItem, DashboardPageTreeItem, DashboardSessionPageTreeItem, DashboardTreeItem } from './../dashboard-treeview';
 import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs';
@@ -20,6 +20,7 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.openDashboardFile', openFileCommand);
     vscode.commands.registerCommand('powershell-universal.openDashboardPageFile', openPageFile);
     vscode.commands.registerCommand('powershell-universal.openDashboardConfigFile', openDashboardConfigFileCommand);
+    vscode.commands.registerCommand('powershell-universal.openDashboardModuleFile', openDashboardModuleFileCommand);
     vscode.commands.registerCommand('powershell-universal.viewDashboardLog', viewDashboardLogCommand);
 
     vscode.workspace.onDidSaveTextDocument(async (file) => {
@@ -62,6 +63,24 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
 
             if (dashboard) {
                 dashboard.content = file.getText();
+                Container.universal.saveDashboard(dashboard.id, dashboard);
+            } else {
+                vscode.window.showErrorMessage(`Dashboard ${info.name} not found.`);
+            }
+        }
+        else if (file.fileName.includes('.universal.code.dashboardModule')) {
+            const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
+
+            if (!info) {
+                vscode.window.showErrorMessage(`File from a previous session. Re-open file from the Activity Bar.`);
+                return;
+            }
+
+            const dashboards = await Container.universal.getDashboards();
+            const dashboard = dashboards.find(x => x.name === info.name);
+
+            if (dashboard) {
+                dashboard.moduleContent = file.getText();
                 Container.universal.saveDashboard(dashboard.id, dashboard);
             } else {
                 vscode.window.showErrorMessage(`Dashboard ${info.name} not found.`);
@@ -242,6 +261,33 @@ export const openPageFile = async (page: DashboardPageTreeItem) => {
         name: page.page.name,
         dashboardName: dashboard.name,
         dashboardId: page.page.dashboardId,
+        filePath: filePath
+    });
+
+    const textDocument = await vscode.workspace.openTextDocument(filePath);
+
+    vscode.window.showTextDocument(textDocument);
+}
+
+export const openDashboardModuleFileCommand = async (item: DashboardModuleTreeItem) => {
+    const os = require('os');
+    const codePath = path.join(tmpdir(), '.universal.code.dashboardModule');
+
+    const codePathId = path.join(codePath, item.dashboard.name);
+    const filePath = path.join(codePathId, item.dashboard.name + ".psm1");
+
+    const dashboard = await Container.universal.getDashboard(item.dashboard.id);
+    var dirName = path.dirname(filePath);
+    if (!fs.existsSync(dirName)) {
+        fs.mkdirSync(dirName, { recursive: true });
+    }
+
+    fs.writeFileSync(filePath, dashboard.moduleContent);
+
+    files.push({
+        name: dashboard.name,
+        dashboardName: dashboard.name,
+        dashboardId: dashboard.id,
         filePath: filePath
     });
 
