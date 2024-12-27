@@ -26,7 +26,8 @@ export class ConnectionTreeViewProvider implements vscode.TreeDataProvider<vscod
                     name: "Default",
                     appToken: settings.appToken,
                     url: settings.url,
-                    allowInvalidCertificate: false
+                    allowInvalidCertificate: false,
+                    windowsAuth: false
                 }, !connectionName || connectionName === 'Default'))
             }
 

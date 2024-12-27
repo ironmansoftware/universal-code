@@ -14,6 +14,7 @@ export interface IConnection {
     appToken: string;
     url: string;
     allowInvalidCertificate: boolean;
+    windowsAuth: boolean;
 }
 
 export function load(): ISettings {

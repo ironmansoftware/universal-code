@@ -39,6 +39,7 @@ export class Universal {
                 appToken = connection.appToken;
                 url = connection.url;
                 rejectUnauthorized = !connection.allowInvalidCertificate;
+                windowsAuth = connection.windowsAuth;
             }
         }
 
@@ -47,15 +48,23 @@ export class Universal {
             rejectUnauthorized
         });
 
+        const headers = {
+            'Content-Type': contentType
+        } as any;
+
+        if (windowsAuth) {
+            headers['X-Windows-Auth'] = '';
+        } else {
+            headers['Authorization'] = `Bearer ${appToken}`;
+        };
+
         return axios({
             url: `${url}${path}`,
             method,
-            headers: {
-                authorization: windowsAuth ? null : `Bearer ${appToken}`,
-                'Content-Type': contentType
-            },
+            headers: headers,
             data: data,
-            httpsAgent: agent
+            httpsAgent: agent,
+            withCredentials: windowsAuth
         });
     }
 
