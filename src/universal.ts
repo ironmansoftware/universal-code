@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace, Repository } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -42,7 +42,7 @@ export class Universal {
             }
         }
 
-        https.globalAgent.options.rejectUnauthorized = true;
+        https.globalAgent.options.rejectUnauthorized = rejectUnauthorized;
         const agent = new https.Agent({
             rejectUnauthorized
         });
@@ -101,8 +101,7 @@ export class Universal {
                 Container.connected = true;
             }
         }
-        catch
-        {
+        catch {
 
         }
     }
@@ -539,7 +538,7 @@ export class Universal {
         });
     }
 
-    getRepositories(): Promise<Array<string>> {
+    getRepositories(): Promise<Array<Repository>> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/module/repository`, 'GET')?.then(x => resolve(x.data)).catch(x => {
                 resolve([]);

@@ -16,8 +16,6 @@ import { registerScriptCommands } from './commands/scripts';
 import { registerConfigCommands } from './commands/config';
 import { ConfigTreeViewProvider } from './configuration-treeview';
 import { registerConnectCommands } from './commands/connect';
-import { registerSampleCommands } from './samples';
-import { SampleTreeViewProvider } from './sample-treeview';
 import { ConnectionTreeViewProvider } from './connection-treeview';
 import { registerWelcomeCommands } from './commands/welcomeCommand';
 import { registerWalkthroughCommands } from './commands/walkthrough';
@@ -76,7 +74,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	const endpointProvider = new ApiTreeViewProvider();
 	const scriptProvider = new AutomationTreeViewProvider();
 	const configProvider = new ConfigTreeViewProvider();
-	const samplesProvider = new SampleTreeViewProvider();
 	const platformProvider = new PlatformTreeViewProvider();
 
 	vscode.window.createTreeView<vscode.TreeItem>('universalConnectionProviderView', { treeDataProvider: connectionProvider });
@@ -84,7 +81,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.window.createTreeView<vscode.TreeItem>('universalEndpointProviderView', { treeDataProvider: endpointProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalScriptProviderView', { treeDataProvider: scriptProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalConfigProviderView', { treeDataProvider: configProvider });
-	vscode.window.createTreeView<vscode.TreeItem>('sampleProviderView', { treeDataProvider: samplesProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalInfoProviderView', { treeDataProvider: infoProvider });
 	vscode.window.createTreeView<vscode.TreeItem>('universalPlatformProviderView', { treeDataProvider: platformProvider });
 
@@ -112,14 +108,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerEndpointCommands(context);
 	registerScriptCommands(context);
 	registerConfigCommands(context);
-	registerSampleCommands(context);
 	registerWelcomeCommands(context);
 	registerWalkthroughCommands(context);
 	registerTerminalCommands(context);
 	registerModuleCommands(context);
 	registerDebuggerCommands(context);
-
-	await vscode.commands.executeCommand("powershell-universal.syncSamples");
 
 	if (Container.universal.hasConnection()) {
 		if (await Container.universal.waitForAlive()) {

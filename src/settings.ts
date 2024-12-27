@@ -4,8 +4,6 @@ export let PowerShellLanguageId = "powerShellUniversal";
 export interface ISettings {
     appToken: string;
     url: string;
-    samplesDirectory: string;
-    syncSamples: boolean;
     localEditing: boolean;
     checkModules: boolean;
     connections: IConnection[];
@@ -24,12 +22,10 @@ export function load(): ISettings {
     return {
         appToken: configuration.get<string>("appToken", ""),
         url: configuration.get<string>("url", "http://localhost:5000"),
-        samplesDirectory: configuration.get<string>("samplesDirectory", ""),
-        syncSamples: configuration.get<boolean>("syncSamples", false),
         localEditing: configuration.get<boolean>("localEditing", false),
         checkModules: configuration.get<boolean>("checkModules", false),
         connections: configuration.get<IConnection[]>("connections", []),
-    }
+    };
 }
 
 export async function SetAppToken(value: string) {
@@ -40,11 +36,6 @@ export async function SetAppToken(value: string) {
 export async function SetServerPath(value: string) {
     const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
     await configuration.update("serverPath", value, vscode.ConfigurationTarget.Global);
-}
-
-export async function SetSamplesDirectory(value: string) {
-    const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(PowerShellLanguageId);
-    await configuration.update("samplesDirectory", value, vscode.ConfigurationTarget.Global);
 }
 
 export async function SetUrl(value: string) {

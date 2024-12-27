@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 
 class Node extends vscode.TreeItem {
-    constructor(label: string, icon : string) {
+    constructor(label: string, icon: string) {
         super(label);
 
         this.iconPath = new vscode.ThemeIcon(icon);
         this.contextValue = 'help';
-        this.command =  {
+        this.command = {
             command: 'powershell-universal.help',
             arguments: [this],
             title: 'Help'
@@ -24,12 +24,12 @@ export class InfoTreeViewProvider implements vscode.TreeDataProvider<vscode.Tree
     }
 
     getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
-        if (element == null)
-        {
+        if (element == null) {
             return [
                 new Node('Documentation', 'book'),
+                new Node('Gallery', 'gift'),
                 new Node('Forums', 'account'),
-                new Node('Support', 'question'),
+                new Node('Issues', 'github'),
                 new Node('Pricing', 'key')
             ]
         }
@@ -37,7 +37,7 @@ export class InfoTreeViewProvider implements vscode.TreeDataProvider<vscode.Tree
         return null;
     }
 
-    refresh(node? : vscode.TreeItem): void {
-		this._onDidChangeTreeData.fire(node);
-	}
+    refresh(node?: vscode.TreeItem): void {
+        this._onDidChangeTreeData.fire(node);
+    }
 }

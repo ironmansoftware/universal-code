@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "5.0.0",
+	"version": "5.2.0",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
@@ -221,21 +221,6 @@
 				"icon": "$(debug-disconnect)"
 			},
 			{
-				"command": "powershell-universal.syncSamples",
-				"title": "Update Samples",
-				"icon": "$(sync)"
-			},
-			{
-				"command": "powershell-universal.insertSample",
-				"title": "Insert Sample",
-				"icon": "$(add)"
-			},
-			{
-				"command": "powershell-universal.viewSampleOnGitHub",
-				"title": "View Sample on GitHub",
-				"icon": "$(github)"
-			},
-			{
 				"command": "powershell-universal.viewJob",
 				"title": "View Job",
 				"icon": "$(link-external)"
@@ -320,10 +305,6 @@
 					"name": "Configuration"
 				},
 				{
-					"id": "sampleProviderView",
-					"name": "Samples"
-				},
-				{
 					"id": "universalInfoProviderView",
 					"name": "Help and Information"
 				}
@@ -342,16 +323,6 @@
 					"type": "string",
 					"default": "",
 					"description": "The App Token used to connect to PowerShell Universal. To specify multiple connections, use the Connections setting."
-				},
-				"powerShellUniversal.samplesDirectory": {
-					"type": "string",
-					"default": "",
-					"description": "Storage location for samples."
-				},
-				"powerShellUniversal.syncSamples": {
-					"type": "boolean",
-					"default": false,
-					"description": "Whether to automatically synchronize samples from GitHub when the extension starts."
 				},
 				"powerShellUniversal.checkModules": {
 					"type": "boolean",
@@ -431,11 +402,6 @@
 				{
 					"command": "powershell-universal.refreshEndpointTreeView",
 					"when": "view == universalEndpointProviderView",
-					"group": "navigation"
-				},
-				{
-					"command": "powershell-universal.syncSamples",
-					"when": "view == sampleProviderView",
 					"group": "navigation"
 				},
 				{
@@ -577,16 +543,6 @@
 				{
 					"command": "powershell-universal.newConfigFolder",
 					"when": "view == universalConfigProviderView && viewItem == configFolder",
-					"group": "inline"
-				},
-				{
-					"command": "powershell-universal.insertSample",
-					"when": "view == sampleProviderView && viewItem == sample",
-					"group": "inline"
-				},
-				{
-					"command": "powershell-universal.viewSampleOnGitHub",
-					"when": "view == sampleProviderView && viewItem == sample",
 					"group": "inline"
 				},
 				{

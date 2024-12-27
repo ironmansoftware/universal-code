@@ -7,6 +7,7 @@ const path = require('path');
 const os = require('os');
 import * as fs from 'fs';
 import { tmpdir } from './utils';
+import { ConfigTreeItem } from './../configuration-treeview';
 
 function normalizeDriveLetter(path: string): string {
     if (hasDriveLetter(path)) {
@@ -60,12 +61,7 @@ export const registerScriptCommands = (context: vscode.ExtensionContext) => {
 }
 
 export const openScriptConfigFileCommand = async () => {
-    const settings = await Container.universal.getSettings();
-    const filePath = path.join(settings.repositoryPath, '.universal', 'scripts.ps1');
-
-    const textDocument = await vscode.workspace.openTextDocument(filePath);
-
-    vscode.window.showTextDocument(textDocument);
+    await vscode.commands.executeCommand('powershell-universal.openConfigFile', new ConfigTreeItem("scripts", ".universal\\scripts.ps1", true, ""));
 }
 
 export const editScriptCommand = async (item: ScriptTreeItem) => {

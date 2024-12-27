@@ -40,10 +40,6 @@ PowerShell Universal is a single of pane of glass to manage your automation envi
 
 - Edit configuration scripts
 
-### Samples 
-
-Automatically insert samples from the [PowerShell Universal Sample Repository](https://github.com/ironmansoftware/universal-samples)
-
 ## Requirements
 
 - Windows, Linux or Mac
@@ -56,7 +52,5 @@ This extension contributes the following settings:
 
 * `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up. 
 * `powershellUniversal.url`: The URL to your PowerShell Universal server.
-* `powershellUniversal.samplesDirectory`: Directory for samples. 
-* `powershellUniversal.syncSamples`: Whether to synchronize samples from GitHub.
 * `powershellUniversal.localEditing`: Whether to edit local configuration files or using the REST API
 * `powershellUniversal.connections`: An array of connections.

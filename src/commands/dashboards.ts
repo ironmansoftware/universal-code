@@ -159,6 +159,10 @@ export const viewDashboardCommand = async (dashboard: DashboardTreeItem, context
         }
     }
 
+    if (!dashboard.dashboard.baseUrl.startsWith('/')) {
+        dashboard.dashboard.baseUrl = '/' + dashboard.dashboard.baseUrl;
+    }
+
     vscode.env.openExternal(vscode.Uri.parse(`${url}${dashboard.dashboard.baseUrl}`));
 }
 

@@ -109,6 +109,11 @@ export enum ModuleSource {
     Gallery
 }
 
+export type Repository = {
+    name: string;
+    url: string;
+};
+
 export type Script = {
     id: number;
     name: string;
@@ -122,42 +127,6 @@ export type ScriptParameter = {
 
 export type Settings = {
     repositoryPath: string;
-}
-
-export class SampleFolder {
-    public name: string;
-    public path: string;
-
-    constructor(name: string, path: string) {
-        this.name = name;
-        this.path = path;
-    }
-}
-
-export class Sample {
-    public title: string;
-    public description: string;
-    public version: string;
-    public files: Array<SampleFile>;
-    public url: string;
-
-    constructor(title: string, description: string, version: string, files: Array<SampleFile>, url: string) {
-        this.title = title;
-        this.description = description;
-        this.version = version;
-        this.files = files;
-        this.url = url;
-    }
-}
-
-export class SampleFile {
-    constructor(file: string, content: string) {
-        this.fileName = file;
-        this.content = content;
-    }
-
-    public fileName: string;
-    public content: string;
 }
 
 export interface Terminal {

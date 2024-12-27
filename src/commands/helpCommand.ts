@@ -6,23 +6,26 @@ const help = () => {
         let url = '';
         switch (item.label) {
             case "Documentation":
-                url = "https://docs.ironmansoftware.com"
+                url = "https://docs.powershelluniversal.com";
                 break;
             case "Forums":
-                url = "https://forums.ironmansoftware.com"
+                url = "https://forums.ironmansoftware.com";
                 break;
             case "Issues":
-                url = "mailto:support@ironmansoftware.com"
+                url = "https://github.com/ironmansoftware/powershell-universal";
                 break;
             case "Pricing":
-                url = "https://www.ironmansoftware.com/pricing/powershell-universal"
+                url = "https://powershelluniversal.com/pricing";
+                break;
+            case "Gallery":
+                url = "https://powershelluniversal.com/gallery";
                 break;
         }
 
         if (url !== '') {
-            vscode.env.openExternal(vscode.Uri.parse(url))
+            vscode.env.openExternal(vscode.Uri.parse(url));
         }
     });
-}
+};
 
 export default help;

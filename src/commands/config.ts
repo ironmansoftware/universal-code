@@ -3,7 +3,6 @@ import { ConfigTreeItem } from './../configuration-treeview';
 import { Container } from '../container';
 const path = require('path');
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
-import { SampleFile } from '../types';
 import { load } from '../settings';
 import { tmpdir } from './utils';
 
@@ -29,7 +28,7 @@ export const registerConfigCommands = (context: vscode.ExtensionContext) => {
     });
 }
 
-export const newConfigFileCommand = async (item: ConfigTreeItem | SampleFile) => {
+export const newConfigFileCommand = async (item: ConfigTreeItem) => {
     const fileName = await vscode.window.showInputBox({
         prompt: "Enter a file name"
     });
@@ -38,7 +37,7 @@ export const newConfigFileCommand = async (item: ConfigTreeItem | SampleFile) =>
     Container.ConfigFileTreeView.refresh();
 }
 
-export const newConfigFolderCommand = async (item: ConfigTreeItem | SampleFile) => {
+export const newConfigFolderCommand = async (item: ConfigTreeItem) => {
     const fileName = await vscode.window.showInputBox({
         prompt: "Enter a folder name"
     });
@@ -47,7 +46,7 @@ export const newConfigFolderCommand = async (item: ConfigTreeItem | SampleFile) 
     Container.ConfigFileTreeView.refresh();
 }
 
-export const openConfigCommand = async (item: ConfigTreeItem | SampleFile) => {
+export const openConfigCommand = async (item: ConfigTreeItem) => {
     var settings = load();
     if (settings.localEditing) {
         await openConfigLocal(item);
@@ -57,7 +56,7 @@ export const openConfigCommand = async (item: ConfigTreeItem | SampleFile) => {
     }
 }
 
-export const openConfigRemote = async (item: ConfigTreeItem | SampleFile) => {
+export const openConfigRemote = async (item: ConfigTreeItem) => {
     const filePath = path.join(tmpdir(), '.universal.code.configuration', item.fileName);
     const codePath = path.join(tmpdir(), '.universal.code.configuration');
     if (!fs.existsSync(codePath)) {
@@ -87,7 +86,7 @@ export const openConfigRemote = async (item: ConfigTreeItem | SampleFile) => {
     return textDocument;
 }
 
-export const openConfigLocal = async (item: ConfigTreeItem | SampleFile) => {
+export const openConfigLocal = async (item: ConfigTreeItem) => {
     const settings = await Container.universal.getSettings();
     const filePath = path.join(settings.repositoryPath, '.universal', item.fileName);
 
