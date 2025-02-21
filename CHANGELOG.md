@@ -1,3 +1,3 @@
 # Change Log
 
-[Changelog](https://docs.ironmansoftware.com/extension-changelog)
+[Changelog](https://docs.powershelluniversal.com/changelogs/extension-changelog)
