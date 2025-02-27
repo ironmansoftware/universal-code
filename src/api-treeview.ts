@@ -16,6 +16,7 @@ export class ApiTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (element == null) {
             try {
                 const endpoints = await Container.universal.getEndpoints();
+                if (!endpoints.map) return [];
                 const items = endpoints.map(y => new EndpointTreeItem(y));
                 return items;
             }

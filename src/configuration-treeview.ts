@@ -17,11 +17,13 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
                 if (version.startsWith("3") || version.startsWith("4") || version.startsWith("5")) {
                     const configs = await Container.universal.getFiles("");
                     var configTree: ConfigTreeItem[] = [];
+                    if (!configs.forEach) return [];
                     configs.forEach(c => configTree.push(new ConfigTreeItem(c.name, c.fullName, c.isLeaf, c.content)));
                     return configTree;
                 } else {
                     const configs = await Container.universal.getConfigurations();
                     var configTree: ConfigTreeItem[] = [];
+                    if (!configs.forEach) return [];
                     configs.forEach(c => configTree.push(new ConfigTreeItem(c, c, false, "")));
                     return configTree;
                 }
@@ -34,6 +36,7 @@ export class ConfigTreeViewProvider implements vscode.TreeDataProvider<vscode.Tr
         } else {
             const configs = await Container.universal.getFiles(element.fileName);
             var configTree: ConfigTreeItem[] = [];
+            if (!configs.forEach) return [];
             configs.forEach(c => configTree.push(new ConfigTreeItem(c.name, c.fullName, c.isLeaf, c.content)));
             return configTree;
         }
