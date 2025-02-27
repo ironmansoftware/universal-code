@@ -55,7 +55,7 @@ export class ProcessTreeItem extends ParentTreeItem {
     public process: Process;
     async getChildren(): Promise<vscode.TreeItem[]> {
         try {
-            const runspaces = await Container.universal.getRunspaces(this.process.processId);
+            const runspaces = await Container.universal.getRunspaces(this.process.id);
             return runspaces.map(x => new RunspaceTreeItem(x));
         }
         catch (err) {

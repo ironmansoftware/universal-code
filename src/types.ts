@@ -158,6 +158,7 @@ export type FileSystemItem = {
 }
 
 export type Process = {
+    id: number;
     processName: string;
     description: string;
     processId: number;
@@ -175,3 +176,5 @@ export type Runspace = {
     availability: string;
     processId: number;
 }
+
+export type XMLHttpRequestResponseType = {}
