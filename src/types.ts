@@ -172,6 +172,7 @@ export type Environment = {
 
 export type Runspace = {
     id: number;
+    runspaceId: number;
     state: string;
     availability: string;
     processId: number;

@@ -28,8 +28,8 @@ export const attachRunspace = async (runspace: RunspaceTreeItem, context: vscode
         name: "PowerShell Universal",
         type: "powershelluniversal",
         request: "attach",
-        processId: runspace.runspace.processId,
-        runspaceId: runspace.runspace.id
+        processId: runspace.process.processId,
+        runspaceId: runspace.runspace.runspaceId
     });
 };
 
