@@ -6,6 +6,10 @@ PowerShell Universal is a single of pane of glass to manage your automation envi
 - [Forums](https://forums.ironmansoftware.com)
 - [Pricing](https://powershelluniversal.com/pricing)
 
+## Issues 
+
+Please open issues on the [PowerShell Universal issue repository](https://github.com/ironmansoftware/powershell-universal).
+
 ## Features
 
 ### APIs
