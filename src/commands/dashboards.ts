@@ -50,24 +50,6 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
                 Container.universal.saveDashboardPage(page.modelId, dashboard.id, page);
             }
         }
-        else if (file.fileName.includes('.universal.code.dashboard')) {
-            const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
-
-            if (!info) {
-                vscode.window.showErrorMessage(`File from a previous session. Re-open file from the Activity Bar.`);
-                return;
-            }
-
-            const dashboards = await Container.universal.getDashboards();
-            const dashboard = dashboards.find(x => x.name === info.name);
-
-            if (dashboard) {
-                dashboard.content = file.getText();
-                Container.universal.saveDashboard(dashboard.id, dashboard);
-            } else {
-                vscode.window.showErrorMessage(`Dashboard ${info.name} not found.`);
-            }
-        }
         else if (file.fileName.includes('.universal.code.dashboardModule')) {
             const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
 
@@ -81,6 +63,24 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
 
             if (dashboard) {
                 dashboard.moduleContent = file.getText();
+                Container.universal.saveDashboard(dashboard.id, dashboard);
+            } else {
+                vscode.window.showErrorMessage(`Dashboard ${info.name} not found.`);
+            }
+        }
+        else if (file.fileName.includes('.universal.code.dashboard')) {
+            const info = files.find(x => x.filePath.toLowerCase() === file.fileName.toLowerCase());
+
+            if (!info) {
+                vscode.window.showErrorMessage(`File from a previous session. Re-open file from the Activity Bar.`);
+                return;
+            }
+
+            const dashboards = await Container.universal.getDashboards();
+            const dashboard = dashboards.find(x => x.name === info.name);
+
+            if (dashboard) {
+                dashboard.content = file.getText();
                 Container.universal.saveDashboard(dashboard.id, dashboard);
             } else {
                 vscode.window.showErrorMessage(`Dashboard ${info.name} not found.`);
