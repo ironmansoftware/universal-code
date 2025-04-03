@@ -88,7 +88,7 @@ export const editScriptRemote = async (item: ScriptTreeItem) => {
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 
-    vscode.window.showTextDocument(textDocument);
+    vscode.window.showTextDocument(textDocument, { preview: false });
 }
 
 export const editScriptLocal = async (item: ScriptTreeItem) => {

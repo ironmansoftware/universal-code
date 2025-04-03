@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace, Repository } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace, Repository, Folder } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -362,8 +362,53 @@ export class Universal {
             }
             this.request('/api/v1/script', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 reject(x.message);
-            })
-        })
+            });
+        });
+    }
+
+    getRootScripts(): Promise<Array<Script>> {
+        return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+            this.request('/api/v1/folder/contents', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            });
+        });
+    }
+
+    getRootFolders(): Promise<Array<Folder>> {
+        return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+            this.request('/api/v1/folder/root', 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            });
+        });
+    }
+
+    getFoldersInFolder(folder: Folder): Promise<Array<Folder>> {
+        return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+            this.request(`/api/v1/folder/children/${folder.path}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            });
+        });
+    }
+
+
+    getScriptsInFolder(folder: Folder): Promise<Array<Script>> {
+        return new Promise((resolve, reject) => {
+            if (!this.hasConnection()) {
+                resolve([]);
+            }
+            this.request(`/api/v1/folder/contents/${folder.path}`, 'GET')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            });
+        });
     }
 
     newTerminalInstance(terminal: Terminal): Promise<TerminalInstance> {

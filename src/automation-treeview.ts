@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Container } from './container';
-import { Job, JobStatus, Script, Terminal } from './types';
+import { Folder, Job, JobStatus, Script, Terminal } from './types';
 import ParentTreeItem from './parentTreeItem';
 
 export class AutomationTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -40,14 +40,65 @@ export class ScriptsTreeItem extends ParentTreeItem {
     }
 
     async getChildren(): Promise<vscode.TreeItem[]> {
+        let treeItems = [] as vscode.TreeItem[];
+
         try {
-            return await Container.universal.getScripts().then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new ScriptTreeItem(y)));
+            treeItems = await Container.universal.getRootFolders().then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new FolderTreeItem(y)));
         }
         catch (err) {
             Container.universal.showConnectionError("Failed to query scripts. " + err);
             return [];
         }
+
+        try {
+            var scripts = await Container.universal.getRootScripts().then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new ScriptTreeItem(y)));
+            treeItems = treeItems.concat(scripts);
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query scripts. " + err);
+            return [];
+        }
+
+        return treeItems;
     }
+}
+
+export class FolderTreeItem extends ParentTreeItem {
+    public folder: Folder;
+
+    constructor(folder: Folder) {
+        super(folder.name, vscode.TreeItemCollapsibleState.Collapsed);
+
+        this.folder = folder;
+        const themeIcon = new vscode.ThemeIcon('folder');
+        this.iconPath = themeIcon;
+    }
+
+    async getChildren(): Promise<vscode.TreeItem[]> {
+
+        let treeItems = [] as vscode.TreeItem[];
+
+        try {
+            treeItems = await Container.universal.getFoldersInFolder(this.folder).then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new FolderTreeItem(y)));
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query folders. " + err);
+            return [];
+        }
+
+        try {
+            var scripts = await Container.universal.getScriptsInFolder(this.folder).then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new ScriptTreeItem(y)));
+            treeItems = treeItems.concat(scripts);
+        }
+        catch (err) {
+            Container.universal.showConnectionError("Failed to query scripts. " + err);
+            return [];
+        }
+
+        return treeItems;
+    }
+
+    contextValue = "folder";
 }
 
 export class ScriptTreeItem extends vscode.TreeItem {

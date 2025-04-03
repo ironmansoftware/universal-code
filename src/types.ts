@@ -114,16 +114,22 @@ export type Repository = {
     url: string;
 };
 
+export type Folder = {
+    id: number;
+    name: string;
+    path: string;
+};
+
 export type Script = {
     id: number;
     name: string;
     fullPath: string;
     content: string;
-}
+};
 
 export type ScriptParameter = {
     id: number;
-}
+};
 
 export type Settings = {
     repositoryPath: string;
