@@ -3,10 +3,17 @@ import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, Scrip
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { DebugProtocol } from '@vscode/debugprotocol';
+import { UniversalDebugAdapter } from './commands/debugger';
 const https = require('https');
 
 export class Universal {
+    private connectionName: string | undefined;
+    private hubConnection: HubConnection | undefined;
     private context: vscode.ExtensionContext;
+    private debugAdapter: UniversalDebugAdapter | undefined;
+
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
     }
@@ -689,6 +696,68 @@ export class Universal {
                 reject(x);
             });
         });
+    }
+
+    registerDebugAdapter(debugAdapter: UniversalDebugAdapter) {
+        this.debugAdapter = debugAdapter;
+    }
+
+    unregisterDebugAdapter() {
+        this.debugAdapter = undefined;
+    }
+
+    connectDebugger() {
+        const settings = load();
+
+        if (this.hubConnection) {
+            this.hubConnection.stop();
+        }
+
+        var appToken = settings.appToken;
+        var url = settings.url;
+        var rejectUnauthorized = true;
+        var windowsAuth = false;
+
+        if (this.connectionName && this.connectionName !== 'Default') {
+            const connection = settings.connections.find(m => m.name === this.connectionName);
+            if (connection) {
+                appToken = connection.appToken;
+                url = connection.url;
+                rejectUnauthorized = !connection.allowInvalidCertificate;
+            }
+        }
+
+        this.hubConnection = new HubConnectionBuilder()
+            .withUrl(`${url}/debuggerhub`, { accessTokenFactory: () => appToken })
+            .configureLogging(LogLevel.Information)
+            .build();
+
+        this.hubConnection.on("message", (message: string) => {
+            const protocolMessage = JSON.parse(message) as DebugProtocol.ProtocolMessage;
+            this.debugAdapter?.handleMessage(protocolMessage);
+        });
+
+        this.hubConnection.on("error", (message: string) => {
+            vscode.window.showErrorMessage(message);
+        });
+
+        this.hubConnection.onclose(() => {
+            vscode.window.showInformationMessage("Disconnected from PowerShell Universal Debugger.");
+        });
+
+        this.hubConnection.start().then(() => {
+            this.hubConnection?.invoke("connect").then((msg) => {
+                if (msg.success) {
+                    vscode.window.showInformationMessage(msg.message);
+                } else {
+                    vscode.window.showErrorMessage(msg.message);
+                }
+            });
+        });
+    }
+
+    sendDebuggerMessage(message: DebugProtocol.ProtocolMessage) {
+        this.hubConnection?.send("message", JSON.stringify(message));
     }
 
     connectUniversal(url: string) {
