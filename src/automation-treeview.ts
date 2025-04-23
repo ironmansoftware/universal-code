@@ -81,7 +81,7 @@ export class FolderTreeItem extends ParentTreeItem {
 
         const version = await Container.universal.getVersion();
 
-        if (compareVersions(version, "5.5.0") < 1) {
+        if (compareVersions(version, "5.5.0") < 0) {
             var scripts = await Container.universal.getScripts().then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new ScriptTreeItem(y)));
             treeItems = treeItems.concat(scripts);
             return treeItems;
