@@ -14,18 +14,10 @@ export const registerConfigCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.reloadConfig', refreshConfig);
     vscode.workspace.onDidSaveTextDocument(async (file) => {
         if (file.fileName.includes('.universal.code.configuration')) {
-            const version = await Container.universal.getVersion();
-            if (version.startsWith("3") || version.startsWith("4")) {
-                const codePath = path.join(tmpdir(), '.universal.code.configuration');
-                const fileName = file.fileName.toLocaleLowerCase().replace(codePath.toLocaleLowerCase(), "").substring(1);
-                await Container.universal.saveFileContent(fileName, file.getText());
-            }
-            else {
-                const fileName = path.basename(file.fileName);
-                Container.universal.saveConfiguration(fileName, file.getText());
-            }
-        }
-    });
+            const codePath = path.join(tmpdir(), '.universal.code.configuration');
+            const fileName = file.fileName.toLocaleLowerCase().replace(codePath.toLocaleLowerCase(), "").substring(1);
+            await Container.universal.saveFileContent(fileName, file.getText());
+        });
 }
 
 export const newConfigFileCommand = async (item: ConfigTreeItem) => {
@@ -63,21 +55,14 @@ export const openConfigRemote = async (item: ConfigTreeItem) => {
         fs.mkdirSync(codePath);
     }
 
-    const version = await Container.universal.getVersion();
-    if (version.startsWith("3") || version.startsWith("4") || version.startsWith("5")) {
-        const config = await Container.universal.getFileContent(item.fileName);
+    const config = await Container.universal.getFileContent(item.fileName);
 
-        const directory = path.dirname(filePath);
-        if (!fs.existsSync(directory)) {
-            fs.mkdirSync(directory, { recursive: true });
-        }
+    const directory = path.dirname(filePath);
+    if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory, { recursive: true });
+    }
 
-        fs.writeFileSync(filePath, config.content);
-    }
-    else {
-        const config = await Container.universal.getConfiguration(item.fileName);
-        fs.writeFileSync(filePath, config);
-    }
+    fs.writeFileSync(filePath, config.content);
 
     const textDocument = await vscode.workspace.openTextDocument(filePath);
 
