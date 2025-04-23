@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Container } from './container';
 import { Folder, Job, JobStatus, Script, Terminal } from './types';
 import ParentTreeItem from './parentTreeItem';
+import compareVersions = require('compare-versions');
 
 export class AutomationTreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
@@ -77,6 +78,14 @@ export class FolderTreeItem extends ParentTreeItem {
     async getChildren(): Promise<vscode.TreeItem[]> {
 
         let treeItems = [] as vscode.TreeItem[];
+
+        const version = await Container.universal.getVersion();
+
+        if (compareVersions(version, "5.4.0") < 1) {
+            var scripts = await Container.universal.getScripts().then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new ScriptTreeItem(y)));
+            treeItems = treeItems.concat(scripts);
+            return treeItems;
+        }
 
         try {
             treeItems = await Container.universal.getFoldersInFolder(this.folder).then(x => x.sort((a, b) => (a.name > b.name) ? 1 : -1).map(y => new FolderTreeItem(y)));
