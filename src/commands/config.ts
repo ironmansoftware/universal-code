@@ -17,8 +17,9 @@ export const registerConfigCommands = (context: vscode.ExtensionContext) => {
             const codePath = path.join(tmpdir(), '.universal.code.configuration');
             const fileName = file.fileName.toLocaleLowerCase().replace(codePath.toLocaleLowerCase(), "").substring(1);
             await Container.universal.saveFileContent(fileName, file.getText());
-        });
-}
+        }
+    });
+};
 
 export const newConfigFileCommand = async (item: ConfigTreeItem) => {
     const fileName = await vscode.window.showInputBox({
