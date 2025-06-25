@@ -168,7 +168,8 @@ export type Process = {
     processName: string;
     description: string;
     processId: number;
-    environment: Environment
+    environment: Environment;
+    computer: string;
 };
 
 export type Environment = {

@@ -64,7 +64,7 @@ export class ProcessTreeItem extends ParentTreeItem {
         }
     }
     constructor(process: Process) {
-        super(`${process.description} (${process.processId})`, vscode.TreeItemCollapsibleState.Collapsed);
+        super(`${process.description} (${process.computer} - ${process.processId})`, vscode.TreeItemCollapsibleState.Collapsed);
 
         this.process = process;
 
