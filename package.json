@@ -3,7 +3,7 @@
 	"displayName": "PowerShell Universal",
 	"description": "Visual Studio Code tools for PowerShell Universal",
 	"publisher": "ironmansoftware",
-	"version": "5.5.1",
+	"version": "5.6.0",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
@@ -147,8 +147,17 @@
 			},
 			{
 				"command": "powershell-universal.startUniversal",
-				"title": "PowerShell Universal: Start",
+				"title": "PowerShell Universal: Start Local Development",
 				"icon": "$(play)"
+			},
+			{
+				"command": "powershell-universal.clearLocalDatabase",
+				"title": "PowerShell Universal: Clear Local Development Database",
+				"icon": "$(delete)"
+			},
+			{
+				"command": "powershell-universal.connectLocalDevModule",
+				"title": "PowerShell Universal: Connect Local Development Module"
 			},
 			{
 				"command": "powershell-universal.manageDashboards",

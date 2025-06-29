@@ -11,10 +11,10 @@ export interface ISettings {
 
 export interface IConnection {
     name: string;
-    appToken: string;
+    appToken?: string | null;
     url: string;
-    allowInvalidCertificate: boolean;
-    windowsAuth: boolean;
+    allowInvalidCertificate?: boolean;
+    windowsAuth?: boolean;
 }
 
 export function load(): ISettings {

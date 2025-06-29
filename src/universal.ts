@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace, Repository, Folder } from './types';
+import { Dashboard, DashboardDiagnostics, Settings, Endpoint, Script, Job, ScriptParameter, JobPagedViewModel, JobLog, FileSystemItem, DashboardPage, Terminal, TerminalInstance, Module, Process, Runspace, Repository, Folder, LocalDevConfig } from './types';
 import axios, { AxiosPromise } from 'axios';
 import { load, SetAppToken, SetUrl } from './settings';
 import { Container } from './container';
@@ -43,11 +43,18 @@ export class Universal {
         if (connectionName && connectionName !== 'Default') {
             const connection = settings.connections.find(m => m.name === connectionName);
             if (connection) {
-                appToken = connection.appToken;
+                appToken = connection.appToken || '';
                 url = connection.url;
                 rejectUnauthorized = !connection.allowInvalidCertificate;
-                windowsAuth = connection.windowsAuth;
+                windowsAuth = connection.windowsAuth || false;
             }
+        }
+
+        let basicAuth = '';
+        var localDevConfig = this.context.globalState.get<LocalDevConfig>("psu.dev.config");
+        if (connectionName === 'Local Development' && localDevConfig) {
+            url = `http://localhost:${localDevConfig.browserPort || 5000}`;
+            basicAuth = Buffer.from(`admin:admin`).toString('base64');
         }
 
         https.globalAgent.options.rejectUnauthorized = rejectUnauthorized;
@@ -61,6 +68,9 @@ export class Universal {
 
         if (windowsAuth) {
             headers['X-Windows-Auth'] = '';
+        }
+        else if (basicAuth) {
+            headers['Authorization'] = `Basic ${basicAuth}`;
         } else {
             headers['Authorization'] = `Bearer ${appToken}`;
         };
@@ -79,8 +89,8 @@ export class Universal {
         return new Promise((resolve) => {
             this.request('/api/v1/version', 'GET')?.then(x => resolve(x.data)).catch(x => {
                 resolve("failed");
-            })
-        })
+            });
+        });
     }
 
     async getReleasedVersion() {
@@ -91,7 +101,9 @@ export class Universal {
     async installAndLoadModule() {
         try {
             const settings = load();
-            if (settings.checkModules) {
+            var localDevConfig = this.context.globalState.get<LocalDevConfig>("psu.dev.config");
+
+            if (settings.checkModules && !localDevConfig) {
                 const version = await Container.universal.getVersion();
 
                 var appToken = settings.appToken;
@@ -101,7 +113,7 @@ export class Universal {
                 if (connectionName && connectionName !== 'Default') {
                     const connection = settings.connections.find(m => m.name === connectionName);
                     if (connection) {
-                        appToken = connection.appToken;
+                        appToken = connection.appToken || '';
                         url = connection.url;
                     }
                 }
@@ -721,7 +733,7 @@ export class Universal {
         if (this.connectionName && this.connectionName !== 'Default') {
             const connection = settings.connections.find(m => m.name === this.connectionName);
             if (connection) {
-                appToken = connection.appToken;
+                appToken = connection.appToken || '';
                 url = connection.url;
                 rejectUnauthorized = !connection.allowInvalidCertificate;
             }
