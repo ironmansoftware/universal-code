@@ -17,3 +17,12 @@ function Install-UniversalModule {
         Import-Module @Parameters -ErrorAction SilentlyContinue
     }
 }
+
+function Import-LocalDevelopmentModule {
+    param($Version, $Port)
+
+    $ModulePath = [IO.Path]::Combine($ENV:USERPROFILE, ".psu", $Version, "Modules", "Universal", "Universal.psd1")
+    Import-Module $ModulePath
+
+    Connect-PSUServer -Url "http://localhost:$Port" -Credential (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "admin" -AsPlainText -Force)))
+}

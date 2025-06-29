@@ -1,13 +1,10 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { Universal } from './universal';
 import { Container } from './container';
 import { DashboardTreeViewProvider } from './dashboard-treeview';
 import { InfoTreeViewProvider } from './info-treeview';
 import help from './commands/helpCommand';
-import { downloadUniversalCommand, downloadUniversal } from './commands/downloadUniversal';
-import { load, SetUrl } from './settings';
+import { load } from './settings';
 import { registerDashboardCommands } from './commands/dashboards';
 import { ApiTreeViewProvider } from './api-treeview';
 import { registerEndpointCommands } from './commands/endpoints';
@@ -23,6 +20,8 @@ import { registerTerminalCommands } from './commands/terminals';
 import { PlatformTreeViewProvider } from './platform-treeview';
 import { registerModuleCommands } from './commands/modules';
 import { registerDebuggerCommands } from './commands/debugger';
+import { registerLocalDevCommands } from './commands/localDev';
+import { LocalDevConfig } from './types';
 
 export async function activate(context: vscode.ExtensionContext) {
 	registerConnectCommands(context);
@@ -102,7 +101,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('powershell-universal.refreshPlatformTreeView');
 	});
 
-	downloadUniversalCommand();
+	registerLocalDevCommands(context);
 	help();
 	registerDashboardCommands(context);
 	registerEndpointCommands(context);
@@ -114,7 +113,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerModuleCommands(context);
 	registerDebuggerCommands(context);
 
-	if (Container.universal.hasConnection()) {
+	var localDevConfig = context.globalState.get<LocalDevConfig>("psu.dev.config");
+
+	if (Container.universal.hasConnection() && !localDevConfig) {
 		if (await Container.universal.waitForAlive()) {
 			await Container.universal.connectDebugger();
 			await Container.universal.installAndLoadModule();

@@ -185,4 +185,12 @@ export type Runspace = {
     processId: number;
 }
 
+export type LocalDevConfig = {
+    version: string;
+    databaseType: string | null;
+    databaseConnectionString: string | null;
+    env?: { [key: string]: string | null };
+    browserPort?: number;
+};
+
 export type XMLHttpRequestResponseType = {}
