@@ -56,6 +56,11 @@
 				"icon": "$(remote)"
 			},
 			{
+				"command": "powershell-universal.reconnect",
+				"title": "Reconnect to Instance",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "powershell-universal.reloadConfig",
 				"title": "Reload Configuration",
 				"icon": "$(debug-restart)"
@@ -453,6 +458,11 @@
 				{
 					"command": "powershell-universal.connection",
 					"when": "view == universalConnectionProviderView && viewItem == connection",
+					"group": "inline"
+				},
+				{
+					"command": "powershell-universal.reconnect",
+					"when": "view == universalConnectionProviderView && viewItem == connection-connected",
 					"group": "inline"
 				},
 				{
