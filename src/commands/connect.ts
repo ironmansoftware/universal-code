@@ -6,6 +6,7 @@ import { load } from '../settings';
 export const registerConnectCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.addConnection', AddConnection);
     vscode.commands.registerCommand('powershell-universal.connection', x => Connection(x, context));
+    vscode.commands.registerCommand('powershell-universal.reconnect', x => Connection(x, context));
 }
 
 export const AddConnection = async (context: vscode.ExtensionContext) => {
