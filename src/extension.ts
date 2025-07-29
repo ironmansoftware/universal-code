@@ -117,7 +117,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	if (Container.universal.hasConnection() && !localDevConfig) {
 		if (await Container.universal.waitForAlive()) {
-			await Container.universal.connectDebugger();
 			await Container.universal.installAndLoadModule();
 		}
 	}
