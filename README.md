@@ -58,3 +58,4 @@ This extension contributes the following settings:
 * `powershellUniversal.url`: The URL to your PowerShell Universal server.
 * `powershellUniversal.localEditing`: Whether to edit local configuration files or using the REST API
 * `powershellUniversal.connections`: An array of connections.
+* `powershellUniversal.checkModules`: Ensure that the latest version of the PowerShell Universal module is installed.
