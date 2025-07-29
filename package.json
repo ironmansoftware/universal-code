@@ -268,6 +268,21 @@
 				"command": "powershell-universal.editModule",
 				"title": "Edit Module",
 				"icon": "$(go-to-file)"
+			},
+			{
+				"command": "powershell-universal.connectDebugger",
+				"title": "Connect Debugger",
+				"icon": "$(debug)"
+			},
+			{
+				"command": "powershell-universal.connectDebugger",
+				"title": "Connect Debugger",
+				"icon": "$(debug)"
+			},
+			{
+				"command": "powershell-universal.disconnectDebugger",
+				"title": "Disconnect Debugger",
+				"icon": "$(debug-disconnect)"
 			}
 		],
 		"debuggers": [
@@ -446,6 +461,16 @@
 				{
 					"command": "powershell-universal.reloadConfig",
 					"when": "view == universalConfigProviderView",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.connectDebugger",
+					"when": "view == universalPlatformProviderView && !powershell-universal.debuggerConnected",
+					"group": "navigation"
+				},
+				{
+					"command": "powershell-universal.disconnectDebugger",
+					"when": "view == universalPlatformProviderView && powershell-universal.debuggerConnected",
 					"group": "navigation"
 				}
 			],

@@ -718,6 +718,12 @@ export class Universal {
         this.debugAdapter = undefined;
     }
 
+    disconnectDebugger() {
+        if (this.hubConnection) {
+            this.hubConnection.stop();
+        }
+    }
+
     connectDebugger() {
         const settings = load();
 
@@ -755,12 +761,14 @@ export class Universal {
 
         this.hubConnection.onclose(() => {
             vscode.window.showInformationMessage("Disconnected from PowerShell Universal Debugger.");
+            vscode.commands.executeCommand('setContext', 'powershell-universal.debuggerConnected', false);
         });
 
         this.hubConnection.start().then(() => {
             this.hubConnection?.invoke("connect").then((msg) => {
                 if (msg.success) {
                     vscode.window.showInformationMessage(msg.message);
+                    vscode.commands.executeCommand('setContext', 'powershell-universal.debuggerConnected', true);
                 } else {
                     vscode.window.showErrorMessage(msg.message);
                 }

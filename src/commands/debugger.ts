@@ -5,6 +5,8 @@ import { Container } from '../container';
 
 export const registerDebuggerCommands = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand('powershell-universal.attachRunspace', (item) => attachRunspace(item, context));
+    vscode.commands.registerCommand('powershell-universal.connectDebugger', _ => Container.universal.connectDebugger());
+    vscode.commands.registerCommand('powershell-universal.disconnectDebugger', _ => Container.universal.disconnectDebugger());
 
     vscode.debug.registerDebugAdapterDescriptorFactory('powershelluniversal', {
         createDebugAdapterDescriptor: (_session) => {
