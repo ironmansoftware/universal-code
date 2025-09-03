@@ -50,6 +50,21 @@ Please open issues on the [PowerShell Universal issue repository](https://github
 - PowerShell v5.1 or later
 - Modern Web Browser
 
+## Extension Configuration
+
+This extension requires an app token generated in PowerShell Universal before using it. You can do so by navigating to your PowerShell Universal admin console and logging in.
+
+Next, click your user name in the top right corner and select Tokens. Create a new token with the role you wish to grant to the token. Tokens with the Administrator role will have access to all features of the platform. Once created, copy the contents of the token.
+
+Within Visual Studio Code, open the command palette (Ctrl+Shift+P) and type "Preferences: Open Settings (UI)". Search for PowerShell Universal and fill in the following values:
+
+- App Token - The contents of the token you created in PowerShell Universal.
+- URL - The URL to your PowerShell Universal server (e.g. http://localhost:5000)
+
+Once connected, click the PowerShell Universal icon in the Activity Bar on the left side of the window. You can now start using the extension.
+
+For more information, visit the [PowerShell Universal documentation](https://docs.powershelluniversal.com/development/visual-studio-code-extension).
+
 ## Extension Settings
 
 This extension contributes the following settings:
