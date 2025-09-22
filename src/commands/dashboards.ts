@@ -46,8 +46,11 @@ export const registerDashboardCommands = (context: vscode.ExtensionContext) => {
                 vscode.window.showErrorMessage(`Page ${info.name} not found.`);
                 return;
             } else {
-                page.content = file.getText();
-                Container.universal.saveDashboardPage(page.modelId, dashboard.id, page);
+                const codePath = path.join(tmpdir(), '.universal.code.dashboardPage');
+                const fileName = file.fileName.toLocaleLowerCase().replace(codePath.toLocaleLowerCase(), "").substring(1);
+                const filePath = path.join("dashboards", info.dashboardName, "pages", info.name + ".ps1");
+                await Container.universal.saveFileContent(filePath, file.getText());
+                await Container.universal.deployApp(dashboard.id);
             }
         }
         else if (file.fileName.includes('.universal.code.dashboardModule')) {
@@ -245,20 +248,20 @@ export const openFileRemote = async (dashboard: DashboardTreeItem) => {
 }
 
 export const openPageFile = async (page: DashboardPageTreeItem) => {
-    const os = require('os');
     const codePath = path.join(tmpdir(), '.universal.code.dashboardPage');
     //Use the id in the path so that we can save the dashboard
     const codePathId = path.join(codePath, page.page.modelId.toString());
     const filePath = path.join(codePathId, page.page.name + ".ps1");
 
-    const dashboardFile = await Container.universal.getDashboardPage(page.page.dashboardId, page.page.modelId);
     const dashboard = await Container.universal.getDashboard(page.page.dashboardId);
     var dirName = path.dirname(filePath);
     if (!fs.existsSync(dirName)) {
         fs.mkdirSync(dirName, { recursive: true });
     }
 
-    fs.writeFileSync(filePath, dashboardFile.content);
+    const content = await Container.universal.getFileContent(path.join("dashboards", dashboard.name, "pages", page.page.name + ".ps1"));
+
+    fs.writeFileSync(filePath, content.content);
 
     files.push({
         id: page.page.modelId,

@@ -262,6 +262,14 @@ export class Universal {
         })
     }
 
+        deployApp(id: number): Promise<Dashboard> {
+        return new Promise((resolve, reject) => {
+            this.request(`/api/v1/dashboard/${id}/status/deploy`, 'PUT')?.then(x => resolve(x.data)).catch(x => {
+                reject(x.message);
+            });
+        });
+    }
+
     getDashboard(id: number): Promise<Dashboard> {
         return new Promise((resolve, reject) => {
             this.request(`/api/v1/dashboard/${id}`, 'GET')?.then(x => resolve(x.data)).catch(x => {

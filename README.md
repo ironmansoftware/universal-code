@@ -14,33 +14,33 @@ Please open issues on the [PowerShell Universal issue repository](https://github
 
 ### APIs
 
-![](https://github.com/ironmansoftware/universal-code/raw/master/images/apis.png)
+![PowerShell Universal APIs](https://github.com/ironmansoftware/universal-code/raw/master/images/apis.png)
 
 - View APIs
 - Automatically insert `Invoke-RestMethod` to call APIs
 - Edit APIs
 
-### Dashboards
+### Apps
 
-![](https://github.com/ironmansoftware/universal-code/raw/master/images/dashboards.png)
+![PowerShell Universal Apps](https://github.com/ironmansoftware/universal-code/raw/master/images/dashboards.png)
 
-- View dashboards 
-- Open Dashboard scripts
-- Restart Dashboards
-- View Dashboard log
-- Debug Dashboard Process
+- View Apps
+- Open App scripts
+- Restart Apps
+- View App log
+- Debug App Process
 
-### Scripts 
+### Scripts
 
-![](https://github.com/ironmansoftware/universal-code/raw/master/images/scripts.png)
+![PowerShell Universal Scripts](https://github.com/ironmansoftware/universal-code/raw/master/images/scripts.png)
 
 - View scripts
 - Edit scripts
 - Run scripts and receive notifications on job status
 
-### Configuration 
+### Configuration
 
-![](https://github.com/ironmansoftware/universal-code/raw/master/images/config.png)
+![PowerShell Universal Configuration](https://github.com/ironmansoftware/universal-code/raw/master/images/config.png)
 
 - Edit configuration scripts
 
@@ -58,7 +58,7 @@ Next, click your user name in the top right corner and select Tokens. Create a n
 
 Within Visual Studio Code, open the command palette (Ctrl+Shift+P) and type "Preferences: Open Settings (UI)". Search for PowerShell Universal and fill in the following values:
 
-- App Token - The contents of the token you created in PowerShell Universal.
+- App Token - The contents of the token you created in PowerShell Universal. Use the Administrator role to provide full access.
 - URL - The URL to your PowerShell Universal server (e.g. http://localhost:5000)
 
 Once connected, click the PowerShell Universal icon in the Activity Bar on the left side of the window. You can now start using the extension.
@@ -69,7 +69,7 @@ For more information, visit the [PowerShell Universal documentation](https://doc
 
 This extension contributes the following settings:
 
-* `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up. 
+* `powershellUniversal.appToken`: An app token for communicating with the Universal REST API. An app token will be granted the first time the extension starts up.
 * `powershellUniversal.url`: The URL to your PowerShell Universal server.
 * `powershellUniversal.localEditing`: Whether to edit local configuration files or using the REST API
 * `powershellUniversal.connections`: An array of connections.
